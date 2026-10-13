@@ -32,3 +32,13 @@
 التطوير الفعلي للنسخة الأولى يتم عبر الفرع `dev/foundation` وPull Requests. سيتم إضافة طريقة بناء APK آليًا عند اكتمال أساس التطبيق.
 
 © NEXVARY. كود المشروع وحقوق النص القرآني والتلاوات تخضع لكلٍ من تراخيصها الخاصة.
+
+## MVP Android (development branch)
+
+The **dev/foundation** branch includes a native Android prototype for the adaptive memorization loop. It supports reading, deterministic visual masking, unaided recall, self-assessed review, and local progress. It **does not** perform speech recognition, tajweed scoring, or audio playback yet.
+
+The local demo uses the four verses of Surah Al-Ikhlas, cross-checked against [Quran.com, Surah 112](https://quran.com/112). This isolated demo is not an approved complete corpus; import and verification of a licensed authoritative Quran text dataset are tracked for the next phase.
+
+Build with Android Studio, or download the debug APK once the **Android CI** GitHub Action finishes successfully. Never distribute the debug build as a final app.
+
+AI features must be evaluated against expert reciters before any pronunciation claims are made.
