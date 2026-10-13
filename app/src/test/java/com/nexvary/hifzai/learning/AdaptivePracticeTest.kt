@@ -31,7 +31,7 @@ class AdaptivePracticeTest {
     }
 
     @Test fun bridgeDoesNotCrossSurah() {
-        assertEquals("رَبِّ الْعَالَمِينَ", BridgeTrainer.tailOfPrevious(listOf(a, b), 1))
+        assertEquals("الرَّحْمَٰنِ الرَّحِيمِ", BridgeTrainer.tailOfPrevious(listOf(a, b), 1))
         assertNull(BridgeTrainer.tailOfPrevious(listOf(a, c), 1))
     }
 
