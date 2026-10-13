@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoStories
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Insights
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.School
@@ -63,6 +64,7 @@ import com.nexvary.hifzai.learning.MemoryCoach
 import com.nexvary.hifzai.learning.MemoryFingerprint
 import com.nexvary.hifzai.learning.PracticeKind
 import com.nexvary.hifzai.learning.ProgressStore
+import com.nexvary.hifzai.learning.ReciterCatalog
 import com.nexvary.hifzai.learning.RecallGrade
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
@@ -75,7 +77,7 @@ private val gold = Color(0xFFE4BE6A)
 private val green = Color(0xFF45DDB0)
 private val muted = Color(0xFFA5BAC5)
 
-private enum class Screen { HOME, PRACTICE, INSIGHTS, SETTINGS }
+private enum class Screen { HOME, PRACTICE, INSIGHTS, RECITERS, SETTINGS }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,6 +186,12 @@ private fun App() {
                     onClick = { screen = Screen.INSIGHTS },
                     icon = { Icon(Icons.Rounded.Insights, contentDescription = null) },
                     label = { Text("تقدمي") }
+                )
+                NavigationBarItem(
+                    selected = screen == Screen.RECITERS,
+                    onClick = { screen = Screen.RECITERS },
+                    icon = { Icon(Icons.Rounded.Groups, contentDescription = null) },
+                    label = { Text("المشايخ") }
                 )
                 NavigationBarItem(
                     selected = screen == Screen.SETTINGS,
@@ -351,6 +359,24 @@ private fun App() {
                                 OutlinedButton(
                                     onClick = { openVerse(i, advice.kind) }
                                 ) { Text("تدريب هذه الآية") }
+                            }
+                        }
+                    }
+                }
+                Screen.RECITERS -> {
+                    Section("دليل قرّاء مصر والسعودية", "أسماء مبدئية • التسجيلات تحتاج مراجعة التراخيص")
+                    ReciterCatalog.all.groupBy { it.country }.forEach { (country, people) ->
+                        Text(country.displayArabic, color = green, fontSize = 21.sp)
+                        people.forEach { person ->
+                            Card(colors = CardDefaults.cardColors(containerColor = panel)) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth().padding(15.dp),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Text(person.nameArabic, color = gold, fontSize = 18.sp)
+                                    Text("بيانات تعريفية فقط — التلاوات قيد فحص حقوق الاستخدام",
+                                        color = muted, fontSize = 13.sp)
+                                }
                             }
                         }
                     }
