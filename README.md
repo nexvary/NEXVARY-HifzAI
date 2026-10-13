@@ -1,44 +1,45 @@
-# NEXVARY HifzAI | حِفْظ
+# حِفْظ | NEXVARY HifzAI
 
-منصة للحفظ الذكي للقرآن الكريم، تبدأ بمحرك تدريب متكيّف يساعد المستخدم على الاسترجاع الفعلي والمراجعة المتباعدة وربط الآيات.
+**Adaptive Quran Memorization** — تطبيق أندرويد عربي لتدريب الحفظ بالاسترجاع والمراجعة المتباعدة، مع نموذج أولي لبصمة الذاكرة.
 
-> **الحالة:** المشروع في مرحلة التأسيس. لا توجد بعد نسخة إنتاجية أو تقييم تجويد معتمد.
+> **الوضع الحالي (0.2.0-dev):** نموذج تجريبي على فرع `dev/foundation`. لا يوجد تقييم تجويد آلي موثّق، ولا مصحف كامل، ولا تسجيلات صوتية مدمجة بعد. لا يُعدّ إصدارًا نهائيًا.
 
-## الفكرة
+## الوظائف التي تم رفع كودها
 
-- **التعلّم:** قراءة الآيات من مصدر قرآني موثوق دون تغيير نصها.
-- **التذكّر:** إخفاء كلمات في *طبقة العرض فقط*، ثم اختبار استرجاع الآية كاملة.
-- **الربط:** تدريب انتقالات الآيات، وليس حفظ كل آية منعزلة.
-- **المراجعة:** جدولة المراجعات بناءً على نتيجة الاسترجاع والتعثر.
-- **الخصوصية:** حفظ نتائج التدريب محليًا في البداية، دون إرسال تسجيلات صوتية إلى خوادم طرف ثالث.
+- تطبيق Android بلغة Kotlin مع Jetpack Compose وتصميم داكن، وأيقونات Material وواجهة RTL.
+- 5 أقسام: **الرئيسية، الحفظ، تقدمي، المشايخ، الإعدادات**.
+- قراءة وتدريب إخفاء كلمات الآيات ثم التسميع من الذاكرة بتقييم المستخدم.
+- تدريب **الربط** بين نهاية الآية السابقة وبداية الآية التالية.
+- بصمة ذاكرة لكل آية: محاولات، استرجاع دون مساعدة، استخدام التلميحات، وأخطاء الانتقال.
+- اختيار تدريب مناسب لكل آية، ومواعيد مراجعة متباعدة؛ النتائج تقريبية لم تُقيَّم بعد في دراسة تعليمية.
+- حفظ التقدم على الهاتف، مشاركة ملخص بسيط، وحذف البيانات من داخل التطبيق.
+- دليل أسماء أولي لقراء معروفين في مصر والسعودية **من دون ملفات صوتية أو ادعاء حقوق تشغيل**.
+- محرك تشابه نصي لأغراض اقتراح التدريبات فقط، وليس لتعديل القرآن الكريم.
+- اختبارات برمجية وتجهيز GitHub Actions لبناء Debug APK.
 
-## الأولويات التقنية
+## حدود النسخة التجريبية
 
-1. Android (Kotlin + Jetpack Compose) بواجهة عربية RTL.
-2. محرك حفظ ومراجعة **قابل للاختبار**، مفصول عن الواجهة وعن النص القرآني.
-3. مصدر نص قرآني موثّق؛ لا يُسمح بتعديل النص الأصلي أو توليد آيات بالذكاء الاصطناعي.
-4. لاحقًا: التلاوة الصوتية، التعرف على الكلام، واختبارات التسميع بإشراف مراجعة بشرية عند الشك.
-5. لاحقًا: معلمون معتمدون من مصر والسعودية، ولوحة إشراف.
+التدريب الحالي يستعمل **أربع آيات من سورة الإخلاص فقط** كنموذج. لا يوجد تعرف صوتي، تصحيح مخارج، فحص تجويد، أو أكاديمية مشايخ مباشرة. نحتاج إلى مصحف كامل موثق المصدر والترخيص وحقوق التلاوات قبل أي توزيع إنتاجي.
 
-## سلامة النص وحقوقه
+## خارطة الطريق من 002 إلى 220
 
-- يُعرض النص الأصلي كما ورد من المصدر المعتمد، ويُخزّن مع تعريف الإصدار.
-- عند الإخفاء أو تقديم تلميح تُغيّر *طريقة العرض* فقط، وليس النص المحفوظ.
-- مصدر مرشح: [Tanzil Text License](https://tanzil.net/docs/Text_License) (اشتراط النقل الحرفي والإسناد).
-- مصدر API مرشح: [Quran Foundation](https://api-docs.quran.com/docs/quickstart/)؛ تستخدم مفاتيح Content API داخل الخادم فقط.
+- [المراحل الـ219 مع شروط الإنجاز](docs/PHASES_002_220.md)
+- [سلامة النص القرآني وحقوقه](docs/CORPUS_INTEGRITY.md)
+- [خارطة التطوير العامة](docs/ROADMAP.md)
 
-## التطوير
+**لماذا لا ترفع نصًا قرآنيًا مولّدًا؟** يجب اعتماد نص أصيل مُراجع. الإخفاء يغيّر واجهة العرض فقط ولا يبدل الأصل.
 
-التطوير الفعلي للنسخة الأولى يتم عبر الفرع `dev/foundation` وPull Requests. سيتم إضافة طريقة بناء APK آليًا عند اكتمال أساس التطبيق.
+## البناء والتحقق
 
-© NEXVARY. كود المشروع وحقوق النص القرآني والتلاوات تخضع لكلٍ من تراخيصها الخاصة.
+عند نجاح [Android CI](../../actions/workflows/android.yml)، اذهب إلى تشغيل البناء الناجح وحمّل الملف من قسم **Artifacts** باسم `NEXVARY-HifzAI-Android-0.2.0-debug`. لا يُعد وجود Workflow وحده دليلًا على نجاح البناء.
 
-## MVP Android (development branch)
+**المفاتيح:** لا تضع API secrets في التطبيق أو GitHub؛ تستخدم Quran Foundation Content APIs خادمًا وسيطًا مع اعتماد الإنتاج. إصدار Pre-live لا يحتوي على المصحف الكامل. انظر [توثيق Quran Foundation](https://api-docs.quran.com/docs/quickstart/).
 
-The **dev/foundation** branch includes a native Android prototype for the adaptive memorization loop. It supports reading, deterministic visual masking, unaided recall, self-assessed review, and local progress. It **does not** perform speech recognition, tajweed scoring, or audio playback yet.
+### Attribution and integrity
 
-The local demo uses the four verses of Surah Al-Ikhlas, cross-checked against [Quran.com, Surah 112](https://quran.com/112). This isolated demo is not an approved complete corpus; import and verification of a licensed authoritative Quran text dataset are tracked for the next phase.
+- Quran text source candidates: [Tanzil](https://tanzil.net/docs/Text_License) and [Quran Foundation](https://api-docs.quran.com/docs/quickstart/).
+- Tanzil permits verbatim copies with explicit attribution; modifying the canonical text is forbidden.
+- No upstream canonical full text has yet been bundled in this repository.
+- Metadata in the reciter directory does not grant rights to stream or redistribute recordings.
 
-Build with Android Studio, or download the debug APK once the **Android CI** GitHub Action finishes successfully. Never distribute the debug build as a final app.
-
-AI features must be evaluated against expert reciters before any pronunciation claims are made.
+© NEXVARY. Local software and third-party Quran content have separate license requirements.
