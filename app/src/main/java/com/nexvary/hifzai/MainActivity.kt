@@ -1,6 +1,10 @@
 package com.nexvary.hifzai
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Bundle
 import android.net.Uri
 import androidx.activity.ComponentActivity
@@ -45,6 +49,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -67,6 +72,7 @@ import com.nexvary.hifzai.learning.DailyMemorizationPlan
 import com.nexvary.hifzai.learning.DifficultyTag
 import com.nexvary.hifzai.learning.RecallLadder
 import com.nexvary.hifzai.learning.QuranCorpus
+import com.nexvary.hifzai.learning.PrivateRecitationPractice
 import com.nexvary.hifzai.learning.HifzScheduler
 import com.nexvary.hifzai.learning.MemoryCoach
 import com.nexvary.hifzai.learning.MemoryFingerprint
@@ -123,6 +129,25 @@ private fun App() {
         return
     }
     val store = remember(context) { ProgressStore(context) }
+    val voicePractice = remember(context) { PrivateRecitationPractice(context) }
+    var voiceMessage by remember { mutableStateOf("التسجيل الصوتي اختياري ويبقى داخل الهاتف") }
+    val microphonePermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            voiceMessage = try {
+                voicePractice.start()
+                "يتم تسجيل صوتك محليًا. اضغط على إيقاف عند الانتهاء."
+            } catch (_: Exception) {
+                "تعذّر بدء التسجيل؛ راجع إعدادات الميكروفون."
+            }
+        } else {
+            voiceMessage = "لم يتم السماح باستخدام الميكروفون. يمكنك استخدام التسميع الكتابي."
+        }
+    }
+    DisposableEffect(voicePractice) {
+        onDispose { voicePractice.close() }
+    }
     var selectedSurah by remember { mutableIntStateOf(1) }
     val verses = remember(corpus, selectedSurah) { corpus.chapter(selectedSurah) }
     val cards = remember(store, corpus) {
@@ -211,6 +236,10 @@ private fun App() {
         openVerse(next)
     }
 
+    LaunchedEffect(screen, selectedSurah, index) {
+        voicePractice.erase()
+        voiceMessage = "التسجيل الصوتي اختياري ولا يغادر هاتفك"
+    }
     LaunchedEffect(screen, selectedSurah, readerPage, insightsPage) {
         scrollState.scrollTo(0)
     }
@@ -386,6 +415,47 @@ private fun App() {
                         }
                     }
                     if (stage == PracticeKind.RECALL || stage == PracticeKind.BRIDGE) {
+                        Text("تسميع بصوتك: استمع إلى تسجيلك وقارن بنفسك دون تقييم تجويد آلي.",
+                            color = gold, fontSize = 15.sp)
+                        Text(voiceMessage, color = muted, fontSize = 12.sp)
+                        if (!voicePractice.isRecording) {
+                            OutlinedButton(onClick = {
+                                if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                                    == PackageManager.PERMISSION_GRANTED) {
+                                    voiceMessage = try {
+                                        voicePractice.start()
+                                        "يتم التسجيل الآن على الهاتف"
+                                    } catch (_: Exception) {
+                                        "تعذّر بدء تسجيل الصوت"
+                                    }
+                                } else {
+                                    microphonePermission.launch(Manifest.permission.RECORD_AUDIO)
+                                }
+                            }, modifier = Modifier.fillMaxWidth()) {
+                                Text("ابدأ تسجيل التسميع الخاص")
+                            }
+                        } else {
+                            OutlinedButton(onClick = {
+                                voiceMessage = if (voicePractice.stop()) {
+                                    "تم حفظ الصوت مؤقتًا داخل التطبيق، ويمكنك سماعه أو حذفه."
+                                } else "تعذر تسجيل الصوت، يرجى إعادة المحاولة"
+                            }, modifier = Modifier.fillMaxWidth()) {
+                                Text("إيقاف التسجيل")
+                            }
+                        }
+                        if (voicePractice.hasRecording) {
+                            Row(Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                OutlinedButton(onClick = {
+                                    voiceMessage = if (voicePractice.play()) "تشغيل صوتك الآن"
+                                        else "تعذر تشغيل التسجيل"
+                                }, modifier = Modifier.weight(1f)) { Text("استمع لصوتك") }
+                                OutlinedButton(onClick = {
+                                    voicePractice.erase()
+                                    voiceMessage = "تم حذف التسجيل المحلي"
+                                }, modifier = Modifier.weight(1f)) { Text("احذف التسجيل") }
+                            }
+                        }
                         Text("تمرين اختياري: اكتب ما تحفظه، ثم قارن بنفسك. لا يُستخدم لتقييم التجويد.",
                             color = muted, fontSize = 13.sp)
                         OutlinedTextField(
@@ -592,7 +662,7 @@ private fun App() {
                     }, modifier = Modifier.fillMaxWidth()) {
                         Text("المصدر وترخيص النص: Tanzil.net")
                     }
-                    Text("لا توجد حسابات أو رفع تسجيلات صوتية أو اتصال بخوادم في النموذج الأولي.",
+                    Text("لا توجد حسابات ولا إرسال للصوت إلى خادم. تسجيل التسميع اختياري ومحلي ومؤقت؛ يُحذف عند مغادرة التدريب أو بالضغط على حذف.",
                         color = silver)
                     PrimaryButton("مشاركة ملخص التقدم", Modifier.fillMaxWidth()) {
                         val summary = "حِفْظ | NEXVARY HifzAI\n" +
