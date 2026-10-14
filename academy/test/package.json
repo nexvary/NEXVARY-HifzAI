@@ -1,0 +1,7 @@
+{
+  "name": "hifzai-private-academy-console-tests",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Test tooling only; not shipped in Android APK",
+  "devDependencies": { "playwright": "1.62.1" }
+}

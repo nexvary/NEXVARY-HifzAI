@@ -246,6 +246,13 @@ class AcademyTests(unittest.TestCase):
             self.assertEqual(0, db.execute('SELECT count(*) FROM revision_plans').fetchone()[0])
             self.assertEqual(0, db.execute('SELECT count(*) FROM observations').fetchone()[0])
 
+    def test_account_directory_is_admin_only_and_excludes_credentials(self):
+        self.error(403, self.guardian, 'accounts')
+        self.error(403, self.teacher, 'accounts')
+        rows = self.call(self.admin, 'accounts')['accounts']
+        self.assertEqual(4, len(rows))
+        self.assertTrue(all(set(row) == {'id', 'login', 'role', 'active'} for row in rows))
+
     def test_http_transport_real_login_and_host_origin_body_guards(self):
         server = make_server(self.db)
         worker = threading.Thread(target=server.serve_forever, daemon=True)
@@ -262,6 +269,24 @@ class AcademyTests(unittest.TestCase):
             status, login, headers = request(body)
             self.assertEqual(200, status)
             self.assertEqual('no-store', headers['Cache-Control'])
+            self.assertEqual('DENY', headers['X-Frame-Options'])
+            self.assertIn("frame-ancestors 'none'", headers['Content-Security-Policy'])
+            status, same_origin, _ = request(body, {'Content-Type': 'application/json',
+                'Origin': 'http://127.0.0.1:'+str(server.server_port)})
+            self.assertEqual(200, status)
+            self.assertEqual(self.guardian_id, same_origin['account'])
+            for path, marker in (('/', b'lang="ar" dir="rtl"'), ('/console.js', b'localStorage'),
+                                 ('/console.css', b'--gold')):
+                conn = http.client.HTTPConnection('127.0.0.1', server.server_port)
+                conn.request('GET', path)
+                response = conn.getresponse()
+                self.assertEqual(200, response.status)
+                content = response.read()
+                if path == '/console.js':
+                    self.assertNotIn(marker, content)
+                else:
+                    self.assertIn(marker, content)
+                conn.close()
             status, result, _ = request(json.dumps({'action': 'students'}),
                 {'Content-Type': 'application/json', 'Authorization': 'Bearer '+login['token']}, '/v1/operation')
             self.assertEqual((200, []), (status, result['students']))

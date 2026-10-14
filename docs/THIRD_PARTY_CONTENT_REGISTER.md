@@ -20,3 +20,6 @@ The repository's MIT license governs only code to which the project can grant MI
 
 ## Structural metadata
 Tanzil official metadata 1.0, unmodified quran-data.xml, copyright and cc-by label preserved verbatim. Source and SHA-256 in NOTICE.md and QuranPartitions.kt. Used for 30 juz and 604 Madani page boundaries, not an assertion of identical printed-page layout. The source states cc-by without a version; clarification is a recorded final rights-review blocker.
+
+## Academy console test tooling
+Playwright 1.62.1 / playwright-core 1.62.1 (Apache-2.0) and optional macOS fsevents 2.3.2 (MIT) are pinned in `academy/test/package-lock.json`. They are development/test dependencies, not bundled in the Android APK. No third-party academy application code or audio/model assets are imported. Browser binaries are installed on the CI runner for tests, not redistributed with the app. See https://github.com/microsoft/playwright/blob/main/LICENSE .

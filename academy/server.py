@@ -2,6 +2,7 @@
 import argparse
 import getpass
 import json
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from .service import Academy, AcademyError
 
@@ -27,10 +28,19 @@ def make_server(academy, port=0):
         def log_message(self, format, *args):
             pass  # No request body, credentials or bearer token in logs.
 
-        def send_json(self, status, body):
-            encoded = json.dumps(body, ensure_ascii=False).encode('utf-8')
+        def local_client(self):
+            allowed = {f'127.0.0.1:{self.server.server_port}', f'localhost:{self.server.server_port}'}
+            host = self.headers.get('Host')
+            origins = {None, 'http://'+str(host)}
+            return (len(self.headers.get_all('Host', [])) == 1 and host in allowed and
+                    len(self.headers.get_all('Origin', [])) <= 1 and self.headers.get('Origin') in origins)
+
+        def send_payload(self, status, encoded, content_type):
             self.send_response(status)
-            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Type', content_type)
+            self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'")
+            self.send_header('Referrer-Policy', 'no-referrer')
+            self.send_header('X-Frame-Options', 'DENY')
             self.send_header('Content-Length', str(len(encoded)))
             self.send_header('Cache-Control', 'no-store')
             self.send_header('X-Content-Type-Options', 'nosniff')
@@ -39,15 +49,31 @@ def make_server(academy, port=0):
             self.wfile.write(encoded)
             self.close_connection = True
 
+        def send_json(self, status, body):
+            self.send_payload(status, json.dumps(body, ensure_ascii=False).encode('utf-8'),
+                              'application/json; charset=utf-8')
+
+        def do_GET(self):
+            if not self.local_client():
+                self.send_json(403, {'error': 'Local integration client required'})
+                return
+            assets = {'/': ('console.html', 'text/html; charset=utf-8'),
+                      '/console.js': ('console.js', 'text/javascript; charset=utf-8'),
+                      '/console.css': ('console.css', 'text/css; charset=utf-8')}
+            if self.path not in assets:
+                self.send_json(404, {'error': 'Resource unavailable'})
+                return
+            filename, content_type = assets[self.path]
+            self.send_payload(200, (Path(__file__).parent / filename).read_bytes(), content_type)
+
         def do_POST(self):
             try:
-                # Exact Host + no browser Origin prevent DNS-rebinding/CORS requests.
-                allowed = {f'127.0.0.1:{self.server.server_port}', f'localhost:{self.server.server_port}'}
-                if self.headers.get('Host') not in allowed or self.headers.get('Origin') is not None:
+                # Exact Host + same-origin-only requests; no cross-site browser access.
+                if not self.local_client():
                     raise AcademyError(403, 'Local integration client required')
                 if self.path not in ('/v1/login', '/v1/operation'):
                     raise AcademyError(404, 'Operation unavailable')
-                if self.headers.get('Transfer-Encoding') or self.headers.get_all('Content-Length', []).__len__() != 1:
+                if self.headers.get('Transfer-Encoding') or len(self.headers.get_all('Content-Length', [])) != 1:
                     raise AcademyError(400, 'Invalid request framing')
                 if self.headers.get('Content-Type') != 'application/json':
                     raise AcademyError(415, 'JSON required')

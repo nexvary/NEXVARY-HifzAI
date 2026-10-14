@@ -16,3 +16,5 @@ __pycache__/
 *.sqlite-*
 *.db
 *.db-*
+
+node_modules/

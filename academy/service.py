@@ -174,7 +174,7 @@ class Academy:
                 db.execute("INSERT INTO sessions VALUES(?,?,?)",
                            (hashlib.sha256(token.encode()).hexdigest(), row['id'], self.now()+3600))
                 self.audit(db, row['id'], 'login', row['id'])
-                result = {'token': token, 'expires': self.now()+3600, 'role': row['role']}
+                result = {'token': token, 'expires': self.now()+3600, 'role': row['role'], 'account': row['id']}
         # Raise after transaction so failed attempts are not rolled back.
         if invalid:
             raise AcademyError(401, "Invalid credentials")
@@ -225,6 +225,10 @@ class Academy:
                 db.execute("DELETE FROM sessions WHERE account=?", (aid,))
                 self.audit(db, aid, action, aid)
                 return {'ok': True, 'reauthenticate': True}
+            if action == 'accounts':
+                fail(role == 'admin', 403, "Administrator required")
+                return {'accounts': [dict(r) for r in db.execute(
+                    "SELECT id,login,role,active FROM accounts ORDER BY login")]}
             if action == 'account_create':
                 fail(role == 'admin', 403, "Administrator required")
                 fail(data.get('role') in ('teacher', 'guardian'))
