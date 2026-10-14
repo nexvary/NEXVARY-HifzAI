@@ -496,13 +496,13 @@ private fun App() {
                             color = muted, fontSize = 14.sp
                         )
                         Text(
-                            BridgeTrainer.tailOfPrevious(verses, index)
+                            BridgeTrainer.tailOfPrevious(verses, index, textForExercise = corpus::ayahText)
                                 ?: "هذه أول آية، اختر الآية التالية لتدريب الربط.",
                             color = green, fontFamily = quranTypeface, fontSize = 20.sp
                         )
                     }
                     val fraction = RecallLadder.concealment(stage, hintCount, revealed)
-                    val visualText = VerseMask.display(verse.text, fraction, verse.id)
+                    val visualText = VerseMask.display(corpus.ayahText(verse), fraction, verse.id)
                     Card(
                         shape = RoundedCornerShape(20.dp),
                         border = BorderStroke(1.dp, gold.copy(alpha = 0.35f)),
@@ -516,7 +516,8 @@ private fun App() {
                                     Text("الآية مخفية • سمّعها من ذاكرتك", color = silver,
                                         fontSize = 20.sp, textAlign = TextAlign.Center)
                                 }
-                            } else Text(
+                            } else if (stage == PracticeKind.READ) CanonicalQuranText(corpus, verse)
+                            else Text(
                                 visualText, fontFamily = quranTypeface, modifier = Modifier.fillMaxWidth(),
                                 fontSize = 29.sp, lineHeight = 52.sp,
                                 fontWeight = FontWeight.Medium, color = silver,
@@ -641,11 +642,6 @@ private fun App() {
                     OutlinedButton(onClick = { screen = Screen.SEARCH }, modifier = Modifier.fillMaxWidth()) {
                         Text("البحث في القرآن والانتقال المباشر")
                     }
-                    if (readerPage == 0) corpus.openingBasmala(selectedSurah)?.let { opening ->
-                        Text("بسملة افتتاح السورة • خارج عد الآيات", color = muted, fontSize = 12.sp)
-                        Text(opening.text, fontFamily = quranTypeface, fontSize = quranFontSize.sp, lineHeight = (quranFontSize * 1.85f).sp,
-                            color = gold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-                    }
                     Row(Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically) {
@@ -669,17 +665,7 @@ private fun App() {
                         ) {
                             Column(Modifier.fillMaxWidth().padding(17.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                Text("﴿ " + item.verse + " ﴾",
-                                    color = gold, fontSize = 16.sp, textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth())
-                                Text(
-                                    item.text, fontFamily = quranTypeface,
-                                    color = silver,
-                                    fontSize = quranFontSize.sp,
-                                    lineHeight = (quranFontSize * 1.85f).sp,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center
-                                )
+                                CanonicalQuranText(corpus, item, quranFontSize, showAyahNumber = true)
                                 OutlinedButton(onClick = {
                                     store.bookmark(item.chapter, item.verse)
                                     message = "حُفظ موضع القراءة • " + item.verse
@@ -735,13 +721,10 @@ private fun App() {
                     Text("الآية الأساسية: " + corpus.info(selectedSurah).arabicName +
                         " " + verse.verse, color = gold)
                     Card(colors = CardDefaults.cardColors(containerColor = panel)) {
-                        Text(verse.text, fontFamily = quranTypeface, color = silver, fontSize = 26.sp,
-                            lineHeight = 46.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().padding(18.dp))
+                        Box(Modifier.fillMaxWidth().padding(18.dp)) { CanonicalQuranText(corpus, verse, 26) }
                     }
                     val suggestions = remember(verse.id, corpus) {
-                        SimilarityIndex.similarTo(verse, corpus.verses, 0.45).take(12)
+                        SimilarityIndex.similarTo(verse, corpus.verses, 0.45, corpus::ayahText).take(12)
                     }
                     if (suggestions.isEmpty()) {
                         Text("لا توجد اقتراحات لفظية فوق معيار التشابه الحالي. " +
@@ -756,8 +739,7 @@ private fun App() {
                                     Text("سورة " + corpus.info(candidate.chapter).arabicName +
                                         " • الآية " + candidate.verse,
                                         color = gold, fontSize = 15.sp)
-                                    Text(candidate.text, fontFamily = quranTypeface, color = silver,
-                                        lineHeight = 40.sp, fontSize = 23.sp)
+                                    CanonicalQuranText(corpus, candidate, 23)
                                     OutlinedButton(onClick = { openCorpusVerse(candidate) }) {
                                         Text("تدريب هذا الموضع")
                                     }
@@ -855,7 +837,7 @@ private fun App() {
                         Card(colors = CardDefaults.cardColors(containerColor = panel)) {
                             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Text(corpus.info(result.chapter).arabicName + " • " + result.verse, color = gold)
-                                Text(result.text, fontFamily = quranTypeface, fontSize = 24.sp, lineHeight = 44.sp)
+                                CanonicalQuranText(corpus, result, 24)
                                 OutlinedButton(onClick = { jumpTo(result.chapter, result.verse) }) { Text("عرض الآية في المصحف") }
                             }
                         }
@@ -943,7 +925,7 @@ private fun App() {
                     })
                 }
                 Screen.TEACHERS -> TeacherNotebookScreen()
-                Screen.EXERCISES -> VerseExercisesScreen(verses, index, ::openCorpusVerse)
+                Screen.EXERCISES -> VerseExercisesScreen(corpus, verses, index, ::openCorpusVerse)
                 Screen.SETTINGS -> {
                     Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
                     OutlinedButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth()) {

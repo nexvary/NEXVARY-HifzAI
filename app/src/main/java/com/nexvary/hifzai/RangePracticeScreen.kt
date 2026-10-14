@@ -51,14 +51,15 @@ internal fun RangePracticeScreen(
         " • " + (index+1) + " من " + verses.size + " في النطاق")
     Text("تعبر الجلسة السور عند الحاجة وتتوقف عند نهاية الجزء أو الصفحة؛ النص الأصلي لا يتغير.")
     if (stage == PracticeKind.BRIDGE) {
-        BridgeTrainer.tailOfPrevious(verses, index)?.let { tail ->
+        BridgeTrainer.tailOfPrevious(verses, index, textForExercise = corpus::ayahText)?.let { tail ->
             Text("تلميح الربط من السابق:")
             Text(tail, fontFamily = quranTypeface, fontSize = 23.sp, lineHeight = 44.sp)
         } ?: Text("لا نربط آيتين من سورتين مختلفتين؛ استرجع الآية الحالية وحدها")
     }
     val fraction = RecallLadder.concealment(stage, hints, reveal)
     Card {
-        Text(if (fraction == 1f) "الآية مخفية • استرجعها من ذاكرتك" else VerseMask.display(verse.text, fraction, verse.id),
+        if (stage == PracticeKind.READ) Box(Modifier.padding(20.dp)) { CanonicalQuranText(corpus, verse) }
+        else Text(if (fraction == 1f) "الآية مخفية • استرجعها من ذاكرتك" else VerseMask.display(corpus.ayahText(verse), fraction, verse.id),
             fontFamily = if (fraction == 1f) null else quranTypeface,
             fontSize = if (fraction == 1f) 20.sp else 29.sp, lineHeight = 52.sp,
             modifier = Modifier.fillMaxWidth().padding(20.dp))

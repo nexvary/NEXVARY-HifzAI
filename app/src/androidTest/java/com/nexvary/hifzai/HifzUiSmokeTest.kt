@@ -75,6 +75,7 @@ class HifzUiSmokeTest {
         click("ابدأ حفظ هذا النطاق")
         screenshot("hifz-range.png")
         rule.onNodeWithText("جلسة حفظ النطاق").assertExists()
+        rule.onNodeWithText("بسملة افتتاح السورة • غير مرقمة").assertExists()
         click("تابع سُلّم حفظ النطاق")
         rule.onNodeWithText("المصحف").performClick()
         screenshot("hifz-reader.png")

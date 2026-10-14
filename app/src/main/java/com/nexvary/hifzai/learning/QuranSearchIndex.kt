@@ -1,8 +1,8 @@
 package com.nexvary.hifzai.learning
 
 /** Derived lookup only. Results always point to the untouched original verse. */
-class QuranSearchIndex(verses: List<VerifiedVerse>) {
-    private val entries = verses.map { it to normalize(it.text) }
+class QuranSearchIndex(verses: List<VerifiedVerse>, textForIndex: (VerifiedVerse) -> String = { it.text }) {
+    private val entries = verses.map { it to normalize(textForIndex(it)) }
 
     fun search(query: String, limit: Int = 40): List<VerifiedVerse> {
         require(limit in 1..200)

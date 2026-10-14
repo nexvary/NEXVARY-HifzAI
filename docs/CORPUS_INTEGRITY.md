@@ -32,3 +32,9 @@ The [Quran Foundation Developer Terms](https://api-docs.quran.com/legal/develope
 - API terms, local law, scholarly approvals and the rights of other contributors are all separate requirements.
 
 These API restrictions do not apply by default to a separately licensed official Tanzil text asset; **each provider's terms must be evaluated independently**. No Quran Foundation content is bundled. The separately licensed complete Tanzil corpus is bundled verbatim.
+
+
+## Basmala encoding and display correction — verified directly
+Official provider note: https://tanzil.net/docs/a_note_on_bismillah . The 6236 numbered records store the unnumbered opening Basmala together with the first ayah of surahs other than 1 and 9. Openings at surahs 95 and 97 include a shadda on the first beh, as explained by the provider. A generic copy of Fatihah's opening would lose that source distinction and duplicate the prefix if also rendering the whole first record.
+
+The renderer now slices each original first record into opening, exact separator, and numbered-ayah body. Rejoining the three must produce the original string character-for-character for every one of the 6236 records. It inserts no Basmala from another surah and never rewrites the asset. The opening is labelled unnumbered; the ayah number belongs to the body. Training, transition hints, search and similarity comparisons use a separate derived ayah body so a common opening does not become an incorrect ayah-word cue. Corpus SHA-256 and Git blob remain unchanged. These technical controls do not replace scholarly visual acceptance.

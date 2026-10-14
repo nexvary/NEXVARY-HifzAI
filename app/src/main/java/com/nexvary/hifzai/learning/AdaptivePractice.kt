@@ -105,13 +105,14 @@ object MemoryCoach {
 
 object BridgeTrainer {
     /** Practice hint, not Quran text: displayed separately and clearly labelled. */
-    fun tailOfPrevious(verses: List<VerifiedVerse>, index: Int, words: Int = 2): String? {
+    fun tailOfPrevious(verses: List<VerifiedVerse>, index: Int, words: Int = 2,
+        textForExercise: (VerifiedVerse) -> String = { it.text }): String? {
         if (index !in 1..verses.lastIndex) return null
         require(words > 0)
         val previous = verses[index - 1]
         val current = verses[index]
         if (previous.chapter != current.chapter || previous.verse + 1 != current.verse) return null
-        return previous.text.trim().split(Regex("\\s+")).takeLast(words).joinToString(" ")
+        return textForExercise(previous).trim().split(Regex("\\s+")).takeLast(words).joinToString(" ")
     }
 }
 
@@ -132,12 +133,13 @@ object SimilarityIndex {
             .filter { it.length >= 2 }
             .toSet()
 
-    fun similarTo(target: VerifiedVerse, all: List<VerifiedVerse>, threshold: Double = 0.5): List<VerifiedVerse> {
+    fun similarTo(target: VerifiedVerse, all: List<VerifiedVerse>, threshold: Double = 0.5,
+        textForComparison: (VerifiedVerse) -> String = { it.text }): List<VerifiedVerse> {
         require(threshold in 0.0..1.0)
-        val words = tokens(target.text)
+        val words = tokens(textForComparison(target))
         if (words.size < 2) return emptyList()
         return all.filter { it.id != target.id }
-            .map { it to tokens(it.text) }
+            .map { it to tokens(textForComparison(it)) }
             .filter { (_, other) ->
                 val union = (words + other).size
                 union > 0 && words.intersect(other).size.toDouble() / union >= threshold

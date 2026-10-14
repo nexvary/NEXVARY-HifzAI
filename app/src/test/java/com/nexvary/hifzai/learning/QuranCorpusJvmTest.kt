@@ -35,7 +35,7 @@ class QuranCorpusJvmTest {
     @Test fun basmalaIsVerbatimReferenceOnlyWhereApplicable() {
         val corpus = corpus()
         assertNull(corpus.openingBasmala(1)); assertNull(corpus.openingBasmala(9))
-        assertSame(corpus.find(1,1), corpus.openingBasmala(114))
+        assertEquals(corpus.find(1,1)!!.text, corpus.openingBasmala(114))
         assertEquals(6236, corpus.verses.size)
     }
 }

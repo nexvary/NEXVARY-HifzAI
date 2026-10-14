@@ -22,7 +22,7 @@ class LocalDataAndAudioTest {
         assertEquals(114, corpus.surahs.size)
         assertNull(corpus.openingBasmala(1))
         assertNull(corpus.openingBasmala(9))
-        assertSame(corpus.find(1, 1), corpus.openingBasmala(2))
+        assertEquals(corpus.find(1, 1)!!.text, corpus.openingBasmala(2))
         assertNull(corpus.find(1, 8))
         assertEquals(corpus.find(2, 255), corpus.searchIndex.search(corpus.find(2, 255)!!.text).single())
     }

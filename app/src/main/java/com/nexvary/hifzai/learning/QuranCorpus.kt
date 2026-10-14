@@ -14,6 +14,10 @@ import java.util.Collections
  *
  * Technical byte verification is NOT a committee's scholarly certification.
  */
+data class QuranPresentation(val opening: String?, val separator: String, val ayahText: String) {
+    fun original(): String = if (opening == null) ayahText else opening + separator + ayahText
+}
+
 data class SurahInfo(val number: Int, val arabicName: String, val ayahCount: Int)
 
 class QuranCorpus private constructor(
@@ -24,11 +28,26 @@ class QuranCorpus private constructor(
     val surahs: List<SurahInfo> = Collections.unmodifiableList(surahs.toList())
     private val chapters: Map<Int, List<VerifiedVerse>> = this.verses.groupBy { it.chapter }
         .mapValues { (_, items) -> Collections.unmodifiableList(items.toList()) }
-    val searchIndex by lazy { QuranSearchIndex(verses) }
-    /** Unnumbered opening is a verbatim reference, never a generated verse. */
-    fun openingBasmala(chapter: Int): VerifiedVerse? {
+    val searchIndex by lazy { QuranSearchIndex(verses, ::ayahText) }
+    /** View slices reassemble exactly to the source; no Quran text is rewritten. */
+    fun presentation(verse: VerifiedVerse): QuranPresentation {
+        require(find(verse.chapter, verse.verse)?.text == verse.text) { "Not a canonical source record" }
+        if (verse.verse != 1 || verse.chapter == 1 || verse.chapter == 9)
+            return QuranPresentation(null, "", verse.text)
+        val match = Regex("^(\\S+\\s+\\S+\\s+\\S+\\s+\\S+)(\\s+)(.+)$", RegexOption.DOT_MATCHES_ALL)
+            .matchEntire(verse.text) ?: error("Missing source opening")
+        val opening = match.groupValues[1]
+        check(QuranSearchIndex.normalize(opening) == QuranSearchIndex.normalize(find(1, 1)!!.text)) {
+            "Unexpected source Basmala; do not infer a replacement"
+        }
+        val parts = QuranPresentation(opening, match.groupValues[2], match.groupValues[3])
+        check(parts.original() == verse.text)
+        return parts
+    }
+    fun ayahText(verse: VerifiedVerse) = presentation(verse).ayahText
+    fun openingBasmala(chapter: Int): String? {
         require(chapter in 1..114)
-        return if (chapter == 1 || chapter == 9) null else find(1, 1)
+        return presentation(find(chapter, 1)!!).opening
     }
     fun chapter(chapter: Int): List<VerifiedVerse> = chapters[chapter].orEmpty()
     fun info(chapter: Int): SurahInfo = surahs.first { it.number == chapter }
