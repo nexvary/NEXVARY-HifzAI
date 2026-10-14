@@ -38,7 +38,7 @@ jobs:
         with:
           gradle-version: '8.9'
       - name: Run unit tests and assemble APK
-        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+        run: gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
       - name: Verify production release guard is attached
         run: gradle :app:assembleRelease --dry-run --no-daemon | grep -F ':app:blockUnapprovedPublicRelease'
       - name: Calculate APK checksum
@@ -46,7 +46,8 @@ jobs:
           cd app/build/outputs/apk/debug
           sha256sum *.apk > SHA256SUMS
       - name: Upload APK
-        if: success()
+        # Never distribute an unapproved APK from this public repository.
+        if: success() && github.event.repository.private == true
         uses: actions/upload-artifact@v4
         with:
           name: NEXVARY-HifzAI-Android-0.5.0-dev-debug
@@ -54,3 +55,12 @@ jobs:
             app/build/outputs/apk/debug/*.apk
             app/build/outputs/apk/debug/SHA256SUMS
           if-no-files-found: error
+      - name: Preserve test and lint evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-unit-and-lint-evidence
+          path: |
+            app/build/test-results/
+            app/build/reports/tests/
+            app/build/reports/lint-results-debug.*
