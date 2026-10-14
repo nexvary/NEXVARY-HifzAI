@@ -36,7 +36,7 @@ internal fun VerseExercisesScreen(verses: List<VerifiedVerse>, index: Int, train
             if (candidates.isEmpty()) message = if (VerseExercises.isCanonicalOrder(selected))
                 "الترتيب مطابق لتسلسل المصدر؛ لا يُقيّم ذلك صحة التلاوة" else "الترتيب مختلف؛ أعد التدريب أو راجع التسلسل الأصلي"
         }, modifier = Modifier.fillMaxWidth()) {
-            Text(verse.text, fontSize = 23.sp, lineHeight = 43.sp)
+            Text(verse.text, fontFamily = quranTypeface, fontSize = 23.sp, lineHeight = 43.sp)
         }
     }
     if (selected.isNotEmpty()) Text("اختيارك بأرقام الآيات: " + selected.joinToString(" ← ") { it.verse.toString() })

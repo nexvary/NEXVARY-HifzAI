@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoStories
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.automirrored.rounded.MenuBook
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Insights
@@ -67,6 +68,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -95,7 +98,7 @@ import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
 import java.time.LocalDate
 
-private val quranTypeface = FontFamily(Font(R.font.amiri_quran))
+internal val quranTypeface = FontFamily(Font(R.font.amiri_quran))
 
 private val navy = Color(0xFF081521)
 private val panel = Color(0xFF122B39)
@@ -114,7 +117,9 @@ class MainActivity : ComponentActivity() {
                 colorScheme = darkColorScheme(
                     primary = gold, onPrimary = navy,
                     background = navy, onBackground = silver,
-                    surface = panel, onSurface = silver
+                    surface = panel, onSurface = silver,
+                    secondary = green, onSecondary = navy,
+                    secondaryContainer = panel, onSecondaryContainer = gold
                 )
             ) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -476,7 +481,7 @@ private fun App() {
                         Text(
                             BridgeTrainer.tailOfPrevious(verses, index)
                                 ?: "هذه أول آية، اختر الآية التالية لتدريب الربط.",
-                            color = green, fontSize = 20.sp
+                            color = green, fontFamily = quranTypeface, fontSize = 20.sp
                         )
                     }
                     val fraction = RecallLadder.concealment(stage, hintCount, revealed)
@@ -487,7 +492,14 @@ private fun App() {
                         colors = CardDefaults.cardColors(containerColor = panel)
                     ) {
                         Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 28.dp)) {
-                            Text(
+                            if (fraction >= 1f && (stage == PracticeKind.RECALL || stage == PracticeKind.BRIDGE)) {
+                                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Icon(Icons.Rounded.Mic, contentDescription = null, tint = green)
+                                    Text("الآية مخفية • سمّعها من ذاكرتك", color = silver,
+                                        fontSize = 20.sp, textAlign = TextAlign.Center)
+                                }
+                            } else Text(
                                 visualText, fontFamily = quranTypeface, modifier = Modifier.fillMaxWidth(),
                                 fontSize = 29.sp, lineHeight = 52.sp,
                                 fontWeight = FontWeight.Medium, color = silver,
@@ -975,7 +987,8 @@ private fun Section(title: String, sub: String) {
 private fun MetricCard(title: String, value: String, modifier: Modifier) {
     Card(modifier = modifier, colors = CardDefaults.cardColors(containerColor = panel)) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            Text(value, color = green, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Text(value, color = green, fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                style = LocalTextStyle.current.copy(textDirection = TextDirection.Ltr))
             Text(title, color = silver, fontSize = 12.sp)
         }
     }
