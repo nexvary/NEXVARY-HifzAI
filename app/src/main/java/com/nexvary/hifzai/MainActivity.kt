@@ -38,12 +38,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -76,12 +78,12 @@ import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
 import java.time.LocalDate
 
-private val navy = Color(0xFF071722)
-private val panel = Color(0xFF142C38)
-private val silver = Color(0xFFE0E7ED)
-private val gold = Color(0xFFE4BE6A)
-private val green = Color(0xFF45DDB0)
-private val muted = Color(0xFFA5BAC5)
+private val navy = Color(0xFF081521)
+private val panel = Color(0xFF122B39)
+private val silver = Color(0xFFEEF1F2)
+private val gold = Color(0xFFD6B465)
+private val green = Color(0xFF43C8AA)
+private val muted = Color(0xFFB9C6CF)
 
 private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, INSIGHTS, RECITERS, SETTINGS }
 
@@ -136,6 +138,10 @@ private fun App() {
     var screen by remember { mutableStateOf(Screen.HOME) }
     var index by remember { mutableIntStateOf(0) }
     var readerPage by remember { mutableIntStateOf(0) }
+    var chapterQuery by remember { mutableStateOf("") }
+    var insightsPage by remember { mutableIntStateOf(0) }
+    var typedRecall by remember { mutableStateOf("") }
+    val scrollState = rememberScrollState()
     var quranFontSize by remember { mutableIntStateOf(30) }
     var stage by remember { mutableStateOf(PracticeKind.READ) }
     var hintCount by remember { mutableIntStateOf(0) }
@@ -159,6 +165,9 @@ private fun App() {
         selectedSurah = chapter.coerceIn(1, 114)
         index = 0
         readerPage = 0
+        insightsPage = 0
+        chapterQuery = ""
+        typedRecall = ""
         screen = Screen.MUSHAF
     }
 
@@ -168,6 +177,7 @@ private fun App() {
         hintCount = 0
         revealed = false
         answerWasRevealed = false
+        typedRecall = ""
         difficulty = DifficultyTag.NONE
         screen = Screen.PRACTICE
     }
@@ -199,6 +209,10 @@ private fun App() {
             " • موعد المراجعة بعد " + newCard.intervalDays + " يوم"
         val next = (index + 1) % verses.size
         openVerse(next)
+    }
+
+    LaunchedEffect(screen, selectedSurah, readerPage, insightsPage) {
+        scrollState.scrollTo(0)
     }
 
     BackHandler(enabled = screen != Screen.HOME) {
@@ -244,7 +258,7 @@ private fun App() {
     ) { inset ->
         Column(
             modifier = Modifier.fillMaxSize().padding(inset)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(horizontal = 18.dp, vertical = 18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -372,6 +386,16 @@ private fun App() {
                         }
                     }
                     if (stage == PracticeKind.RECALL || stage == PracticeKind.BRIDGE) {
+                        Text("تمرين اختياري: اكتب ما تحفظه، ثم قارن بنفسك. لا يُستخدم لتقييم التجويد.",
+                            color = muted, fontSize = 13.sp)
+                        OutlinedTextField(
+                            value = typedRecall,
+                            onValueChange = { typedRecall = it.take(1800) },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("إجابتك من الذاكرة (لا تُحفظ)") },
+                            minLines = 2,
+                            maxLines = 7
+                        )
                         Text("موضع التعثر (تقييم ذاتي وليس تصحيحًا آليًا)", color = muted, fontSize = 13.sp)
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             DifficultyButton("لا يوجد", difficulty == DifficultyTag.NONE, Modifier.weight(1f)) { difficulty = DifficultyTag.NONE }
@@ -470,7 +494,18 @@ private fun App() {
                 }
                 Screen.CHAPTERS -> {
                     Section("السور القرآنية", "١١٤ سورة • اختر السورة لعرض آياتها")
-                    corpus.surahs.forEach { info ->
+                    OutlinedTextField(
+                        value = chapterQuery,
+                        onValueChange = { chapterQuery = it.take(50) },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text("ابحث باسم السورة أو رقمها") },
+                        singleLine = true
+                    )
+                    corpus.surahs.filter {
+                        chapterQuery.isBlank() ||
+                            it.arabicName.contains(chapterQuery.trim()) ||
+                            it.number.toString() == chapterQuery.trim()
+                    }.forEach { info ->
                         OutlinedButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = { chooseSurah(info.number) },
@@ -490,7 +525,8 @@ private fun App() {
                         MetricCard("محاولات الاسترجاع", attempts.toString(), Modifier.weight(1f))
                         MetricCard("بدون تلميح", independent.toString() + "%", Modifier.weight(1f))
                     }
-                    verses.forEachIndexed { i, item ->
+                    verses.drop(insightsPage * 15).take(15).forEachIndexed { pageOffset, item ->
+                        val i = insightsPage * 15 + pageOffset
                         val memory = memories[item.id] ?: MemoryFingerprint(item.id)
                         val card = cards[item.id] ?: ReviewCard(item.id)
                         val advice = MemoryCoach.recommend(card, memory)
@@ -516,6 +552,14 @@ private fun App() {
                                     onClick = { openVerse(i, advice.kind) }
                                 ) { Text("تدريب هذه الآية") }
                             }
+                        }
+                    }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        OutlinedButton(onClick = { insightsPage = (insightsPage - 1).coerceAtLeast(0) },
+                            enabled = insightsPage > 0) { Text("الآيات السابقة") }
+                        OutlinedButton(onClick = { insightsPage += 1 },
+                            enabled = (insightsPage + 1) * 15 < verses.size) {
+                            Text("آيات أخرى")
                         }
                     }
                 }
