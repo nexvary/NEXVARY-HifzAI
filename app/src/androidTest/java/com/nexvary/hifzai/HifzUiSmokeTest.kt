@@ -84,7 +84,7 @@ class HifzUiSmokeTest {
         screenshot("hifz-recall.png")
         click("تدرّب على الآيات المتشابهة لفظيًا")
         screenshot("hifz-similar.png")
-        rule.onNodeWithText("التقدم").performClick()
+        rule.onNodeWithText("تقدمي").performClick()
         screenshot("hifz-insights.png")
         rule.onNodeWithText("الإعدادات").performClick()
         screenshot("hifz-settings.png")

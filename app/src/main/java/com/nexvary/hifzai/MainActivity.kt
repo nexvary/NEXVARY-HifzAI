@@ -28,7 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoStories
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.MenuBook
+import androidx.compose.material.icons.automirrored.rounded.MenuBook
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Insights
 import androidx.compose.material.icons.rounded.Settings
@@ -339,7 +339,7 @@ private fun App() {
                 NavigationBarItem(
                     selected = screen == Screen.MUSHAF || screen == Screen.CHAPTERS,
                     onClick = { screen = Screen.MUSHAF },
-                    icon = { Icon(Icons.Rounded.MenuBook, contentDescription = null) },
+                    icon = { Icon(Icons.AutoMirrored.Rounded.MenuBook, contentDescription = null) },
                     label = { Text("المصحف") }
                 )
                 NavigationBarItem(

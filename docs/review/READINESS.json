@@ -1,0 +1,77 @@
+{
+  "purpose": "Internal preparation only. Incomplete, not a committee submission.",
+  "source_commit": null,
+  "apk": {},
+  "gates": {
+    "functional_scope": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "official_corpus": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "rendered_quran_internal_review": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "learning_methods_internal_review": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "audio_rights": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "asr_independent_evaluation": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "academy_authorization_and_child_safety": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "android_ci": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "device_matrix": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "accessibility": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "security_and_dependency_review": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "arabic_user_guide": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "real_screenshots_all_pages": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    },
+    "internal_quality_minutes": {
+      "status": "pending",
+      "reviewer": null,
+      "evidence": []
+    }
+  }
+}

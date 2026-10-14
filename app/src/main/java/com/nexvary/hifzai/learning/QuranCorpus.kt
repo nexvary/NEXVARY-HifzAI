@@ -35,6 +35,7 @@ class QuranCorpus private constructor(
         const val ASSET = "quran/uthmani-v1.1.txt"
         const val SOURCE_SHA256 = "6933e133dd56db778c801bf738848454e43648105a151e8d84d86a7cae39ec5f"
         const val SOURCE_BLOB_SHA1 = "9813920ae5afce9e50d2ac44562457e29bb4bfca"
+        const val METADATA_SHA256 = "ec86874d26dd3bcd5474b9dd6afb92541484e13b8c8d0da8138e070885bc5b51"
         const val SOURCE_CREDIT = "النص القرآني: مشروع تنزيل Tanzil — الرسم العثماني 1.1"
         const val SOURCE_LINK = "https://tanzil.net/"
 
@@ -53,8 +54,11 @@ class QuranCorpus private constructor(
                 "Quran source integrity check failed; display must be blocked"
             }
             val text = original.toString(StandardCharsets.UTF_8)
-            val metadata = context.assets.open("quran/surah-metadata.txt")
-                .bufferedReader(StandardCharsets.UTF_8).use { it.readText() }
+            val metadataBytes = context.assets.open("quran/surah-metadata.txt").use { it.readBytes() }
+            val metadataHash = MessageDigest.getInstance("SHA-256").digest(metadataBytes)
+                .joinToString("") { "%02x".format(it.toInt() and 255) }
+            check(metadataHash == METADATA_SHA256) { "Surah metadata integrity failed" }
+            val metadata = metadataBytes.toString(StandardCharsets.UTF_8)
             return parse(text, metadata)
         }
 

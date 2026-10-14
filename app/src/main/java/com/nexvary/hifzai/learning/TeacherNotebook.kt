@@ -79,7 +79,7 @@ class TeacherNotebook(context: Context) {
         check(prefs.edit().putString("students", data.toString()).commit())
         saveLessons(lessons().filter { it.studentId != id })
         // A local complaint contains no student identity; all complaint notes are cleared on deletion.
-        prefs.edit().remove("complaints").commit()
+        check(prefs.edit().remove("complaints").commit())
     }
     fun complaints(): List<NotebookComplaint> = runCatching {
         val data = JSONArray(prefs.getString("complaints", "[]"))

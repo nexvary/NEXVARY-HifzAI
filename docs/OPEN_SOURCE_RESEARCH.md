@@ -29,3 +29,24 @@
 - Latimier et al. (2021), meta-analysis of spaced retrieval: https://eric.ed.gov/?id=EJ1310148
 
 **حدود الاستدلال:** هذه النتائج من بحوث التعلّم العام؛ لا تثبت بذاتها فعالية عدد أيام المراجعة الحالي أو فاعلية التطبيق في حفظ القرآن. يجب إجراء تجربة حفظ ومراجعة واقعية بإشراف معلمين.
+
+
+## Rechecked primary sources — 2026-10-14
+| Reference | Actual license checked | Useful design | Limitation / decision |
+|---|---|---|---|
+| Quran Revision Companion (Waqar144/quran_memorization_helper, master/LICENSE) | MIT, Copyright 2023 Waqar Ahmed | Simple revision records; focus on already memorized material | Different Flutter codebase; no code imported; does not license third-party audio |
+| Recite (noureddin/recite, gh-pages/LICENSE) | CC0-1.0 | Distinct typed/untyped recall, contiguous ranges, opt-in teacher audio mode | Web interaction rather than native Android; Quran/audio/font rights remain separate |
+| Irsaa (noureddin/irsaa, master/LICENSE) | CC0-1.0 | Writing and progressive reveal with immutable references | Web focus; not evidence that matching text diagnoses tajweed |
+| Hifz Companion (zakariaf/Hifz-Companion, main/LICENSE) | GPL-3.0 text; additional conditions in LICENSING.md must be checked before reuse | Offline revision and separate data/asset provenance | No implementation imported into the MIT application |
+| Quran Android (quran/quran_android, main/LICENSE) | GPL-3.0 | Native reader, audio and source/content separation | Architecture reference only; no GPL source copied into MIT |
+| Tarteel | Proprietary service; compared through official help pages | Recognition UX and uncertainty/evaluation needs | No copying its recordings, code or models; public availability does not license redistribution |
+
+The license files above were retrieved directly from raw.githubusercontent.com. No third-party project code was imported in this change. URLs identify the checked branch, which may change; a future source import requires pinning a commit and reviewing that exact version. Recite README: https://github.com/noureddin/recite ; Irsaa README: https://github.com/noureddin/irsaa ; Tarteel privacy explanation: https://support.tarteel.ai/en/articles/12414462-understanding-our-privacy-policy .
+
+### Learning research versus product claims
+- Roediger & Karpicke (2006), Test-enhanced learning, PMID 16507066, DOI 10.1111/j.1467-9280.2006.01693.x: https://pubmed.ncbi.nlm.nih.gov/16507066/ . Supports testing retrieval in general learning tasks; it does not validate this Quran application or its 35/70% masking policy.
+- Cepeda et al. (2006), Distributed practice in verbal recall, PMID 16719566, DOI 10.1037/0033-2909.132.3.354: https://pubmed.ncbi.nlm.nih.gov/16719566/ . Provides broad evidence for spacing; this deterministic scheduler still needs an application-specific pilot and delayed-recall measures.
+- Quran pronunciation research (arXiv:2509.00094): https://arxiv.org/abs/2509.00094 . Research/model/data claims must be independently reproduced, representative learner speech evaluated, and each data/model license reviewed. No model or claimed published accuracy is applied to HifzAI.
+
+### Concrete engineering changes informed by this review
+Retain immutable source references, separate normalized indices, keep hint history for the whole attempt, prioritize forgotten verses as reviews, restore sessions without audio/typed responses, and keep ASR comparison unknown until a separately evaluated recognizer is configured. These are design decisions, not proofs of educational effectiveness.
