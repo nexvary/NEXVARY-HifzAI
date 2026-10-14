@@ -17,3 +17,18 @@ Authoritative documentation:
 - Quran Foundation: https://api-docs.quran.com/docs/quickstart/
   - Content APIs require backend secrets: never embed client_secret inside an APK.
   - Pre-live datasets currently contain surahs 1 and 2 only; full data requires approved production access.
+
+
+## Quran Foundation API restrictions — verified 2026-10-14
+The [Quran Foundation Developer Terms](https://api-docs.quran.com/legal/developer-terms/) were updated on **2026-10-11**. Before ANY QF integration:
+
+- Client credentials stay exclusively on a private backend; do not embed them in Android.
+- Do not cache QF Content beyond **one week**, unless obtained and updated via the authorized [Content Sync API](https://api-docs.quran.com/docs/tutorials/content-sync/offline-cache-patterns/) or other stated exceptions.
+- A resource available through Content Sync must only be obtained for offline use through the authorized Content Sync mechanism and synced at least every **seven days when online**.
+- An API response is not permission to redistribute the data or recording files as a separate bundle, public API, or dataset.
+- Recitation records and chapter audio timing metadata do not imply redistribution rights in the underlying audio files.
+- Do not use QF Content or User Data to train AI/ML models without written consent under the applicable API rules.
+- Attribution: “Quran data provided by Quran Foundation”, as required where relevant, plus specific translator/reciter credits.
+- API terms, local law, scholarly approvals and the rights of other contributors are all separate requirements.
+
+These API restrictions do not apply by default to a separately licensed official Tanzil text asset; **each provider's terms must be evaluated independently**. No QF or Tanzil full Quran dataset is currently bundled in this repository.
