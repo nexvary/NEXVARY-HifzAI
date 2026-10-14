@@ -50,6 +50,10 @@ class SafetyRegressionTest {
         assertNull(VerseExercises.continuation(original, 3))
         assertNull(VerseExercises.continuation(listOf(original[0], VerifiedVerse(4, 1, "اختبار")), 0))
     }
+    @Test fun corruptAppointmentFormattingCannotCrashTheUi() {
+        assertEquals("تعذر قراءة الموعد", NotebookRules.displayDateTime("broken"))
+        assertEquals("2026/10/20 • 18:30", NotebookRules.displayDateTime("2026-10-20T18:30"))
+    }
     @Test(expected = IllegalArgumentException::class)
     fun minorsCannotBeAddedWithoutConsent() = NotebookRules.validateStudent("مستعار", false)
     @Test fun validLessonDoesNotCertifyTeacher() {

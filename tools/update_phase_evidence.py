@@ -39,6 +39,8 @@ group([20], ['tools/prepare_review_bundle.py','docs/review/READINESS.json','docs
 
 group([31,32], [L+'QuranPartitions.kt', 'app/src/main/java/com/nexvary/hifzai/PartitionPickerScreen.kt', 'app/src/main/java/com/nexvary/hifzai/RangePracticeScreen.kt'], [T+'QuranPartitionsTest.kt', 'app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt'], 'نطاق أجزاء وصفحات مثبت؛ تدريب إكمال نهاية الصفحة إلى التالية وأهداف مقاطع مخصصة غير مكتملين')
 
+group([195], ['docs/DEPENDENCY_AUDIT_2026-10-14.json'], ['OSV querybatch on 93 resolved debugRuntimeClasspath coordinates'], 'لا سجلات ثغرات أعيدت وقت الفحص؛ نطاق الفحص لا يشمل plugins أو نظام Android أو تدقيق أمان مستقل')
+
 def main():
     phases = re.findall(r'\*\*Phase (\d{3})\*\* — (.+)', (ROOT/'docs/PHASES_002_220.md').read_text())
     assert [int(n) for n,_ in phases] == list(range(2,221))

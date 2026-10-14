@@ -212,7 +212,7 @@ private fun App() {
     val recommendation = MemoryCoach.recommend(currentCard, fingerprint)
     val dueCount = MemoryCoach.dueCount(cards.values, today)
     val dailyPlan = DailyMemorizationPlan.create(verses, cards, today)
-    val studied = cards.values.count { it.repetitions > 0 }
+    val studied = memories.values.count { it.attempts > 0 }
     val independent = MemoryCoach.independentRecallPercent(memories.values)
     val attempts = memories.values.sumOf { it.attempts }
 

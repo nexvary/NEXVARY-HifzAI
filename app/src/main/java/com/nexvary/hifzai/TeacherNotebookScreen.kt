@@ -1,5 +1,7 @@
 package com.nexvary.hifzai
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -7,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.nexvary.hifzai.learning.TeacherNotebook
+import java.time.LocalDateTime
+import com.nexvary.hifzai.learning.NotebookRules
 
 @Composable
 internal fun TeacherNotebookScreen() {
@@ -67,20 +71,29 @@ internal fun TeacherNotebookScreen() {
         }
         OutlinedTextField(value = teacher, onValueChange = { teacher = it.take(60) },
             label = { Text("اسم المعلم المعروف لك • غير موثق من التطبيق") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = time, onValueChange = { time = it.take(16) },
-            label = { Text("الموعد: 2026-10-20T18:30 بتوقيت الجهاز") }, modifier = Modifier.fillMaxWidth())
+        OutlinedButton(onClick = {
+            val now = LocalDateTime.now()
+            DatePickerDialog(context, { _, year, month, day ->
+                TimePickerDialog(context, { _, hour, minute ->
+                    time = LocalDateTime.of(year, month + 1, day, hour, minute).toString()
+                }, now.hour, now.minute, true).show()
+            }, now.year, now.monthValue - 1, now.dayOfMonth).show()
+        }, modifier = Modifier.fillMaxWidth()) {
+            Text(if (time.isBlank()) "اختر يوم ووقت الجلسة" else
+                NotebookRules.displayDateTime(time))
+        }
         OutlinedTextField(value = note, onValueChange = { note = it.take(500) },
             label = { Text("هدف الجلسة وملاحظات الحفظ") }, modifier = Modifier.fillMaxWidth())
         Button(onClick = { act {
             notebook.addLesson(studentId!!, teacher, time, note); note = ""
-        } }, enabled = studentId != null && teacher.isNotBlank() && time.length == 16,
+        } }, enabled = studentId != null && teacher.isNotBlank() && time.isNotBlank(),
             modifier = Modifier.fillMaxWidth()) { Text("احفظ الموعد المحلي") }
         Text("المواعيد تنظيمية داخل الجهاز؛ لا ترسل دعوة للمعلم ولا تتأكد من تفرغه")
         lessons.forEach { lesson ->
             Card {
                 Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(students.firstOrNull { it.id == lesson.studentId }?.alias ?: "طالب محذوف")
-                    Text(lesson.teacherLabel + " • " + lesson.dateTime)
+                    Text(lesson.teacherLabel + " • " + NotebookRules.displayDateTime(lesson.dateTime))
                     Text(lesson.note)
                     OutlinedButton(onClick = { act { notebook.updateLesson(lesson.id, lesson.note, !lesson.completed) } }) {
                         Text(if (lesson.completed) "مكتملة • أعد فتحها" else "سجّل اكتمال الجلسة")

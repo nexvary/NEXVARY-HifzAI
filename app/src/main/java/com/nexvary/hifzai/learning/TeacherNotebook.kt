@@ -4,6 +4,7 @@ import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 /** Personal offline organisation, not a verified academy or remote identity service. */
@@ -15,6 +16,9 @@ data class NotebookLesson(
 data class NotebookComplaint(val lessonId: String, val note: String)
 
 object NotebookRules {
+    fun displayDateTime(value: String): String = runCatching {
+        LocalDateTime.parse(value).format(DateTimeFormatter.ofPattern("yyyy/MM/dd • HH:mm"))
+    }.getOrDefault("تعذر قراءة الموعد")
     fun validateStudent(alias: String, guardianConsent: Boolean) {
         require(alias.trim().length in 1..40) { "استخدم اسمًا مستعارًا من 1 إلى 40 حرفًا" }
         require(guardianConsent) { "يلزم إقرار إشراف ولي الأمر أو كون الطالب بالغًا" }

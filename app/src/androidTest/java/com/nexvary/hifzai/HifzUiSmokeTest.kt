@@ -53,7 +53,7 @@ class HifzUiSmokeTest {
         rule.waitForIdle()
         rule.onNodeWithText("حِفْظ | NEXVARY").assertExists()
         screenshot("hifz-home.png")
-        rule.onNodeWithText("افتح المصحف الكامل • ١١٤ سورة").performClick()
+        click("افتح المصحف الكامل • ١١٤ سورة")
         rule.waitForIdle()
         rule.onNodeWithText("المصحف الشريف").assertExists()
         rule.onNodeWithText("اختيار السورة • الفاتحة").assertExists()
