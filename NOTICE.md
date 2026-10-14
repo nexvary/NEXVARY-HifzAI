@@ -16,3 +16,6 @@ Any future contribution adding third-party materials must add the origin and lic
 
 ## Trademark
 The MIT software license does not grant an automatic right to imply endorsement by NEXVARY or any reciter, educator, or Quranic institution. Project marks and third-party identities are handled separately from code rights.
+
+### Bundled Tanzil Uthmani corpus
+Original file: `app/src/main/assets/quran/uthmani-v1.1.txt`. CC BY 3.0, Tanzil Project (Version 1.1). It remains a byte-identical copy of `dotquran/corpus/src/resources/uthmani.txt` Git blob `9813920ae5afce9e50d2ac44562457e29bb4bfca`, including its full original copyright notice and provenance. Attribution: https://tanzil.net/ . The MIT software license does not supersede Tanzil's license. Independent scholarly inspection of actual rendered text is still pending.
