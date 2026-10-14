@@ -4,9 +4,9 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class AdaptivePracticeTest {
-    private val a = VerifiedVerse(1, 1, "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
-    private val b = VerifiedVerse(1, 2, "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ")
-    private val c = VerifiedVerse(2, 1, "الم ذَٰلِكَ الْكِتَابُ")
+    private val a = VerifiedVerse(1, 1, "نَصٌّ تَجْرِيبِيٌّ مُشَكَّلٌ")
+    private val b = VerifiedVerse(1, 2, "نص ثان محفوظ")
+    private val c = VerifiedVerse(2, 1, "نص ثالث تجريبي")
 
     @Test fun recordsHintedRecallWithoutClaimingIndependent() {
         val start = MemoryFingerprint(1001)
@@ -31,14 +31,14 @@ class AdaptivePracticeTest {
     }
 
     @Test fun bridgeDoesNotCrossSurah() {
-        assertEquals("الرَّحْمَٰنِ الرَّحِيمِ", BridgeTrainer.tailOfPrevious(listOf(a, b), 1))
+        assertEquals("تَجْرِيبِيٌّ مُشَكَّلٌ", BridgeTrainer.tailOfPrevious(listOf(a, b), 1))
         assertNull(BridgeTrainer.tailOfPrevious(listOf(a, c), 1))
     }
 
     @Test fun similarityIgnoresDiacriticsOnlyForSearch() {
-        val near = VerifiedVerse(3, 1, "بسم الله الرحمن الرحيم")
+        val near = VerifiedVerse(3, 1, "نص تجريبي مشكل")
         assertTrue(SimilarityIndex.similarTo(a, listOf(a, near)).contains(near))
-        assertEquals("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", a.text)
+        assertEquals("نَصٌّ تَجْرِيبِيٌّ مُشَكَّلٌ", a.text)
     }
 
     @Test fun coldStartHasNoFictitiousProgress() {

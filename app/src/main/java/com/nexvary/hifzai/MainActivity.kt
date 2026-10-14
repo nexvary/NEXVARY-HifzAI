@@ -365,7 +365,7 @@ private fun App() {
         ) {
             Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF5A2930))) {
                 Text(
-                    "نسخة مراجعة علمية غير معتمدة • لا يُعاد نشرها للجمهور",
+                    "نسخة تطوير داخلية • غير جاهزة للمراجعة النهائية",
                     color = Color(0xFFFFE0DE),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth().padding(12.dp),

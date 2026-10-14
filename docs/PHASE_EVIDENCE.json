@@ -1,0 +1,3137 @@
+{
+  "source_revision_audited": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+  "all_phase_numbers_present": true,
+  "phase_count": 219,
+  "final_complete_phases": 0,
+  "phases": [
+    {
+      "phase": "002",
+      "required_function": "Audit GitHub HEAD and existing code",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/AUDIT_2026-10-14.md"
+      ],
+      "implementation_commits": {
+        "docs/AUDIT_2026-10-14.md": "d7a4648b556f3b59bd9d1baadc2a2949debd2e8b"
+      },
+      "tests_or_checks": [
+        "Git history and CI logs inspected"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التدقيق الأولي مثبت؛ الإصلاحات اللاحقة لها أدلة مستقلة"
+    },
+    {
+      "phase": "003",
+      "required_function": "Repair the Android SDK CI bootstrap",
+      "status": "partial_unaccepted",
+      "implementation": [
+        ".github/workflows/android.yml"
+      ],
+      "implementation_commits": {
+        ".github/workflows/android.yml": "d7a4648b556f3b59bd9d1baadc2a2949debd2e8b"
+      },
+      "tests_or_checks": [
+        "Android CI unit/build/lint"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "راجع نتيجة CI لنفس commit؛ لا يغطي فحص القرآن البصري"
+    },
+    {
+      "phase": "004",
+      "required_function": "Produce verifiable debug APK and checksum",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "005",
+      "required_function": "Establish README and architecture decisions",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "006",
+      "required_function": "Freeze canonical Quran text interfaces",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "007",
+      "required_function": "Add full-corpus structural validation",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "008",
+      "required_function": "Verify independently pinned source hashes",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "009",
+      "required_function": "Document text and recitation licensing",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "NOTICE.md",
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "NOTICE.md": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "النص والخط موثقان؛ لا تراخيص تسجيلات خارجية معتمدة"
+    },
+    {
+      "phase": "010",
+      "required_function": "Add provenance fields and versioning",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "011",
+      "required_function": "Prevent mutation of canonical text",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "012",
+      "required_function": "Add representative Quran text tests",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "013",
+      "required_function": "Provide right-to-left Arabic baseline",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "014",
+      "required_function": "Add accessibility labels for all controls",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "015",
+      "required_function": "Persist review progress locally",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "016",
+      "required_function": "Add reset confirmation for user data",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "017",
+      "required_function": "Separate UI, domain and persistence",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "018",
+      "required_function": "Document demo-vs-production status",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "019",
+      "required_function": "Implement protected secrets policy",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "020",
+      "required_function": "Define first end-to-end release gate",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "tools/prepare_review_bundle.py",
+        "docs/review/READINESS.json",
+        "docs/SCHOLARLY_REVIEW_DOSSIER.md"
+      ],
+      "implementation_commits": {
+        "tools/prepare_review_bundle.py": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/review/READINESS.json": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/SCHOLARLY_REVIEW_DOSSIER.md": "85abd13c714b865d0325630c7b267c769ea2445e"
+      },
+      "tests_or_checks": [
+        "tests/test_review_bundle_gate.py"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بوابة مانعة موجودة؛ الحزمة والطلب النهائي والإصدار المعتمد غير مكتملة"
+    },
+    {
+      "phase": "021",
+      "required_function": "Provide first-run learning introduction",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "022",
+      "required_function": "Let learners choose memorization goal",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "023",
+      "required_function": "Create surah and ayah selector",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranSearchIndex.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranSearchIndex.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "اختيار سورة وآية موجود؛ تقسيم عرض 8 آيات ليس صفحات المدينة"
+    },
+    {
+      "phase": "024",
+      "required_function": "Add read-first practice stage",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "025",
+      "required_function": "Implement progressive word concealment",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "026",
+      "required_function": "Add full-verse active recall",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "027",
+      "required_function": "Add optional first-word hints",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "028",
+      "required_function": "Track hint usage in review events",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "029",
+      "required_function": "Implement verse transition practice",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "030",
+      "required_function": "Add reverse transition prompts",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "031",
+      "required_function": "Add end-of-page continuation practice",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "032",
+      "required_function": "Allow learner-supplied segment goals",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "033",
+      "required_function": "Provide repetition without losing place",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "034",
+      "required_function": "Support slow learners with shorter tasks",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "035",
+      "required_function": "Allow manual replay of failed items",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "036",
+      "required_function": "Add review due-date display",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "037",
+      "required_function": "Separate memorization from revision modes",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "038",
+      "required_function": "Add recovery drill for forgotten ayat",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا"
+    },
+    {
+      "phase": "039",
+      "required_function": "Enable saved stop points",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "040",
+      "required_function": "Test entire memorization flow on device",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "041",
+      "required_function": "Implement single-screen focus practice",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "042",
+      "required_function": "Design clear home dashboard",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "043",
+      "required_function": "Provide full in-app back navigation",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "044",
+      "required_function": "Make large readable touch targets",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "045",
+      "required_function": "Support tablets and foldables",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "046",
+      "required_function": "Design authentic Quran reading typography",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/res/font/amiri_quran.ttf",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
+        "NOTICE.md"
+      ],
+      "implementation_commits": {
+        "app/src/main/res/font/amiri_quran.ttf": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "NOTICE.md": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "Unicode cmap coverage; pending visual inspection"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تغطية المحارف لا تثبت سلامة تركيب كل علامة على كل جهاز"
+    },
+    {
+      "phase": "047",
+      "required_function": "Add controlled text-size settings",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "048",
+      "required_function": "Support contrast-friendly dark mode",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "049",
+      "required_function": "Provide optional bright reading mode",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "050",
+      "required_function": "Use real vector icons and labels",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "051",
+      "required_function": "Keep all Arabic screens fully RTL",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "052",
+      "required_function": "Preserve LTR for URLs and numbers",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "053",
+      "required_function": "Improve TalkBack navigation order",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "054",
+      "required_function": "Add screen-reader friendly verse indices",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "055",
+      "required_function": "Offer minimal distraction mode",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "056",
+      "required_function": "Support font scaling without clipping",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/res/font/amiri_quran.ttf",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
+        "NOTICE.md"
+      ],
+      "implementation_commits": {
+        "app/src/main/res/font/amiri_quran.ttf": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "NOTICE.md": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "Unicode cmap coverage; pending visual inspection"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تغطية المحارف لا تثبت سلامة تركيب كل علامة على كل جهاز"
+    },
+    {
+      "phase": "057",
+      "required_function": "Handle rotation without losing session",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "058",
+      "required_function": "Show empty and error states",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "059",
+      "required_function": "Clarify microphone permissions in UI",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+    },
+    {
+      "phase": "060",
+      "required_function": "Run usability sessions with learners",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "061",
+      "required_function": "Define licensed recitation contracts",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt": "0cc947c09c12fcc6757fa7d71e9517a1c9e51d3d",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+    },
+    {
+      "phase": "062",
+      "required_function": "Design reciter profile schema",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt": "0cc947c09c12fcc6757fa7d71e9517a1c9e51d3d",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+    },
+    {
+      "phase": "063",
+      "required_function": "Record Egyptian reciters metadata",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt": "0cc947c09c12fcc6757fa7d71e9517a1c9e51d3d",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+    },
+    {
+      "phase": "064",
+      "required_function": "Record Saudi reciters metadata",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ReciterCatalog.kt": "0cc947c09c12fcc6757fa7d71e9517a1c9e51d3d",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+    },
+    {
+      "phase": "065",
+      "required_function": "Link each recording to chapter and ayah",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "066",
+      "required_function": "Verify recording provenance and rights",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "حقول المنع موجودة؛ لا وثائق أذون تسجيلات فعلية"
+    },
+    {
+      "phase": "067",
+      "required_function": "Build streaming audio adapter",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "068",
+      "required_function": "Add background audio service",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "069",
+      "required_function": "Enable verse repeat and sequence",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "محول تشغيل محلي للربط لاحقًا؛ لا تسجيل مرخص لتجربة التكرار والسرعة والاستئناف"
+    },
+    {
+      "phase": "070",
+      "required_function": "Provide adjustable playback speed",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "محول تشغيل محلي للربط لاحقًا؛ لا تسجيل مرخص لتجربة التكرار والسرعة والاستئناف"
+    },
+    {
+      "phase": "071",
+      "required_function": "Design gapless ayah transitions",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "072",
+      "required_function": "Add pause and resume state",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "محول تشغيل محلي للربط لاحقًا؛ لا تسجيل مرخص لتجربة التكرار والسرعة والاستئناف"
+    },
+    {
+      "phase": "073",
+      "required_function": "Support headset media controls",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "074",
+      "required_function": "Enable approved offline downloads",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "075",
+      "required_function": "Manage offline audio storage quotas",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "076",
+      "required_function": "Apply recording expiration conditions",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "077",
+      "required_function": "Design favorite reciter setting",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "078",
+      "required_function": "Support multiple authorized narrations",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "079",
+      "required_function": "Provide playable sample validation",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "080",
+      "required_function": "Test low-connectivity playback",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "081",
+      "required_function": "Define ASR evaluation corpus",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "082",
+      "required_function": "Collect consented recitation examples",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "083",
+      "required_function": "Measure Egyptian Arabic recitation variations",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "084",
+      "required_function": "Measure Saudi recitation variations",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "085",
+      "required_function": "Baseline word alignment accuracy",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "086",
+      "required_function": "Build offline-capable ASR prototype",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+    },
+    {
+      "phase": "087",
+      "required_function": "Measure false positives by verse",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "088",
+      "required_function": "Measure false negatives by verse",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "089",
+      "required_function": "Separate omitted-word vs substitution signals",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "090",
+      "required_function": "Provide uncertainty thresholds",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+    },
+    {
+      "phase": "091",
+      "required_function": "Suppress low-confidence automated judgments",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+    },
+    {
+      "phase": "092",
+      "required_function": "Do not grade makharij by text match alone",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+    },
+    {
+      "phase": "093",
+      "required_function": "Allow recitation replay for users",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تسجيل اختياري مؤقت للاستماع الذاتي؛ لا تصحيح آلي"
+    },
+    {
+      "phase": "094",
+      "required_function": "Provide expert escalation workflow",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "095",
+      "required_function": "Implement correction consent control",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "096",
+      "required_function": "Avoid recording storage by default",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تسجيل اختياري مؤقت للاستماع الذاتي؛ لا تصحيح آلي"
+    },
+    {
+      "phase": "097",
+      "required_function": "Provide opt-in encrypted recordings",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "098",
+      "required_function": "Evaluate tajweed with qualified teachers",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "099",
+      "required_function": "Measure latency and resource needs",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "100",
+      "required_function": "Gate voice grading behind validation",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+    },
+    {
+      "phase": "101",
+      "required_function": "Define per-ayah memory fingerprint",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "102",
+      "required_function": "Track unaided recall events",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "103",
+      "required_function": "Track hint-dependent recall events",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "104",
+      "required_function": "Track transition misses",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "105",
+      "required_function": "Track repetitions and lapses",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "106",
+      "required_function": "Implement due-review priority",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "107",
+      "required_function": "Add adaptive masking difficulty",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "108",
+      "required_function": "Model similarity confusion indicators",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "109",
+      "required_function": "Add differentiated recency scores",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "110",
+      "required_function": "Create daily workload budget",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "111",
+      "required_function": "Tune review intervals empirically",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "112",
+      "required_function": "Allow learner to override training plan",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "113",
+      "required_function": "Explain recommended drills transparently",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
+        "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+    },
+    {
+      "phase": "114",
+      "required_function": "Add confidence estimate to model choices",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "115",
+      "required_function": "Track long-term retention cohorts",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "116",
+      "required_function": "Add weekly learning trends",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "117",
+      "required_function": "Measure improvement by practice mode",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "118",
+      "required_function": "Detect disengagement with consent",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "119",
+      "required_function": "Avoid addictive or misleading streaks",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "120",
+      "required_function": "Calibrate algorithm by human study outcomes",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "121",
+      "required_function": "Specify teacher registration and consent",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "122",
+      "required_function": "Design Quran teacher verification",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "123",
+      "required_function": "Verify certificates without public identity leakage",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "124",
+      "required_function": "Offer Egypt region filtering",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "125",
+      "required_function": "Offer Saudi Arabia region filtering",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "126",
+      "required_function": "Add teacher availability calendar",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل"
+    },
+    {
+      "phase": "127",
+      "required_function": "Design class booking workflow",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل"
+    },
+    {
+      "phase": "128",
+      "required_function": "Support students and guardians roles",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "129",
+      "required_function": "Provide private live teaching sessions",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "130",
+      "required_function": "Create teacher correction notes",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل"
+    },
+    {
+      "phase": "131",
+      "required_function": "Enable human quality review queue",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "132",
+      "required_function": "Add student progress with permissions",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل"
+    },
+    {
+      "phase": "133",
+      "required_function": "Provide teacher-assigned revision plan",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "134",
+      "required_function": "Design parental consent for minors",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل"
+    },
+    {
+      "phase": "135",
+      "required_function": "Add safety and abuse-report workflow",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/TeacherNotebookScreen.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل"
+    },
+    {
+      "phase": "136",
+      "required_function": "Build controlled messaging policies",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "137",
+      "required_function": "Manage teacher schedule changes",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "138",
+      "required_function": "Issue completion attestations not ijazat",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "139",
+      "required_function": "Define documented ijazah verification",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "140",
+      "required_function": "Pilot with approved Quran teachers",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "141",
+      "required_function": "Establish scholarly review board guidelines",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "142",
+      "required_function": "Specify Quran text provenance checks",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "143",
+      "required_function": "Register teaching methodology sources",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/OPEN_SOURCE_RESEARCH.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt",
+        "docs/RELEASE_GATES.md"
+      ],
+      "implementation_commits": {
+        "docs/OPEN_SOURCE_RESEARCH.md": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/RELEASE_GATES.md": "6c46f0fd092b7c70fc5619b5a89dea89c2627df8"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة"
+    },
+    {
+      "phase": "144",
+      "required_function": "Define metadata for classical reciters",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "145",
+      "required_function": "Define metadata for contemporary reciters",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "146",
+      "required_function": "Add verified biography editor",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "147",
+      "required_function": "Track editorial changes and approvals",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "148",
+      "required_function": "Build tafsir content attribution layer",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "149",
+      "required_function": "Create carefully scoped verse explanation view",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "150",
+      "required_function": "Validate narration-specific differences",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "151",
+      "required_function": "Document qiraat handling boundaries",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/OPEN_SOURCE_RESEARCH.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt",
+        "docs/RELEASE_GATES.md"
+      ],
+      "implementation_commits": {
+        "docs/OPEN_SOURCE_RESEARCH.md": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/RELEASE_GATES.md": "6c46f0fd092b7c70fc5619b5a89dea89c2627df8"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة"
+    },
+    {
+      "phase": "152",
+      "required_function": "Avoid blending incompatible riwayat",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/OPEN_SOURCE_RESEARCH.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt",
+        "docs/RELEASE_GATES.md"
+      ],
+      "implementation_commits": {
+        "docs/OPEN_SOURCE_RESEARCH.md": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/RELEASE_GATES.md": "6c46f0fd092b7c70fc5619b5a89dea89c2627df8"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة"
+    },
+    {
+      "phase": "153",
+      "required_function": "Add vetted tajweed learning modules",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "154",
+      "required_function": "Identify ambiguous recitation cases",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/OPEN_SOURCE_RESEARCH.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt",
+        "docs/RELEASE_GATES.md"
+      ],
+      "implementation_commits": {
+        "docs/OPEN_SOURCE_RESEARCH.md": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/RELEASE_GATES.md": "6c46f0fd092b7c70fc5619b5a89dea89c2627df8"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة"
+    },
+    {
+      "phase": "155",
+      "required_function": "Build report-content-error workflow",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "156",
+      "required_function": "Require two-person editorial review",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "157",
+      "required_function": "Track licensing for rare recordings",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "NOTICE.md",
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "NOTICE.md": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "النص والخط موثقان؛ لا تراخيص تسجيلات خارجية معتمدة"
+    },
+    {
+      "phase": "158",
+      "required_function": "Implement external link validation",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "159",
+      "required_function": "Preserve historical recording attribution",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "NOTICE.md",
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt"
+      ],
+      "implementation_commits": {
+        "NOTICE.md": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "docs/THIRD_PARTY_CONTENT_REGISTER.md": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRights.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "النص والخط موثقان؛ لا تراخيص تسجيلات خارجية معتمدة"
+    },
+    {
+      "phase": "160",
+      "required_function": "Publish content correction policy",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "161",
+      "required_function": "Specify minimal data collection",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "162",
+      "required_function": "Document clear privacy notice",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "163",
+      "required_function": "Complete data inventory",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "164",
+      "required_function": "Audit Android permissions",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "165",
+      "required_function": "Keep API secrets off the client",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "166",
+      "required_function": "Design authorized server proxy",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "167",
+      "required_function": "Add HTTPS security review",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "168",
+      "required_function": "Establish encryption-at-rest threat model",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "169",
+      "required_function": "Implement secure authentication when needed",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "170",
+      "required_function": "Provide local data deletion",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "171",
+      "required_function": "Add export of user progress",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "172",
+      "required_function": "Support anonymous local mode",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "173",
+      "required_function": "Define cloud opt-in consent",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "174",
+      "required_function": "Protect children's data by default",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "175",
+      "required_function": "Prevent raw microphone log collection",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "176",
+      "required_function": "Review third-party SDK telemetry",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "177",
+      "required_function": "Add retention schedules and deletion jobs",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "SECURITY.md",
+        "app/src/main/AndroidManifest.xml",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt"
+      ],
+      "implementation_commits": {
+        "SECURITY.md": "330aa3034366e593c6d45301695db63af72bd93d",
+        "app/src/main/AndroidManifest.xml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/TeacherNotebook.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية"
+    },
+    {
+      "phase": "178",
+      "required_function": "Implement account deletion on server",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "179",
+      "required_function": "Threat-model teacher-student interactions",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "180",
+      "required_function": "Perform independent privacy review",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "181",
+      "required_function": "Enforce JVM unit test gate",
+      "status": "partial_unaccepted",
+      "implementation": [
+        ".github/workflows/android.yml"
+      ],
+      "implementation_commits": {
+        ".github/workflows/android.yml": "d7a4648b556f3b59bd9d1baadc2a2949debd2e8b"
+      },
+      "tests_or_checks": [
+        "Android CI unit/build/lint"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "راجع نتيجة CI لنفس commit؛ لا يغطي فحص القرآن البصري"
+    },
+    {
+      "phase": "182",
+      "required_function": "Add Android instrumentation tests",
+      "status": "partial_unaccepted",
+      "implementation": [
+        ".github/workflows/android-ui-proof.yml",
+        "tools/verify_screenshot_proof.py"
+      ],
+      "implementation_commits": {
+        ".github/workflows/android-ui-proof.yml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "tools/verify_screenshot_proof.py": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt",
+        "tests/test_screenshot_proof.py"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "صور فعلية فقط بعد نجاح PNG validation؛ ليست مقارنة baseline أو اعتمادًا بصريًا"
+    },
+    {
+      "phase": "183",
+      "required_function": "Run screenshot test baselines",
+      "status": "partial_unaccepted",
+      "implementation": [
+        ".github/workflows/android-ui-proof.yml",
+        "tools/verify_screenshot_proof.py"
+      ],
+      "implementation_commits": {
+        ".github/workflows/android-ui-proof.yml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "tools/verify_screenshot_proof.py": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt",
+        "tests/test_screenshot_proof.py"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "صور فعلية فقط بعد نجاح PNG validation؛ ليست مقارنة baseline أو اعتمادًا بصريًا"
+    },
+    {
+      "phase": "184",
+      "required_function": "Verify responsive tablet layout",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "185",
+      "required_function": "Test TalkBack paths",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "186",
+      "required_function": "Run Arabic typography review",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/res/font/amiri_quran.ttf",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
+        "NOTICE.md"
+      ],
+      "implementation_commits": {
+        "app/src/main/res/font/amiri_quran.ttf": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "NOTICE.md": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "Unicode cmap coverage; pending visual inspection"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "تغطية المحارف لا تثبت سلامة تركيب كل علامة على كل جهاز"
+    },
+    {
+      "phase": "187",
+      "required_function": "Validate Quran checksum in release CI",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/QuranCorpus.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/OFFICIAL_CORPUS_COMPARISON.json": "c4e656a8c50759f97a77c858475a65a1c607c35a"
+      },
+      "tests_or_checks": [
+        "tests/test_embedded_quran.py",
+        "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+    },
+    {
+      "phase": "188",
+      "required_function": "Add battery and memory benchmarks",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "189",
+      "required_function": "Test offline reading with no internet",
+      "status": "partial_unaccepted",
+      "implementation": [
+        ".github/workflows/android-ui-proof.yml",
+        "tools/verify_screenshot_proof.py"
+      ],
+      "implementation_commits": {
+        ".github/workflows/android-ui-proof.yml": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "tools/verify_screenshot_proof.py": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt",
+        "tests/test_screenshot_proof.py"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "صور فعلية فقط بعد نجاح PNG validation؛ ليست مقارنة baseline أو اعتمادًا بصريًا"
+    },
+    {
+      "phase": "190",
+      "required_function": "Test long background audio sessions",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "191",
+      "required_function": "Test corrupted local preferences",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635"
+      },
+      "tests_or_checks": [
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+    },
+    {
+      "phase": "192",
+      "required_function": "Test database schema migrations",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "193",
+      "required_function": "Add fuzz tests for verse index bounds",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "194",
+      "required_function": "Test errors at API access revocation",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "195",
+      "required_function": "Audit dependency vulnerabilities",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "196",
+      "required_function": "Check APK signing pipeline",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "197",
+      "required_function": "Pilot learner interviews",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "198",
+      "required_function": "Design randomized retention comparison",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "199",
+      "required_function": "Measure recall at 1 7 and 14 days",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "200",
+      "required_function": "Publish accurate measured limitations",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/OPEN_SOURCE_RESEARCH.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt",
+        "docs/RELEASE_GATES.md"
+      ],
+      "implementation_commits": {
+        "docs/OPEN_SOURCE_RESEARCH.md": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/RELEASE_GATES.md": "6c46f0fd092b7c70fc5619b5a89dea89c2627df8"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة"
+    },
+    {
+      "phase": "201",
+      "required_function": "Establish alpha release naming",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/build.gradle.kts",
+        ".github/workflows/android.yml"
+      ],
+      "implementation_commits": {
+        "app/build.gradle.kts": "96b7644a571d2a0c5612d4dfe50ca18f874eecbc",
+        ".github/workflows/android.yml": "d7a4648b556f3b59bd9d1baadc2a2949debd2e8b"
+      },
+      "tests_or_checks": [
+        "Gradle debug build and SHA256"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "نسخة تطوير غير نهائية؛ APK لا ينشر في المستودع العام"
+    },
+    {
+      "phase": "202",
+      "required_function": "Version features with change logs",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/build.gradle.kts",
+        ".github/workflows/android.yml"
+      ],
+      "implementation_commits": {
+        "app/build.gradle.kts": "96b7644a571d2a0c5612d4dfe50ca18f874eecbc",
+        ".github/workflows/android.yml": "d7a4648b556f3b59bd9d1baadc2a2949debd2e8b"
+      },
+      "tests_or_checks": [
+        "Gradle debug build and SHA256"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "نسخة تطوير غير نهائية؛ APK لا ينشر في المستودع العام"
+    },
+    {
+      "phase": "203",
+      "required_function": "Add reproducible signed release builds",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "204",
+      "required_function": "Create dependency lock policy",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "205",
+      "required_function": "Publish APK checksum and artifact link",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/build.gradle.kts",
+        ".github/workflows/android.yml"
+      ],
+      "implementation_commits": {
+        "app/build.gradle.kts": "96b7644a571d2a0c5612d4dfe50ca18f874eecbc",
+        ".github/workflows/android.yml": "d7a4648b556f3b59bd9d1baadc2a2949debd2e8b"
+      },
+      "tests_or_checks": [
+        "Gradle debug build and SHA256"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "نسخة تطوير غير نهائية؛ APK لا ينشر في المستودع العام"
+    },
+    {
+      "phase": "206",
+      "required_function": "Configure Play internal test track",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "207",
+      "required_function": "Write localized store description",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "208",
+      "required_function": "Add Arabic and English localization",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "209",
+      "required_function": "Plan Turkish and Urdu localization",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "210",
+      "required_function": "Plan French and German localization",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "211",
+      "required_function": "Plan Persian and Spanish localization",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "212",
+      "required_function": "Create website landing page",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "213",
+      "required_function": "Prepare terms and educational disclaimers",
+      "status": "partial_unaccepted",
+      "implementation": [
+        "docs/OPEN_SOURCE_RESEARCH.md",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt",
+        "docs/RELEASE_GATES.md"
+      ],
+      "implementation_commits": {
+        "docs/OPEN_SOURCE_RESEARCH.md": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationAssessment.kt": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
+        "docs/RELEASE_GATES.md": "6c46f0fd092b7c70fc5619b5a89dea89c2627df8"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
+      ],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة"
+    },
+    {
+      "phase": "214",
+      "required_function": "Set up support ticket process",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "215",
+      "required_function": "Create monitoring for backend health",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "216",
+      "required_function": "Build anonymous opt-in crash reports",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "217",
+      "required_function": "Add in-app update check",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "218",
+      "required_function": "Document server deployment and rollback",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "219",
+      "required_function": "Open scholarly feedback channel",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    },
+    {
+      "phase": "220",
+      "required_function": "Release first expert-approved stable version",
+      "status": "not_implemented_or_not_evidenced",
+      "implementation": [],
+      "implementation_commits": {},
+      "tests_or_checks": [],
+      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+    }
+  ]
+}

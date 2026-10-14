@@ -3,6 +3,7 @@ package com.nexvary.hifzai.learning
 import android.content.Context
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
+import java.util.Collections
 
 /** A locally bundled, verbatim copy of Tanzil Uthmani Version 1.1.
  *
@@ -16,10 +17,13 @@ import java.security.MessageDigest
 data class SurahInfo(val number: Int, val arabicName: String, val ayahCount: Int)
 
 class QuranCorpus private constructor(
-    val verses: List<VerifiedVerse>,
-    val surahs: List<SurahInfo>
+    verses: List<VerifiedVerse>,
+    surahs: List<SurahInfo>
 ) {
-    private val chapters: Map<Int, List<VerifiedVerse>> = verses.groupBy { it.chapter }
+    val verses: List<VerifiedVerse> = Collections.unmodifiableList(verses.toList())
+    val surahs: List<SurahInfo> = Collections.unmodifiableList(surahs.toList())
+    private val chapters: Map<Int, List<VerifiedVerse>> = this.verses.groupBy { it.chapter }
+        .mapValues { (_, items) -> Collections.unmodifiableList(items.toList()) }
     val searchIndex by lazy { QuranSearchIndex(verses) }
     /** Unnumbered opening is a verbatim reference, never a generated verse. */
     fun openingBasmala(chapter: Int): VerifiedVerse? {

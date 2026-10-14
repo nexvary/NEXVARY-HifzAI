@@ -70,3 +70,14 @@
 - تسميع اختياري بالكتابة دون حفظ كتابات المستخدم بعد انتهاء الجلسة.
 - أيقونة تطبيق متجهية بهوية كحلية وذهبية وزمردية، مع تنقل من خمسة تبويبات.
 - لا تزال تشغيل تلاوات المشايخ وتصحيح التجويد وأكاديمية المحفظين وظائف غير مكتملة تحتاج أصولًا مرخصة واعتمادًا بشريًا.
+
+## Verified development additions — not final acceptance
+Official Tanzil download byte comparison, immutable corpus views, derived Quran search, direct ayah navigation, opening basmala references, Amiri Quran OFL font, session resume, retained hint accounting, lapse prioritisation, private voice cleanup, local teacher notebook, and safety-gated adapters for future approved audio/ASR. No external recording/model is bundled.
+
+- [Initial code/CI audit](docs/AUDIT_2026-10-14.md)
+- [Every numbered phase: implementation and remaining evidence](docs/PHASE_EVIDENCE.md)
+- [Arabic user guide for existing functions](docs/USER_GUIDE_AR.md)
+- [Official corpus comparison](docs/OFFICIAL_CORPUS_COMPARISON.json)
+- [Final-review readiness — currently blocked](docs/review/READINESS.json)
+
+A local notebook is not a live academy; an ASR comparator is not an evaluated recognizer; a playback adapter is not a cleared audio catalogue. Public APK upload is blocked as well as production Gradle packaging. Do not submit this development state to the committee.

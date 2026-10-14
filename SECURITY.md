@@ -1,7 +1,7 @@
 # Security policy — NEXVARY HifzAI
 
 ## Status
-The current 0.3.0-dev code is an internal development prototype with no public production release. Do **not** treat a successful APK build as Quran approval, teaching certification or legal clearance.
+The current 0.5.0-dev code is an internal development prototype with no public production release. Do **not** treat a successful APK build as Quran approval, teaching certification or legal clearance.
 
 ## Reporting
 Please avoid publishing exploit details or sensitive personal data in a public issue. If GitHub's **Report a vulnerability** / private advisory feature is available for this repository, use it. Otherwise contact repository maintainers through an agreed private communication channel before sharing details; no personal contact address is published by this file.
@@ -18,3 +18,6 @@ Do not post secrets or personal data in GitHub issues, logs or pull requests. Pr
 
 ## Release and patches
 Maintain PR review, CI and evidence retention, and follow `docs/RELEASE_GATES.md` and `docs/WORK_PLAN_SINGLE_REVIEW.md`. A patch affecting Quran text must pass independent source checking and the project's content-release process, not just code tests.
+
+## Local data scope
+Private preferences hold self-reported recall, a bookmark, a non-audio session and an optional local teaching notebook with aliases and consent acknowledgments. Cache holds only temporary microphone audio. No network permission or telemetry SDK is present. Explicit Android 12 data extraction rules exclude cloud backup and device transfer; older backup rules exclude all domains. Device compromise/root remains outside these storage guarantees. The notebook does not authenticate separate people or qualify teachers; a remote academy requires a separately reviewed authorization service.
