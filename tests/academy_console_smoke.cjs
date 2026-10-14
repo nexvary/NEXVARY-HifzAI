@@ -71,7 +71,7 @@ const {chromium}=require(require.resolve('playwright',{paths:[process.env.CODEX_
     await page.getByLabel('موعد المراجعة',{exact:true}).fill(local(new Date(Date.now()+86400000)));
     await page.getByLabel('تعليمات المعلم',{exact:true}).fill('خطة اصطناعية لا تقييم دقة للتعلم');
     await page.getByRole('button',{name:'تعيين خطة مراجعة',exact:true}).click();
-    await page.getByRole('heading',{name:'سورة 1 • الآيات 1–7',exact:true}).waitFor();
+    await page.getByRole('heading',{name:'سورة 1 • من الآية 1 إلى الآية 7',exact:true}).waitFor();
     await shot('06-teacher-plan');
     await logout();
     await login('guardian');

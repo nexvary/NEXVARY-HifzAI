@@ -208,7 +208,7 @@ async function plans(parent,student) {
     due=field(f,'موعد المراجعة','datetime-local');instruction=field(f,'تعليمات المعلم','textarea',false);
   }
   for(const plan of (await api('plans',{student:student.id})).plans) {
-    const c=card(parent,'سورة '+plan.chapter+' • الآيات '+plan.first_ayah+'–'+plan.last_ayah);
+    const c=card(parent,'سورة '+plan.chapter+' • من الآية '+plan.first_ayah+' إلى الآية '+plan.last_ayah);
     el('p','الموعد: '+date(plan.due),c);el('p',plan.instruction,c);
     for(const o of plan.observations)el('p',(o.kind==='teacher_observation'?'ملاحظة معلم':'تقييم ولي أمر ذاتي')+' • '+(o.result==='recalled'?'استرجع':'يحتاج مراجعة')+' • '+o.note,c);
     let result,note;const f=form(c,'حفظ المتابعة البشرية',async()=>{await api('plan_observe',{plan:plan.id,result:result.value,note:note.value});await studentPage(student);});
