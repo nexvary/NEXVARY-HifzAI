@@ -19,6 +19,12 @@ class PrivateRecitationPractice(context: Context) {
     private var recorder: MediaRecorder? = null
     private var player: MediaPlayer? = null
 
+    init {
+        // A previous process may have crashed before session cleanup.
+        // No recording is carried into a new application session.
+        file.delete()
+    }
+
     val isRecording: Boolean get() = recorder != null
     val hasRecording: Boolean get() = !isRecording && file.exists() && file.length() > 0L
 
