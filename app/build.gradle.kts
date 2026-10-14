@@ -62,3 +62,6 @@ tasks.configureEach {
         dependsOn(blockUnapprovedPublicRelease)
     }
 }
+
+// Test tooling only; never shipped in the application.
+dependencies { androidTestImplementation("androidx.test:rules:1.6.1") }

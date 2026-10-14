@@ -38,8 +38,7 @@ jobs:
           script: |
             gradle :app:connectedDebugAndroidTest --no-daemon --stacktrace
             mkdir -p ui-proof
-            adb exec-out run-as com.nexvary.hifzai cat files/hifz-home.png > ui-proof/hifz-home.png
-            adb exec-out run-as com.nexvary.hifzai cat files/hifz-reader.png > ui-proof/hifz-reader.png
+            for page in home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters; do adb exec-out run-as com.nexvary.hifzai cat files/hifz-$page.png > ui-proof/hifz-$page.png; done
             test -s ui-proof/hifz-home.png
             test -s ui-proof/hifz-reader.png
       - name: Upload genuine emulator screenshots
