@@ -4,7 +4,7 @@ This ledger does not grant rights. Records must be supported by upstream documen
 
 | Asset / dataset | Version / origin | Owner | License / permission proof | SHA256 / provenance | Status |
 |---|---|---|---|---|---|
-| Full Quran canonical corpus | Not selected | TBD | Not granted to this project | Not pinned | **BLOCKED** |
+| Full Quran canonical corpus | Tanzil Uthmani v1.1, source `dotquran/corpus/src/resources/uthmani.txt` | Tanzil Project | CC BY 3.0, verbatim no changes; preserve original notice and tanzil.net link | exact Git blob `9813920ae5afce9e50d2ac44562457e29bb4bfca` | **Imported; scholarly/display review pending** |
 | Egypt/Saudi recitation audio | No production assets bundled | TBD | Not granted to this project | TBD | **BLOCKED** |
 | Tafsir / translations | None bundled | TBD | TBD | TBD | **BLOCKED** |
 | Third-party Quran font/imagery | None approved | TBD | TBD | TBD | **BLOCKED** |
