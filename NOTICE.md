@@ -22,3 +22,6 @@ Original file: `app/src/main/assets/quran/uthmani-v1.1.txt`. CC BY 3.0, Tanzil P
 
 ### Amiri Quran font
 Amiri Quran, unmodified from aliftype/amiri commit d3d0c5cb6fe7196cb4a58608fc5c8ecd2e6e80fa. SIL Open Font License 1.1; copyright and full license in app/src/main/assets/licenses/AMIRI-OFL.txt. Font SHA-256: 8fa95faaf7bd18b71789f6f57312003e30c5029218a035e5baf613a0222ab82d. All Unicode codepoints in the bundled Quran are in its cmap; that does not certify rendered glyph placement.
+
+### Tanzil structural metadata
+Official unmodified quran-data.xml metadata 1.0: https://tanzil.net/res/text/metadata/quran-data.xml . Root identifies copyright (C) 2008-2009 Tanzil.info and license cc-by, without a version suffix. Preserved verbatim in quran/metadata-v1.0.xml; SHA-256 8867c1d88191472adec9db694b3cd9f135b1a2ef580574d32cf888dcb22c5c7a. Numerical partition addresses are used without altering Quran text. License-version clarification and internal specialist boundary/display review remain part of final rights acceptance.

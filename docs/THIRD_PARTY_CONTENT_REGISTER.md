@@ -17,3 +17,6 @@ The repository's MIT license governs only code to which the project can grant MI
 ## Verified font addition 2026-10-14
 - Amiri Quran: upstream https://github.com/aliftype/amiri, commit d3d0c5cb6fe7196cb4a58608fc5c8ecd2e6e80fa; OFL-1.1; unmodified font and full license bundled. SHA-256 in NOTICE.md. Unicode coverage checked; Android visual inspection pending.
 - Direct official Tanzil byte comparison: docs/OFFICIAL_CORPUS_COMPARISON.json. Full bytes match, without changing the existing asset. This is technical verification, not committee approval.
+
+## Structural metadata
+Tanzil official metadata 1.0, unmodified quran-data.xml, copyright and cc-by label preserved verbatim. Source and SHA-256 in NOTICE.md and QuranPartitions.kt. Used for 30 juz and 604 Madani page boundaries, not an assertion of identical printed-page layout. The source states cc-by without a version; clarification is a recorded final rights-review blocker.

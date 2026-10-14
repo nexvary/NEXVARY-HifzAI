@@ -7,7 +7,7 @@ import sys
 import zlib
 from pathlib import Path
 
-PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters'.split()
+PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters partitions range'.split()
 
 def verify_png(path):
     data = path.read_bytes()
@@ -41,6 +41,8 @@ def main():
     apk = Path('app/build/outputs/apk/debug/app-debug.apk')
     report = {'source_commit':source,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),
               'origin':'Compose captureToImage during Android instrumented tests; no generated mockups',
+              'android_api':subprocess.check_output(['adb','shell','getprop','ro.build.version.sdk'],text=True).strip(),
+              'system_font_scale':subprocess.check_output(['adb','shell','settings','get','system','font_scale'],text=True).strip(),
               'screenshots':files,'visual_scholarly_acceptance':False}
     (directory / 'PROOF_MANIFEST.json').write_text(json.dumps(report,indent=2)+'\n')
     print(f'Validated {len(files)} real PNG containers; human visual review remains required')

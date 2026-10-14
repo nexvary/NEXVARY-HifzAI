@@ -78,6 +78,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.nexvary.hifzai.learning.TeacherNotebook
 import com.nexvary.hifzai.learning.PracticeSession
 import com.nexvary.hifzai.learning.RecallObservation
+import com.nexvary.hifzai.learning.QuranPartitions
 import com.nexvary.hifzai.learning.QuranSearchIndex
 import com.nexvary.hifzai.learning.BridgeTrainer
 import com.nexvary.hifzai.learning.DailyMemorizationPlan
@@ -107,7 +108,7 @@ private val gold = Color(0xFFD6B465)
 private val green = Color(0xFF43C8AA)
 private val muted = Color(0xFFB9C6CF)
 
-private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES }
+private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,9 +169,12 @@ private fun App() {
     DisposableEffect(voicePractice) {
         onDispose { voicePractice.close() }
     }
+    val partitions = remember(corpus, context) { runCatching { QuranPartitions.load(context, corpus) } }
     val savedSession = remember(store, corpus) {
         store.session()?.takeIf { corpus.find(it.chapter, it.ayah) != null }
     }
+    var rangeStart by rememberSaveable { mutableIntStateOf(savedSession?.rangeStart ?: 0) }
+    var rangeEnd by rememberSaveable { mutableIntStateOf(savedSession?.rangeEnd ?: 0) }
     var selectedSurah by rememberSaveable { mutableIntStateOf(savedSession?.chapter ?: 1) }
     val verses = remember(corpus, selectedSurah) { corpus.chapter(selectedSurah) }
     val cards = remember(store, corpus) {
@@ -288,7 +292,7 @@ private fun App() {
         message = "سُجل تقييم الآية " + verse.verse +
             (if (assisted > 0) " (بمساعدة)" else " (بدون كشف)") +
             " • موعد المراجعة بعد " + newCard.intervalDays + " يوم"
-        val next = (index + 1) % verses.size
+        val next = if (effectiveGrade == RecallGrade.AGAIN) index else (index + 1) % verses.size
         openVerse(next)
     }
 
@@ -399,7 +403,9 @@ private fun App() {
                                 selectedSurah = active.chapter; index = active.ayah - 1
                                 stage = active.stage; hintCount = active.hints
                                 answerWasRevealed = active.exposed; difficulty = active.difficulty
-                                revealed = false; screen = Screen.PRACTICE
+                                rangeStart = active.rangeStart; rangeEnd = active.rangeEnd
+                                revealed = false
+                                screen = if (rangeStart > 0) Screen.RANGE_PRACTICE else Screen.PRACTICE
                             }
                         }, modifier = Modifier.fillMaxWidth()) { Text("استكمل جلسة الحفظ السابقة") }
                     }
@@ -441,6 +447,9 @@ private fun App() {
                     }
                     OutlinedButton(onClick = { screen = Screen.EXERCISES }, modifier = Modifier.fillMaxWidth()) {
                         Text("تدريبات الاسترجاع وترتيب الآيات")
+                    }
+                    OutlinedButton(onClick = { screen = Screen.PARTITIONS }, modifier = Modifier.fillMaxWidth()) {
+                        Text("الحفظ بالأجزاء والصفحات")
                     }
                     Section("الخطوات", "تعلّم → إخفاء → استرجاع → ربط → مراجعة")
                     Text("التقييم في هذه النسخة ذاتي، ولا يوجد تصحيح صوتي أو حكم آلي على التجويد.",
@@ -893,6 +902,33 @@ private fun App() {
                     Text("٤. سجّل صوتك اختياريًا واستمع لنفسك. ليس هناك تصحيح تجويد آلي. الصوت يُحذف عند الخروج أو الخلفية.")
                     Text("٥. زر استكمال الجلسة يعيد موضعك ومرحلتك دون الصوت أو الإجابة المكتوبة. يمكنك حذف التقدم من الإعدادات.")
                     Text("٦. تقسيم العرض كل 8 آيات ليس ترقيم صفحات مصحف المدينة. المتشابهات اقتراحات لفظية غير معتمدة.")
+                }
+                Screen.PARTITIONS -> {
+                    val source = partitions.getOrNull()
+                    if (source == null) Text("تعذر التحقق من بيانات حدود الأجزاء والصفحات؛ أُوقف عرضها")
+                    else PartitionPickerScreen(corpus, source) { chosen ->
+                        rangeStart = chosen.first().id; rangeEnd = chosen.last().id
+                        store.saveSession(PracticeSession(chosen.first().chapter, chosen.first().verse,
+                            PracticeKind.READ, 0, false, DifficultyTag.NONE, rangeStart, rangeEnd))
+                        screen = Screen.RANGE_PRACTICE
+                    }
+                }
+                Screen.RANGE_PRACTICE -> {
+                    val range = remember(corpus, rangeStart, rangeEnd) {
+                        corpus.verses.filter { it.id in rangeStart..rangeEnd }
+                    }
+                    RangePracticeScreen(corpus, range, store, record = { item, result, hints, exposed, bridge ->
+                        val bounded = RecallLadder.boundedGrade(result, hints, exposed)
+                        val card = HifzScheduler.grade(cards[item.id] ?: ReviewCard(item.id), bounded, today)
+                        val memory = MemoryCoach.record(memories[item.id] ?: MemoryFingerprint(item.id),
+                            bounded, hints + if (exposed) 1 else 0, bridge)
+                        cards[item.id] = card; memories[item.id] = memory
+                        store.save(card, memory)
+                        store.observe(item.id, RecallObservation(today, bounded, hints, exposed, DifficultyTag.NONE))
+                    }, finish = {
+                        message = "انتهت جلسة النطاق؛ راجع خطة اليوم للمواعيد التالية"
+                        screen = Screen.TODAY
+                    })
                 }
                 Screen.TEACHERS -> TeacherNotebookScreen()
                 Screen.EXERCISES -> VerseExercisesScreen(verses, index, ::openCorpusVerse)

@@ -1,13 +1,13 @@
 {
   "source_revision_reference": "fea04ad019e69635132d0890ad0a4eb00c383a9a",
-  "evidence_type": "Local Gradle actual XML reports; working tree changes must be checked again before final acceptance",
-  "kotlin_tests": 42,
+  "evidence_type": "Actual local Gradle reports after range implementation; source working tree, matching commit CI still required before final acceptance",
+  "kotlin_tests": 46,
   "failures": 0,
   "errors": 0,
-  "python_tests": 16,
+  "python_tests": 18,
   "android_lint": "No issues found",
-  "debug_apk_bytes": 17491082,
-  "last_local_apk_sha256": "51f06b52b0a595529b3d2a1a38cd7771402eb9de69fa015bb06f2d43259e2d00",
+  "debug_apk_bytes": 17491158,
+  "last_local_apk_sha256": "aec7864a0210185a83e9acd3ba1376279db10b29b6a8dcd3ce28972ada572143",
   "apk_permissions": [
     "android.permission.RECORD_AUDIO",
     "com.nexvary.hifzai.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"

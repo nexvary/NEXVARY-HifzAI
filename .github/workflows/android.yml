@@ -4,6 +4,10 @@ on:
     branches: [main, dev/foundation]
   pull_request:
   workflow_dispatch:
+concurrency:
+  group: hifz-build-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 jobs:

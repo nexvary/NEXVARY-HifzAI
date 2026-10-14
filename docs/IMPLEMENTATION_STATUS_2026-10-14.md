@@ -1,42 +1,23 @@
-# Implementation evidence — 2026-10-14 (development branch)
+# حالة التنفيذ والأدلة — 14 أكتوبر 2026
 
-**Development version:** 0.5.0-dev  
-**Scholarly approval:** none. **Public release:** blocked.  
-**Branch:** `dev/foundation`. Draft PR #1.
+الإصدار التطويري الفعلي: **0.5.0-dev** على `dev/foundation`. PR #1 للتطوير، وليس إصدارًا مستقرًا. **غير جاهز للطلب الوحيد للجنة، والنشر العام محظور.**
 
-## Implemented in source
-- [x] Tanzil Uthmani v1.1 Quran corpus: 114 surahs, 6236 ayat, verbatim original with copyright footer.
-- [x] Technical source Git blob pin: `9813920ae5afce9e50d2ac44562457e29bb4bfca`.
-- [x] Source SHA-256 pin: `6933e133dd56db778c801bf738848454e43648105a151e8d84d86a7cae39ec5f` (subject to CI confirmation).
-- [x] Runtime refusal to show Quran content when source integrity check fails.
-- [x] Quran reader, 114-surah navigation, search by name/number, font sizing, 8-ayah page navigation.
-- [x] Arabic RTL five-tab home/practice/reader/insights/settings with reciter directory as secondary screen.
-- [x] Active-recall learning ladder, hint/reveal accounting, due-review plan, memory fingerprints and difficulty labels.
-- [x] Cross-surah lexical similarity suggestions, labelled as an unverified training aid.
-- [x] Optional written recall, never retained between sessions.
-- [x] Optional private microphone record/play/erase for self-assessment, microphone permission requested on demand; audio must not leave device.
-- [x] Native vector app icon and royal navy / gold / emerald design baseline.
-- [x] Python checks for all surah and ayah indices and both corpus digests.
-- [x] Compose Android emulator smoke-test code and screenshot-capture workflow added.
-- [x] MIT code license, CC BY 3.0 corpus notice, independent rights register, one-committee-submission policy, Gradle release block.
+## تحقق فعليًا
+- مطابقة ملف المصحف بالكامل لتنزيل Tanzil الرسمي مباشرة، وبصمتا SHA-256 وGit blob صحيحتان، و114 سورة و6236 آية مرتبة. التقرير: OFFICIAL_CORPUS_COMPARISON.json.
+- بناء محلي ناجح؛ 46 اختبار Kotlin و18 اختبار Python؛ Lint بلا ملاحظات، وDebug/test APK قابلان للبناء. هذه أرقام التنفيذ المحلي؛ يُراجع CI المطابق لكل commit.
+- اختبارات محاكي Android 15 نجحت في سلسلة التطوير: 2 اختبار UI و4 اختبارات للنص والتخزين والتسجيل ودفتر المعلم. ينتج المسار 17 PNG فعلية مع PROOF_MANIFEST وبصمة APK.
+- ملفات الصور القديمة بحجم 44 بايت كانت أخطاء run-as، وليست Screenshots؛ رُفضت ويمنع فحص PNG تكرار ذلك. الدليل المعتمد يبدأ من workflow 38619491221 على c2f06fa47e7608bc7b231570a0f6451a0dff8635؛ أي تعديل أحدث يحتاج نتيجة مطابقة.
 
-## Not yet verified
-- [ ] Successful CI for **the current 0.5.0-dev HEAD**, including compile, Kotlin tests, Python hash tests.
-- [ ] Actual Android emulator screenshot proof artifacts from the new UI workflow.
-- [ ] Physical phone and tablet UI/diacritic/line-breaking/accessibility review.
-- [ ] Academic measurement of learning effectiveness / confidence calibration.
-- [ ] Independent scholarly inspection of Quranic text rendering and copy source against an official release.
-- [ ] Audit that audio file deletion handles lifecycle edge-cases on physical devices.
+## وظائف منفذة ضمن نطاق محلي
+المصحف والبحث والانتقال المباشر والبسملة المنفصلة وموضع القراءة وحجم الخط وحفظ نطاقات 30 جزءًا و604 صفحات؛ السلم التدريجي والتلميحات والتقييم الذاتي والمراجعات وتاريخ آخر 30 محاولة لكل آية واستعادة الجلسة؛ المتشابهات اللفظية وترتيب الآيات؛ التسجيل الخاص والتنظيف بالخلفية؛ دفتر طلاب ومواعيد محلي؛ صفحات الخصوصية والمصادر والمساعدة وحول التطبيق. أُضيف خط Amiri Quran المرخص وتحقق تغطية المحارف.
 
-## Still to be built or legally cleared
-- [ ] Licensed and correctly attributed Egyptian/Saudi reciter audio playback and repetition.
-- [ ] Optional offline audio caches only when a recording's rights permit it.
-- [ ] ASR and recitation pronunciation/tajweed evaluation only after expert-validated accuracy and uncertainty tests.
-- [ ] Complete verified teacher academy, backend, booking, minor safety and access controls.
-- [ ] Multi-device synchronization with encryption/privacy controls, if enabled.
-- [ ] Full responsive design-system refinements, TalkBack, performance/energy audit.
-- [ ] Professional QA for stable distribution, signed release, legal/privacy/rights reviews.
-- [ ] **Single final scholarly committee submission after all gates, not before.**
+## لا تُعد مكتملة
+- تدقيق متخصص لحدود الأجزاء والصفحات المنفذة، وتوضيح إصدار رخصة metadata التي يصفها المصدر بـ cc-by دون تحديد الإصدار.
+- التلاوات المرخصة والخلفية والتوقيت والتنزيل.
+- نموذج ASR وصحة التجويد والمخارج؛ الموجود واجهة ربط ومقارنة كلمات فقط، مُحجبتان عن الحكم الفعلي قبل التقييم.
+- الأكاديمية المتصلة والتحقق من المعلمين والحجز والأدوار والشكاوى المرسلة. الموجود دفتر شخصي محلي.
+- مصفوفة أجهزة فعلية وTalkBack والخط الكبير والطاقة والذاكرة، وتقييم التعلم والحقوق والأمان المستقل.
+- حزمة علمية نهائية أو اعتماد لجنة أو نشر عام.
 
-## Truthfulness rule
-A checked **implemented in source** checkbox means the code was committed and can be inspected; it **does not** mean the feature passed QA or is certified. No latest-build success, released APK or genuine screenshots should be claimed without a matching successful Actions run.
+## أدلة جميع المراحل
+PHASE_EVIDENCE.md وPHASE_EVIDENCE.json يغطّيان المراحل الـ219 من 002 إلى 220؛ لكل مرحلة التنفيذ/Commit/الاختبار/المانع. وجود واجهة ربط لا يحول وظيفة مستقبلية إلى وظيفة مكتملة. لا يُعلَّم إنجاز نهائي دون دليل قبول.

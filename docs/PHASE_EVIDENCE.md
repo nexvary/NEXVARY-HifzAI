@@ -1,6 +1,6 @@
 # مصفوفة المراحل 002–220 — أدلة وحالة فعلية
 
-كل المراحل الـ219 موجودة. مراجعة المصدر: `c2f06fa47e7608bc7b231570a0f6451a0dff8635`.
+كل المراحل الـ219 موجودة. مراجعة المصدر: `fec3361fb61c6a20389eb2cfc4ae9688d875a50e`.
 
 الحالة «جزئي» تصف وجود تنفيذ أو جزء من بنيته؛ لا تعني تحقيق كل وظيفة في عنوان المرحلة. لا مربعات إنجاز تُملأ آليًا. البنية القابلة للربط ليست ميزة نهائية. `PHASE_EVIDENCE.json` يحتوي ملفات التنفيذ وCommit لكل ملف والاختبارات والمانع لكل مرحلة.
 
@@ -35,8 +35,8 @@
 | 028 | Track hint usage in review events | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
 | 029 | Implement verse transition practice | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 030 | Add reverse transition prompts | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 031 | Add end-of-page continuation practice | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 032 | Allow learner-supplied segment goals | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
+| 031 | Add end-of-page continuation practice | جزئي / غير مقبول نهائيًا | QuranPartitions.kt, PartitionPickerScreen.kt, RangePracticeScreen.kt؛ نطاق أجزاء وصفحات مثبت؛ تدريب إكمال نهاية الصفحة إلى التالية وأهداف مقاطع مخصصة غير مكتملين |
+| 032 | Allow learner-supplied segment goals | جزئي / غير مقبول نهائيًا | QuranPartitions.kt, PartitionPickerScreen.kt, RangePracticeScreen.kt؛ نطاق أجزاء وصفحات مثبت؛ تدريب إكمال نهاية الصفحة إلى التالية وأهداف مقاطع مخصصة غير مكتملين |
 | 033 | Provide repetition without losing place | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 034 | Support slow learners with shorter tasks | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 035 | Allow manual replay of failed items | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |

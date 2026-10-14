@@ -7,11 +7,14 @@ data class PracticeSession(
     val stage: PracticeKind,
     val hints: Int,
     val exposed: Boolean,
-    val difficulty: DifficultyTag
+    val difficulty: DifficultyTag,
+    val rangeStart: Int = 0,
+    val rangeEnd: Int = 0
 ) {
     init {
         require(chapter in 1..114 && ayah in 1..286)
         require(hints in 0..100)
+        require((rangeStart == 0 && rangeEnd == 0) || (rangeStart > 0 && rangeEnd >= rangeStart))
     }
     /** Assistance belongs to the entire attempt, not a selected screen/stage. */
     fun changeStage(next: PracticeKind) = copy(

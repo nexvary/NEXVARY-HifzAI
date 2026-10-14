@@ -81,3 +81,6 @@ Official Tanzil download byte comparison, immutable corpus views, derived Quran 
 - [Final-review readiness — currently blocked](docs/review/READINESS.json)
 
 A local notebook is not a live academy; an ASR comparator is not an evaluated recognizer; a playback adapter is not a cleared audio catalogue. Public APK upload is blocked as well as production Gradle packaging. Do not submit this development state to the committee.
+
+### Partition learning
+An unmodified official Tanzil metadata asset now supplies 30 juz and 604 page verse boundaries. Range sessions use original references, cross surahs, retain assistance, resume locally and stop at the selected boundary. They do not reproduce the printed page layout. Coverage/order/boundary tests are present. The metadata root specifies cc-by without a license version; this remains a final rights-clarification item. Device proof is configured for API 26 and 35 at normal and 1.5x system font; consult matching Actions outcomes before claiming that matrix passed.

@@ -30,7 +30,7 @@ class LocalDataAndAudioTest {
     @Test fun progressSessionHistoryAndCorruptedPreferences() {
         val store = ProgressStore(context)
         store.clear()
-        val session = PracticeSession(2, 255, PracticeKind.RECALL, 1, true, DifficultyTag.WORDS)
+        val session = PracticeSession(2, 255, PracticeKind.RECALL, 1, true, DifficultyTag.WORDS, 2001, 2286)
         store.saveSession(session)
         assertEquals(session, ProgressStore(context).session())
         store.bookmark(2, 255)

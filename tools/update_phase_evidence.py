@@ -37,6 +37,8 @@ group([182,183,189], ['.github/workflows/android-ui-proof.yml','tools/verify_scr
 group([201,202,205], ['app/build.gradle.kts','.github/workflows/android.yml'], ['Gradle debug build and SHA256'], 'نسخة تطوير غير نهائية؛ APK لا ينشر في المستودع العام')
 group([20], ['tools/prepare_review_bundle.py','docs/review/READINESS.json','docs/SCHOLARLY_REVIEW_DOSSIER.md'], ['tests/test_review_bundle_gate.py'], 'بوابة مانعة موجودة؛ الحزمة والطلب النهائي والإصدار المعتمد غير مكتملة')
 
+group([31,32], [L+'QuranPartitions.kt', 'app/src/main/java/com/nexvary/hifzai/PartitionPickerScreen.kt', 'app/src/main/java/com/nexvary/hifzai/RangePracticeScreen.kt'], [T+'QuranPartitionsTest.kt', 'app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt'], 'نطاق أجزاء وصفحات مثبت؛ تدريب إكمال نهاية الصفحة إلى التالية وأهداف مقاطع مخصصة غير مكتملين')
+
 def main():
     phases = re.findall(r'\*\*Phase (\d{3})\*\* — (.+)', (ROOT/'docs/PHASES_002_220.md').read_text())
     assert [int(n) for n,_ in phases] == list(range(2,221))
