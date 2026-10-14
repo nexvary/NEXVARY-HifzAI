@@ -80,6 +80,8 @@ import com.nexvary.hifzai.learning.PracticeKind
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.ReciterCatalog
 import com.nexvary.hifzai.learning.RecallGrade
+import com.nexvary.hifzai.learning.SimilarityIndex
+import com.nexvary.hifzai.learning.VerifiedVerse
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
 import java.time.LocalDate
@@ -91,7 +93,7 @@ private val gold = Color(0xFFD6B465)
 private val green = Color(0xFF43C8AA)
 private val muted = Color(0xFFB9C6CF)
 
-private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, INSIGHTS, RECITERS, SETTINGS }
+private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -195,6 +197,19 @@ private fun App() {
         chapterQuery = ""
         typedRecall = ""
         screen = Screen.MUSHAF
+    }
+
+    fun openCorpusVerse(chosen: VerifiedVerse) {
+        selectedSurah = chosen.chapter
+        index = chosen.verse - 1
+        readerPage = index / 8
+        stage = PracticeKind.MASK_LIGHT
+        hintCount = 0
+        revealed = false
+        answerWasRevealed = false
+        typedRecall = ""
+        difficulty = DifficultyTag.NONE
+        screen = Screen.PRACTICE
     }
 
     fun openVerse(newIndex: Int, training: PracticeKind = PracticeKind.READ) {
@@ -351,6 +366,10 @@ private fun App() {
                     Section("جلسة الحفظ", "سورة " + corpus.info(selectedSurah).arabicName +
                         " • الآية " + verse.verse + " من " + verses.size)
                     Text("سُلّم الاسترجاع • ٥ مراحل تعليمية", color = green, fontSize = 14.sp)
+                    OutlinedButton(onClick = { screen = Screen.SIMILAR },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("تدرّب على الآيات المتشابهة لفظيًا")
+                    }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                         StageButton("١ قراءة", stage == PracticeKind.READ, Modifier.weight(1f)) {
                             stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
@@ -587,6 +606,47 @@ private fun App() {
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Start)
                         }
+                    }
+                }
+                Screen.SIMILAR -> {
+                    Section("اقتراحات المتشابهات اللفظية",
+                        "مقارنة نصية آلية للتدريب فقط، وليست تصنيفًا معتمدًا للمتشابهات")
+                    Text("الآية الأساسية: " + corpus.info(selectedSurah).arabicName +
+                        " " + verse.verse, color = gold)
+                    Card(colors = CardDefaults.cardColors(containerColor = panel)) {
+                        Text(verse.text, color = silver, fontSize = 26.sp,
+                            lineHeight = 46.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth().padding(18.dp))
+                    }
+                    val suggestions = remember(verse.id, corpus) {
+                        SimilarityIndex.similarTo(verse, corpus.verses, 0.45).take(12)
+                    }
+                    if (suggestions.isEmpty()) {
+                        Text("لا توجد اقتراحات لفظية فوق معيار التشابه الحالي. " +
+                            "هذا لا يعني عدم وجود متشابهات يقررها المختصون.",
+                            color = muted)
+                    } else {
+                        suggestions.forEach { candidate ->
+                            Card(colors = CardDefaults.cardColors(containerColor = panel),
+                                shape = RoundedCornerShape(18.dp)) {
+                                Column(Modifier.fillMaxWidth().padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text("سورة " + corpus.info(candidate.chapter).arabicName +
+                                        " • الآية " + candidate.verse,
+                                        color = gold, fontSize = 15.sp)
+                                    Text(candidate.text, color = silver,
+                                        lineHeight = 40.sp, fontSize = 23.sp)
+                                    OutlinedButton(onClick = { openCorpusVerse(candidate) }) {
+                                        Text("تدريب هذا الموضع")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    OutlinedButton(onClick = { screen = Screen.PRACTICE },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("العودة إلى التسميع")
                     }
                 }
                 Screen.INSIGHTS -> {
