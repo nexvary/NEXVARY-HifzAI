@@ -2,7 +2,7 @@ package com.nexvary.hifzai
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.test.assertExists
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -19,6 +19,7 @@ import org.junit.runner.RunWith
  * Real emulator/device launch proof. Screenshots come from the running app;
  * no static mockups or fabricated UI evidence.
  */
+@OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
 class HifzUiSmokeTest {
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()

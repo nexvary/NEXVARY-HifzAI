@@ -82,19 +82,19 @@ object MemoryCoach {
             compareBy<VerifiedVerse> { verse ->
                 val card = cards[verse.id]
                 when {
-                    card == null || card.repetitions == 0 -> 1
+                    card == null || (card.repetitions == 0 && card.lapses == 0) -> 1
                     card.dueEpochDay <= todayEpochDay -> 0
                     else -> 2
                 }
             }.thenBy { verse ->
                 val card = cards[verse.id]
-                if (card != null && card.repetitions > 0) card.dueEpochDay else Long.MAX_VALUE
+                if (card != null && (card.repetitions > 0 || card.lapses > 0)) card.dueEpochDay else Long.MAX_VALUE
             }.thenBy { it.chapter }.thenBy { it.verse }
         )
     }
 
     fun dueCount(cards: Collection<ReviewCard>, todayEpochDay: Long) =
-        cards.count { it.repetitions > 0 && it.dueEpochDay <= todayEpochDay }
+        cards.count { (it.repetitions > 0 || it.lapses > 0) && it.dueEpochDay <= todayEpochDay }
 
     fun independentRecallPercent(memories: Collection<MemoryFingerprint>): Int {
         val attempts = memories.sumOf { it.attempts }

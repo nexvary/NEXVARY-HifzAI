@@ -13,3 +13,7 @@ This ledger does not grant rights. Records must be supported by upstream documen
 Before any row is marked approved, provide the **precise asset and version**, verified source, license obligations for storage/redistribution/alterations, lawful usage scope, original text accuracy where appropriate, integrity hash and review date. Reference any separate rights file in `NOTICE.md`.
 
 The repository's MIT license governs only code to which the project can grant MIT rights. It does not override a content owner or provider's rights.
+
+## Verified font addition 2026-10-14
+- Amiri Quran: upstream https://github.com/aliftype/amiri, commit d3d0c5cb6fe7196cb4a58608fc5c8ecd2e6e80fa; OFL-1.1; unmodified font and full license bundled. SHA-256 in NOTICE.md. Unicode coverage checked; Android visual inspection pending.
+- Direct official Tanzil byte comparison: docs/OFFICIAL_CORPUS_COMPARISON.json. Full bytes match, without changing the existing asset. This is technical verification, not committee approval.

@@ -55,6 +55,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -62,11 +63,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import com.nexvary.hifzai.learning.TeacherNotebook
+import com.nexvary.hifzai.learning.PracticeSession
+import com.nexvary.hifzai.learning.RecallObservation
+import com.nexvary.hifzai.learning.QuranSearchIndex
 import com.nexvary.hifzai.learning.BridgeTrainer
 import com.nexvary.hifzai.learning.DailyMemorizationPlan
 import com.nexvary.hifzai.learning.DifficultyTag
@@ -86,6 +95,8 @@ import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
 import java.time.LocalDate
 
+private val quranTypeface = FontFamily(Font(R.font.amiri_quran))
+
 private val navy = Color(0xFF081521)
 private val panel = Color(0xFF122B39)
 private val silver = Color(0xFFEEF1F2)
@@ -93,7 +104,7 @@ private val gold = Color(0xFFD6B465)
 private val green = Color(0xFF43C8AA)
 private val muted = Color(0xFFB9C6CF)
 
-private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS }
+private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,7 +141,7 @@ private fun App() {
         }
         return
     }
-    var screen by remember { mutableStateOf(Screen.HOME) }
+    var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
     val voicePractice = remember(context) { PrivateRecitationPractice(context) }
     var voiceMessage by remember { mutableStateOf("التسجيل الصوتي اختياري ويبقى داخل الهاتف") }
@@ -152,7 +163,10 @@ private fun App() {
     DisposableEffect(voicePractice) {
         onDispose { voicePractice.close() }
     }
-    var selectedSurah by remember { mutableIntStateOf(1) }
+    val savedSession = remember(store, corpus) {
+        store.session()?.takeIf { corpus.find(it.chapter, it.ayah) != null }
+    }
+    var selectedSurah by rememberSaveable { mutableIntStateOf(savedSession?.chapter ?: 1) }
     val verses = remember(corpus, selectedSurah) { corpus.chapter(selectedSurah) }
     val cards = remember(store, corpus) {
         mutableStateMapOf<Int, ReviewCard>().apply {
@@ -164,18 +178,21 @@ private fun App() {
             corpus.verses.forEach { put(it.id, store.memory(it.id)) }
         }
     }
-    var index by remember { mutableIntStateOf(0) }
-    var readerPage by remember { mutableIntStateOf(0) }
+    var index by rememberSaveable { mutableIntStateOf((savedSession?.ayah ?: 1) - 1) }
+    var readerPage by rememberSaveable { mutableIntStateOf(index / 8) }
     var chapterQuery by remember { mutableStateOf("") }
     var insightsPage by remember { mutableIntStateOf(0) }
     var typedRecall by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
-    var quranFontSize by remember { mutableIntStateOf(30) }
-    var stage by remember { mutableStateOf(PracticeKind.READ) }
-    var hintCount by remember { mutableIntStateOf(0) }
+    var quranFontSize by remember { mutableIntStateOf(store.fontSize) }
+    var advanced by remember { mutableStateOf(store.advanced) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var jumpQuery by rememberSaveable { mutableStateOf("") }
+    var stage by rememberSaveable { mutableStateOf(savedSession?.stage ?: PracticeKind.READ) }
+    var hintCount by rememberSaveable { mutableIntStateOf(savedSession?.hints ?: 0) }
     var revealed by remember { mutableStateOf(false) }
-    var answerWasRevealed by remember { mutableStateOf(false) }
-    var difficulty by remember { mutableStateOf(DifficultyTag.NONE) }
+    var answerWasRevealed by rememberSaveable { mutableStateOf(savedSession?.exposed ?: false) }
+    var difficulty by rememberSaveable { mutableStateOf(savedSession?.difficulty ?: DifficultyTag.NONE) }
     var message by remember { mutableStateOf("") }
     var confirmClear by remember { mutableStateOf(false) }
     val today = LocalDate.now().toEpochDay()
@@ -234,6 +251,23 @@ private fun App() {
         ).kind)
     }
 
+    fun changeStage(next: PracticeKind) {
+        if (next == PracticeKind.READ && stage != PracticeKind.READ) answerWasRevealed = true
+        stage = next
+        revealed = false
+        // Hint/exposure history is retained until a different verse/attempt starts.
+    }
+
+    fun jumpTo(chapter: Int, ayah: Int) {
+        val found = corpus.find(chapter, ayah)
+        if (found == null) { message = "رقم السورة أو الآية غير موجود"; return }
+        selectedSurah = chapter
+        index = ayah - 1
+        readerPage = index / 8
+        screen = Screen.MUSHAF
+        message = "تم الانتقال إلى " + corpus.info(chapter).arabicName + " • " + ayah
+    }
+
     fun grade(grade: RecallGrade) {
         // Revealed answers must never count as independent recall.
         val assisted = hintCount + if (answerWasRevealed) 1 else 0
@@ -245,6 +279,7 @@ private fun App() {
         cards[verse.id] = newCard
         memories[verse.id] = newMemory
         store.save(newCard, newMemory)
+        store.observe(verse.id, RecallObservation(today, effectiveGrade, hintCount, answerWasRevealed, difficulty))
         message = "سُجل تقييم الآية " + verse.verse +
             (if (assisted > 0) " (بمساعدة)" else " (بدون كشف)") +
             " • موعد المراجعة بعد " + newCard.intervalDays + " يوم"
@@ -252,6 +287,27 @@ private fun App() {
         openVerse(next)
     }
 
+    DisposableEffect(context, voicePractice) {
+        val activity = context as? ComponentActivity
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                voicePractice.erase()
+                typedRecall = ""
+                voiceMessage = "تم حذف الصوت عند انتقال التطبيق إلى الخلفية"
+            }
+        }
+        activity?.lifecycle?.addObserver(observer)
+        onDispose { activity?.lifecycle?.removeObserver(observer) }
+    }
+    LaunchedEffect(screen, selectedSurah, index, stage, hintCount, answerWasRevealed, difficulty) {
+        if (screen == Screen.PRACTICE) store.saveSession(
+            PracticeSession(selectedSurah, index + 1, stage, hintCount, answerWasRevealed, difficulty)
+        )
+    }
+    LaunchedEffect(quranFontSize, advanced) {
+        store.fontSize = quranFontSize
+        store.advanced = advanced
+    }
     LaunchedEffect(screen, selectedSurah, index) {
         voicePractice.erase()
         voiceMessage = "التسجيل الصوتي اختياري ولا يغادر هاتفك"
@@ -316,7 +372,13 @@ private fun App() {
                     textAlign = TextAlign.Center
                 )
             }
-            Text("حِفْظ | NEXVARY", color = gold, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text("حِفْظ | NEXVARY", color = gold, fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                if (screen != Screen.HOME) OutlinedButton(onClick = {
+                    screen = if (screen == Screen.CHAPTERS) Screen.MUSHAF else Screen.HOME
+                }) { Text("رجوع") }
+            }
             Text("مصحف تدريبي يتكيّف مع طريقة استرجاعك", color = muted, fontSize = 14.sp)
             if (message.isNotEmpty()) {
                 Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF103B37))) {
@@ -325,6 +387,17 @@ private fun App() {
             }
             when (screen) {
                 Screen.HOME -> {
+                    if (store.session() != null) {
+                        OutlinedButton(onClick = {
+                            val active = store.session()
+                            if (active != null && corpus.find(active.chapter, active.ayah) != null) {
+                                selectedSurah = active.chapter; index = active.ayah - 1
+                                stage = active.stage; hintCount = active.hints
+                                answerWasRevealed = active.exposed; difficulty = active.difficulty
+                                revealed = false; screen = Screen.PRACTICE
+                            }
+                        }, modifier = Modifier.fillMaxWidth()) { Text("استكمل جلسة الحفظ السابقة") }
+                    }
                     Section("خطة اليوم", "سورة " + corpus.info(selectedSurah).arabicName +
                         " • " + verses.size + " آية")
                     PrimaryButton("اختبار استرجاع من غير بداية السورة", Modifier.fillMaxWidth()) {
@@ -336,7 +409,7 @@ private fun App() {
                         color = green, fontSize = 14.sp)
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         MetricCard("مراجعات مستحقة", dueCount.toString(), Modifier.weight(1f))
-                        MetricCard("آيات دُرست", studied.toString() + " / " + verses.size, Modifier.weight(1f))
+                        MetricCard("آيات دُرست", studied.toString() + " / " + corpus.verses.size, Modifier.weight(1f))
                     }
                     Card(
                         colors = CardDefaults.cardColors(containerColor = panel),
@@ -358,6 +431,12 @@ private fun App() {
                     OutlinedButton(onClick = { screen = Screen.RECITERS }, modifier = Modifier.fillMaxWidth()) {
                         Text("دليل القرّاء المصريين والسعوديين")
                     }
+                    OutlinedButton(onClick = { screen = Screen.TODAY }, modifier = Modifier.fillMaxWidth()) {
+                        Text("تفاصيل الخطة اليومية والمراجعات")
+                    }
+                    OutlinedButton(onClick = { screen = Screen.EXERCISES }, modifier = Modifier.fillMaxWidth()) {
+                        Text("تدريبات الاسترجاع وترتيب الآيات")
+                    }
                     Section("الخطوات", "تعلّم → إخفاء → استرجاع → ربط → مراجعة")
                     Text("التقييم في هذه النسخة ذاتي، ولا يوجد تصحيح صوتي أو حكم آلي على التجويد.",
                         color = muted, fontSize = 13.sp)
@@ -370,23 +449,23 @@ private fun App() {
                         modifier = Modifier.fillMaxWidth()) {
                         Text("تدرّب على الآيات المتشابهة لفظيًا")
                     }
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    if (advanced) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                         StageButton("١ قراءة", stage == PracticeKind.READ, Modifier.weight(1f)) {
-                            stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
+                            changeStage(PracticeKind.READ)
                         }
                         StageButton("٢ إخفاء خفيف", stage == PracticeKind.MASK_LIGHT, Modifier.weight(1f)) {
-                            stage = PracticeKind.MASK_LIGHT; hintCount = 0; revealed = false; answerWasRevealed = false
+                            changeStage(PracticeKind.MASK_LIGHT)
                         }
                         StageButton("٣ إخفاء أكبر", stage == PracticeKind.MASK_HEAVY, Modifier.weight(1f)) {
-                            stage = PracticeKind.MASK_HEAVY; hintCount = 0; revealed = false; answerWasRevealed = false
+                            changeStage(PracticeKind.MASK_HEAVY)
                         }
                     }
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    if (advanced) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                         StageButton("٤ تسميع حر", stage == PracticeKind.RECALL, Modifier.weight(1f)) {
-                            stage = PracticeKind.RECALL; hintCount = 0; revealed = false; answerWasRevealed = false
+                            changeStage(PracticeKind.RECALL)
                         }
                         StageButton("٥ ربط الآيات", stage == PracticeKind.BRIDGE, Modifier.weight(1f)) {
-                            stage = PracticeKind.BRIDGE; hintCount = 0; revealed = false; answerWasRevealed = false
+                            changeStage(PracticeKind.BRIDGE)
                         }
                     }
                     if (stage == PracticeKind.BRIDGE) {
@@ -409,7 +488,7 @@ private fun App() {
                     ) {
                         Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 28.dp)) {
                             Text(
-                                visualText, modifier = Modifier.fillMaxWidth(),
+                                visualText, fontFamily = quranTypeface, modifier = Modifier.fillMaxWidth(),
                                 fontSize = 29.sp, lineHeight = 52.sp,
                                 fontWeight = FontWeight.Medium, color = silver,
                                 textAlign = TextAlign.Center
@@ -434,6 +513,8 @@ private fun App() {
                             ) { Text(if (revealed) "إخفاء الإجابة" else "كشف الآية") }
                         }
                     }
+                    if (stage == PracticeKind.RECALL) OutlinedButton(onClick = { changeStage(PracticeKind.BRIDGE) },
+                        modifier = Modifier.fillMaxWidth()) { Text("انتقل إلى ربط الآيات") }
                     if (stage == PracticeKind.RECALL || stage == PracticeKind.BRIDGE) {
                         Text("تسميع بصوتك: استمع إلى تسجيلك وقارن بنفسك دون تقييم تجويد آلي.",
                             color = gold, fontSize = 15.sp)
@@ -505,8 +586,7 @@ private fun App() {
                         PrimaryButton(
                             "المرحلة التالية في سُلّم الاسترجاع", Modifier.fillMaxWidth()
                         ) {
-                            stage = RecallLadder.next(stage)
-                            hintCount = 0; revealed = false; answerWasRevealed = false
+                            changeStage(RecallLadder.next(stage))
                         }
                     }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -528,6 +608,14 @@ private fun App() {
                     OutlinedButton(onClick = { screen = Screen.CHAPTERS },
                         modifier = Modifier.fillMaxWidth()) {
                         Text("اختيار السورة • " + corpus.info(selectedSurah).arabicName)
+                    }
+                    OutlinedButton(onClick = { screen = Screen.SEARCH }, modifier = Modifier.fillMaxWidth()) {
+                        Text("البحث في القرآن والانتقال المباشر")
+                    }
+                    if (readerPage == 0) corpus.openingBasmala(selectedSurah)?.let { opening ->
+                        Text("بسملة افتتاح السورة • خارج عد الآيات", color = muted, fontSize = 12.sp)
+                        Text(opening.text, fontFamily = quranTypeface, fontSize = quranFontSize.sp, lineHeight = (quranFontSize * 1.85f).sp,
+                            color = gold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     }
                     Row(Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -556,13 +644,17 @@ private fun App() {
                                     color = gold, fontSize = 16.sp, textAlign = TextAlign.Center,
                                     modifier = Modifier.fillMaxWidth())
                                 Text(
-                                    item.text,
+                                    item.text, fontFamily = quranTypeface,
                                     color = silver,
                                     fontSize = quranFontSize.sp,
                                     lineHeight = (quranFontSize * 1.85f).sp,
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center
                                 )
+                                OutlinedButton(onClick = {
+                                    store.bookmark(item.chapter, item.verse)
+                                    message = "حُفظ موضع القراءة • " + item.verse
+                                }) { Text("احفظ موضع القراءة") }
                                 OutlinedButton(onClick = { openVerse(readerPage * 8 + pageIndex) }) {
                                     Text("تدريب الحفظ لهذه الآية")
                                 }
@@ -614,7 +706,7 @@ private fun App() {
                     Text("الآية الأساسية: " + corpus.info(selectedSurah).arabicName +
                         " " + verse.verse, color = gold)
                     Card(colors = CardDefaults.cardColors(containerColor = panel)) {
-                        Text(verse.text, color = silver, fontSize = 26.sp,
+                        Text(verse.text, fontFamily = quranTypeface, color = silver, fontSize = 26.sp,
                             lineHeight = 46.sp,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth().padding(18.dp))
@@ -635,7 +727,7 @@ private fun App() {
                                     Text("سورة " + corpus.info(candidate.chapter).arabicName +
                                         " • الآية " + candidate.verse,
                                         color = gold, fontSize = 15.sp)
-                                    Text(candidate.text, color = silver,
+                                    Text(candidate.text, fontFamily = quranTypeface, color = silver,
                                         lineHeight = 40.sp, fontSize = 23.sp)
                                     OutlinedButton(onClick = { openCorpusVerse(candidate) }) {
                                         Text("تدريب هذا الموضع")
@@ -712,8 +804,96 @@ private fun App() {
                         }
                     }
                 }
+                Screen.SEARCH -> {
+                    Section("البحث والانتقال", "فهرس البحث منفصل عن النص القرآني الأصلي")
+                    OutlinedTextField(value = jumpQuery, onValueChange = { jumpQuery = it.take(15) },
+                        label = { Text("سورة:آية مثل ٢:٢٥٥") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                    PrimaryButton("انتقل إلى الآية", Modifier.fillMaxWidth()) {
+                        val address = QuranSearchIndex.address(jumpQuery)
+                        if (address == null) message = "اكتب رقم السورة ثم : ثم رقم الآية"
+                        else jumpTo(address.first, address.second)
+                    }
+                    store.bookmark()?.let { bookmark ->
+                        OutlinedButton(onClick = { jumpTo(bookmark.first, bookmark.second) }, modifier = Modifier.fillMaxWidth()) {
+                            Text("موضع القراءة المحفوظ • " + bookmark.first + ":" + bookmark.second)
+                        }
+                    }
+                    OutlinedTextField(value = searchQuery, onValueChange = { searchQuery = it.take(100) },
+                        label = { Text("ابحث بكلمتين أو جزء من آية") }, modifier = Modifier.fillMaxWidth())
+                    val found = remember(searchQuery, corpus) { corpus.searchIndex.search(searchQuery) }
+                    if (searchQuery.length >= 2 && found.isEmpty()) Text("لا توجد نتائج مطابقة في فهرس البحث", color = muted)
+                    found.forEach { result ->
+                        Card(colors = CardDefaults.cardColors(containerColor = panel)) {
+                            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(corpus.info(result.chapter).arabicName + " • " + result.verse, color = gold)
+                                Text(result.text, fontFamily = quranTypeface, fontSize = 24.sp, lineHeight = 44.sp)
+                                OutlinedButton(onClick = { jumpTo(result.chapter, result.verse) }) { Text("عرض الآية في المصحف") }
+                            }
+                        }
+                    }
+                    if (found.size == 40) Text("أول ٤٠ نتيجة؛ أضف كلمات لتضييق البحث", color = muted)
+                }
+                Screen.TODAY -> {
+                    Section("الخطة اليومية", "مراجعات المصحف كله ثم حفظ جديد في السورة المختارة")
+                    val plan = DailyMemorizationPlan.create(corpus.verses, cards, today, maxNew = 0)
+                    Text("المستحقة اليوم: " + dueCount + " • تُعرض أول ١٥ مراجعة", color = green)
+                    plan.dueVerseIds.forEach { id ->
+                        val item = corpus.verses.first { it.id == id }
+                        OutlinedButton(onClick = { openCorpusVerse(item) }, modifier = Modifier.fillMaxWidth()) {
+                            Text(corpus.info(item.chapter).arabicName + " • الآية " + item.verse)
+                        }
+                    }
+                    if (plan.dueVerseIds.isEmpty()) Text("لا توجد مراجعات مستحقة؛ ابدأ جلسة قصيرة من السورة المختارة", color = muted)
+                    PrimaryButton("ابدأ الحفظ الجديد أو مراجعة السورة", Modifier.fillMaxWidth()) { focusToday() }
+                    Text("أسبوعي وشهري: مواعيد الآيات تُحسب من تقييمك الذاتي؛ لا تُضاعف الخوارزمية جلسات إلزامية دون حاجة.", color = muted)
+                }
+                Screen.PRIVACY -> {
+                    Section("خصوصيتك وحماية الأطفال", "وضع محلي دون حساب أو رفع صوت")
+                    Text("التقدم وموضع القراءة والجلسة محفوظة داخل مساحة التطبيق الخاصة. التسجيل في الذاكرة المؤقتة ويُحذف عند مغادرة التدريب أو وضع التطبيق في الخلفية. لا تُحفظ إجابات التسميع الكتابية.")
+                    Text("لا إذن إنترنت أو جهات اتصال أو موقع. يطلب الميكروفون فقط عند اختيار التسجيل. تُستبعد بيانات التطبيق من النسخ الاحتياطي.")
+                    Text("لا توجد محادثات عامة أو اتصال بين أطفال ومعلمين عبر هذا الإصدار. دفتر المعلم للتنظيم المحلي بإشراف ولي الأمر؛ ليس أكاديمية متصلة أو اعتمادًا لمؤهلات معلم.")
+                    OutlinedButton(onClick = { screen = Screen.SETTINGS }, modifier = Modifier.fillMaxWidth()) { Text("إدارة التقدم وحذف البيانات") }
+                }
+                Screen.SOURCES -> {
+                    Section("المصادر والتراخيص", "الكود والمحتوى لهما حقوق منفصلة")
+                    Text(QuranCorpus.SOURCE_CREDIT, color = gold)
+                    Text("نسخة حرفية مطابقة لتنزيل Tanzil الرسمي • 114 سورة و6236 آية. المطابقة التقنية لا تعني اعتماد اللجنة.")
+                    Text("CC BY 3.0 مع شرط Tanzil بعدم تغيير النص. جميع علامات النص محفوظة؛ فهرس البحث مستقل.")
+                    Text("SHA-256: " + QuranCorpus.SOURCE_SHA256, fontSize = 12.sp)
+                    Text("خط المصحف Amiri Quran: SIL Open Font License 1.1، إشعار الحقوق مضمن. تغطية المحارف اختُبرت تقنيًا؛ تدقيق تشكيلها بصريًا ما زال مطلوبًا.")
+                    Text("الكود الأصلي: MIT. مكونات AndroidX وCompose: Apache 2.0. إشعارات الحقوق كاملة ضمن ملفات المصدر.")
+                    OutlinedButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://tanzil.net/docs/Text_License"))) },
+                        modifier = Modifier.fillMaxWidth()) { Text("شروط Tanzil الأصلية") }
+                    Text("لا تسجيلات تلاوة خارجية مضمنة قبل توثيق الحقوق. خوارزمية المراجعة مستلهمة من الاسترجاع والمراجعة المتباعدة؛ نسب الإخفاء سياسة تصميم لم تُثبت فعاليتها لهذا التطبيق بعد.")
+                }
+                Screen.ABOUT -> {
+                    Section("حول NEXVARY HifzAI", "نسخة تطوير داخلية 0.5.0-dev • مفتوحة المصدر")
+                    Text("المصحف دون إنترنت، الحفظ التدريجي، المراجعات والتسميع الذاتي. لا اعتماد علمي أو إجازة قرآنية آلية.")
+                    Text("لا يُرسل إلى اللجنة إلا ملف واحد بعد اجتياز جميع شروط القبول. هذه النسخة غير جاهزة لذلك الطلب.")
+                    OutlinedButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/nexvary/NEXVARY-HifzAI"))) },
+                        modifier = Modifier.fillMaxWidth()) { Text("الشفرة المصدرية والتوثيق") }
+                }
+                Screen.HELP -> {
+                    Section("دليل الاستخدام", "ابدأ بجلسة قصيرة ثم راجع بتقييم صادق")
+                    Text("١. افتح المصحف واختر السورة، أو ابحث وانتقل برقم سورة:آية. النص المعروض هو الأصل دون تغيير.")
+                    Text("٢. ابدأ الحفظ: قراءة، إخفاء 35%، إخفاء 70%، استرجاع، ربط. الوضع المتقدم يتيح اختيار المرحلة مباشرة.")
+                    Text("٣. التلميح وكشف الإجابة يُحتسبان مساعدة؛ تبديل المرحلة لا يمحو المساعدة. النتائج تقييم ذاتي.")
+                    Text("٤. سجّل صوتك اختياريًا واستمع لنفسك. ليس هناك تصحيح تجويد آلي. الصوت يُحذف عند الخروج أو الخلفية.")
+                    Text("٥. زر استكمال الجلسة يعيد موضعك ومرحلتك دون الصوت أو الإجابة المكتوبة. يمكنك حذف التقدم من الإعدادات.")
+                    Text("٦. تقسيم العرض كل 8 آيات ليس ترقيم صفحات مصحف المدينة. المتشابهات اقتراحات لفظية غير معتمدة.")
+                }
+                Screen.TEACHERS -> TeacherNotebookScreen()
+                Screen.EXERCISES -> VerseExercisesScreen(verses, index, ::openCorpusVerse)
                 Screen.SETTINGS -> {
-                    Section("خصوصية البيانات", "كل تقدمك محفوظ محليًا على هذا الهاتف")
+                    Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
+                    OutlinedButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth()) {
+                        Text(if (advanced) "الوضع الحالي: متقدم • التحويل إلى مبسط" else "الوضع الحالي: مبسط • التحويل إلى متقدم")
+                    }
+                    listOf(Screen.PRIVACY to "الخصوصية وحماية الأطفال", Screen.SOURCES to "المصادر والتراخيص",
+                        Screen.TEACHERS to "دفتر المعلم المحلي", Screen.HELP to "المساعدة", Screen.ABOUT to "حول التطبيق").forEach { (destination, label) ->
+                        OutlinedButton(onClick = { screen = destination }, modifier = Modifier.fillMaxWidth()) { Text(label) }
+                    }
+                    Section("إدارة البيانات", "كل تقدمك محفوظ محليًا على هذا الهاتف")
                     OutlinedButton(onClick = { screen = Screen.RECITERS },
                         modifier = Modifier.fillMaxWidth()) { Text("دليل القراء") }
                     Text(QuranCorpus.SOURCE_CREDIT, color = gold)
@@ -737,12 +917,14 @@ private fun App() {
                         context.startActivity(Intent.createChooser(intent, "مشاركة التقدم"))
                     }
                     if (confirmClear) {
-                        Text("تأكيد: سيُحذف كل تقدمك المحلي ولا يمكن استعادته.",
+                        Text("تأكيد: سيُحذف التقدم والجلسة ودفتر المعلم المحلي ولا يمكن استعادتها.",
                             color = gold)
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             OutlinedButton(onClick = { confirmClear = false }) { Text("إلغاء") }
                             Button(onClick = {
-                                if (store.clear()) {
+                                if (store.clear() && TeacherNotebook(context).clear()) {
+                                    voicePractice.erase()
+                                    typedRecall = ""
                                     cards.keys.toList().forEach { cards[it] = ReviewCard(it) }
                                     memories.keys.toList().forEach { memories[it] = MemoryFingerprint(it) }
                                     message = "حُذفت بيانات التدريب من هذا الجهاز"

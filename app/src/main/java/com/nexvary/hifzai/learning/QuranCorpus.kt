@@ -20,6 +20,12 @@ class QuranCorpus private constructor(
     val surahs: List<SurahInfo>
 ) {
     private val chapters: Map<Int, List<VerifiedVerse>> = verses.groupBy { it.chapter }
+    val searchIndex by lazy { QuranSearchIndex(verses) }
+    /** Unnumbered opening is a verbatim reference, never a generated verse. */
+    fun openingBasmala(chapter: Int): VerifiedVerse? {
+        require(chapter in 1..114)
+        return if (chapter == 1 || chapter == 9) null else find(1, 1)
+    }
     fun chapter(chapter: Int): List<VerifiedVerse> = chapters[chapter].orEmpty()
     fun info(chapter: Int): SurahInfo = surahs.first { it.number == chapter }
     fun find(chapter: Int, ayah: Int): VerifiedVerse? =
@@ -82,6 +88,9 @@ class QuranCorpus private constructor(
                 require(chapter.map { it.verse } == (1..info.ayahCount).toList())
             }
             require(counts.size == 114) { "Incomplete Quran" }
+            require(verses.map { it.id } == surahs.flatMap { s ->
+                (1..s.ayahCount).map { s.number * 1000 + it }
+            }) { "Quran chapter order changed" }
             return QuranCorpus(verses, surahs)
         }
     }

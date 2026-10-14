@@ -58,7 +58,7 @@ object VerseMask {
         val tokens = canonicalText.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
         if (tokens.isEmpty()) return ""
         val fraction = maskedFraction.coerceIn(0f, 1f)
-        if (fraction <= 0f) return tokens.joinToString(" ")
+        if (fraction <= 0f) return canonicalText
         if (fraction >= 1f) return tokens.joinToString(" ") { "●●●" }
         val hiddenCount = (tokens.size * fraction).roundToInt().coerceIn(1, tokens.size)
         val ordering = tokens.indices.sortedBy { (it * 37L + seed * 19L).floorMod(101L) }

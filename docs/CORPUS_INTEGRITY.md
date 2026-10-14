@@ -10,7 +10,7 @@ This app must **never** generate canonical Quran verses from a language model.
 6. Keep licensed attribution prominently visible within the app, and reproduce required notices in any distributed asset.
 7. Masking, search normalization and tutoring hints must never overwrite or replace canonical text records.
 8. No automatic translation of Quran/tafsir; translations must come from reviewed licensed sources.
-9. The current four-verse Surah Al-Ikhlas fixture is a **prototype only**, not a validated production corpus.
+9. The complete byte-pinned Tanzil corpus is bundled. DemoVerses remains an unused test fixture; the running reader loads only the full corpus. See OFFICIAL_CORPUS_COMPARISON.json for a direct official-byte comparison.
 
 Authoritative documentation:
 - Tanzil text license: https://tanzil.net/docs/Text_License
@@ -31,4 +31,4 @@ The [Quran Foundation Developer Terms](https://api-docs.quran.com/legal/develope
 - Attribution: “Quran data provided by Quran Foundation”, as required where relevant, plus specific translator/reciter credits.
 - API terms, local law, scholarly approvals and the rights of other contributors are all separate requirements.
 
-These API restrictions do not apply by default to a separately licensed official Tanzil text asset; **each provider's terms must be evaluated independently**. No QF or Tanzil full Quran dataset is currently bundled in this repository.
+These API restrictions do not apply by default to a separately licensed official Tanzil text asset; **each provider's terms must be evaluated independently**. No Quran Foundation content is bundled. The separately licensed complete Tanzil corpus is bundled verbatim.

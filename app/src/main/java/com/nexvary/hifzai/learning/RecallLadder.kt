@@ -66,10 +66,13 @@ object DailyMemorizationPlan {
         val unique = verses.distinctBy { it.id }
         val due = unique.filter { v ->
             val c = cards[v.id]
-            c != null && c.repetitions > 0 && c.dueEpochDay <= today
+            c != null && (c.repetitions > 0 || c.lapses > 0) && c.dueEpochDay <= today
         }.sortedWith(compareBy({ cards[it.id]?.dueEpochDay ?: Long.MAX_VALUE }, { it.chapter }, { it.verse }))
             .take(maxDue)
-        val new = unique.filter { v -> (cards[v.id]?.repetitions ?: 0) == 0 }
+        val new = unique.filter { v ->
+            val c = cards[v.id]
+            c == null || (c.repetitions == 0 && c.lapses == 0)
+        }
             .sortedWith(compareBy({ it.chapter }, { it.verse }))
             .take(maxNew)
         return DailyPlan(due.map { it.id }, new.map { it.id })

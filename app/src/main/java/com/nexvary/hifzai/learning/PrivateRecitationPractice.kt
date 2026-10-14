@@ -71,19 +71,24 @@ class PrivateRecitationPractice(context: Context) {
         if (!hasRecording) return false
         player?.release()
         player = null
+        val next = MediaPlayer()
         return try {
-            val next = MediaPlayer()
             next.setDataSource(file.absolutePath)
             next.prepare()
             next.setOnCompletionListener {
                 it.release()
                 if (player === it) player = null
             }
+            next.setOnErrorListener { failed, _, _ ->
+                if (player === failed) player = null
+                failed.release()
+                true
+            }
             player = next
             next.start()
             true
         } catch (_: Exception) {
-            player?.release()
+            next.release()
             player = null
             false
         }
