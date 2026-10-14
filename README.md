@@ -4,7 +4,7 @@
 
 **Adaptive Quran Memorization** — تطبيق أندرويد عربي لتدريب الحفظ بالاسترجاع والمراجعة المتباعدة، مع نموذج أولي لبصمة الذاكرة.
 
-> **الوضع الحالي (0.3.0-dev):** نموذج تجريبي على فرع `dev/foundation`. لا يوجد تقييم تجويد آلي موثّق، ولا مصحف كامل، ولا تسجيلات صوتية مدمجة بعد. لا يُعدّ إصدارًا نهائيًا.
+> **الوضع الحالي (0.4.0-dev):** مصحف كامل مصدره Tanzil Uthmani 1.1 محليًا مع تحقق تقني من الملف، وقارئ 114 سورة وتمارين حفظ؛ لا يُعد نشرًا مُعتمدًا ولا شهادة بصحة العرض على كل الأجهزة. التلاوات والتسميع الصوتي وأكاديمية المعلمين لم تكتمل.
 
 ## الوظائف التي تم رفع كودها
 
@@ -21,7 +21,7 @@
 
 ## حدود النسخة التجريبية
 
-التدريب الحالي يستعمل **أربع آيات من سورة الإخلاص فقط** كنموذج. لا يوجد تعرف صوتي، تصحيح مخارج، فحص تجويد، أو أكاديمية مشايخ مباشرة. نحتاج إلى مصحف كامل موثق المصدر والترخيص وحقوق التلاوات قبل أي توزيع إنتاجي.
+أُضيف **مصحف Tanzil Uthmani 1.1 الكامل (114 سورة، 6236 آية)** من `dotquran/corpus` إلى ملفات التطبيق **بنسخة حرفية مطابقة** (Git blob `9813920ae5afce9e50d2ac44562457e29bb4bfca`) وبيانات السور، وتم إنشاء قارئ للمصحف مع اختيار السورة وتغيير حجم الخط وتدريب أي آية. يحتاج الخط والرسم والعرض إلى مراجعة علماء القرآن على أجهزة حقيقية، كما لم تُستكمل الصوتيات والتصحيح أو الأكاديمية.
 
 ## خارطة الطريق من 002 إلى 220
 
@@ -33,7 +33,7 @@
 
 ## البناء والتحقق
 
-عند نجاح [Android CI](../../actions/workflows/android.yml)، اذهب إلى تشغيل البناء الناجح وحمّل الملف من قسم **Artifacts** باسم `NEXVARY-HifzAI-Android-0.3.0-dev-debug`. لا يُعد وجود Workflow وحده دليلًا على نجاح البناء.
+عند نجاح [Android CI](../../actions/workflows/android.yml)، اذهب إلى تشغيل البناء الناجح وحمّل الملف من قسم **Artifacts** باسم `NEXVARY-HifzAI-Android-0.4.0-dev-debug`. لا يُعد وجود Workflow وحده دليلًا على نجاح البناء.
 
 **المفاتيح:** لا تضع API secrets في التطبيق أو GitHub؛ تستخدم Quran Foundation Content APIs خادمًا وسيطًا مع اعتماد الإنتاج. إصدار Pre-live لا يحتوي على المصحف الكامل. انظر [توثيق Quran Foundation](https://api-docs.quran.com/docs/quickstart/).
 
@@ -41,7 +41,7 @@
 
 - Quran text source candidates: [Tanzil](https://tanzil.net/docs/Text_License) and [Quran Foundation](https://api-docs.quran.com/docs/quickstart/).
 - Tanzil permits verbatim copies with explicit attribution; modifying the canonical text is forbidden.
-- No upstream canonical full text has yet been bundled in this repository.
+- Tanzil Uthmani 1.1 source is bundled verbatim with full copyright footer; independent scholarly review of real rendering remains pending.
 - Metadata in the reciter directory does not grant rights to stream or redistribute recordings.
 
 © NEXVARY. Local software and third-party Quran content have separate license requirements.
@@ -53,3 +53,12 @@
 
 **مهم:** هذه نسخة داخلية للتطوير وعرض محدود على لجنة المراجعة؛ نجاح البناء البرمجي لا يعني صلاحية نشر المصحف أو اعتماد طريقة التعلم. حظر إصدار Release في Gradle مقصود إلى حين استكمال مستندات الاعتماد والتحقق منها.
 
+
+### Offline full Quran asset — technical evidence
+
+- Verbatim original: `app/src/main/assets/quran/uthmani-v1.1.txt` (Tanzil Uthmani v1.1, CC BY 3.0, copyright notice preserved).
+- Mirror/source trace: `dotquran/corpus/src/resources/uthmani.txt`, Git blob `9813920ae5afce9e50d2ac44562457e29bb4bfca`.
+- Android runtime refuses to display the asset if it differs from the pinned Git object.
+- CI test `tests/test_embedded_quran.py`: checks 6236 sequential ayat and 114 surahs and exact bytes.
+- Versioned surah metadata and offline browsing (8-verse readable pages).
+- **Not yet a certificate:** every diacritic and actual rendered screen must still be examined by qualified scholars on target devices before the one final committee submission.
