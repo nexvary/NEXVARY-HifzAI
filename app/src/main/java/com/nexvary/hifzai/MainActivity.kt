@@ -2,6 +2,7 @@ package com.nexvary.hifzai
 
 import android.content.Intent
 import android.os.Bundle
+import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoStories
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.MenuBook
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Insights
 import androidx.compose.material.icons.rounded.Settings
@@ -33,6 +35,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
@@ -61,7 +64,7 @@ import com.nexvary.hifzai.learning.BridgeTrainer
 import com.nexvary.hifzai.learning.DailyMemorizationPlan
 import com.nexvary.hifzai.learning.DifficultyTag
 import com.nexvary.hifzai.learning.RecallLadder
-import com.nexvary.hifzai.learning.DemoVerses
+import com.nexvary.hifzai.learning.QuranCorpus
 import com.nexvary.hifzai.learning.HifzScheduler
 import com.nexvary.hifzai.learning.MemoryCoach
 import com.nexvary.hifzai.learning.MemoryFingerprint
@@ -80,7 +83,7 @@ private val gold = Color(0xFFE4BE6A)
 private val green = Color(0xFF45DDB0)
 private val muted = Color(0xFFA5BAC5)
 
-private enum class Screen { HOME, PRACTICE, INSIGHTS, RECITERS, SETTINGS }
+private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, INSIGHTS, RECITERS, SETTINGS }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,20 +107,36 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun App() {
     val context = LocalContext.current
+    val corpusResult = remember(context) { runCatching { QuranCorpus.load(context) } }
+    val corpus = corpusResult.getOrNull()
+    if (corpus == null) {
+        Column(
+            Modifier.fillMaxSize().background(navy).padding(24.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("تعذر التحقق من سلامة النص القرآني", color = gold, fontSize = 22.sp)
+            Text("تم إيقاف عرض المصحف لحماية سلامة النص. أعد تثبيت نسخة سليمة من المصدر الرسمي.",
+                color = silver)
+        }
+        return
+    }
     val store = remember(context) { ProgressStore(context) }
-    val verses = DemoVerses.alIkhlas
-    val cards = remember(store) {
+    var selectedSurah by remember { mutableIntStateOf(1) }
+    val verses = remember(corpus, selectedSurah) { corpus.chapter(selectedSurah) }
+    val cards = remember(store, corpus) {
         mutableStateMapOf<Int, ReviewCard>().apply {
-            verses.forEach { put(it.id, store.card(it.id)) }
+            corpus.verses.forEach { put(it.id, store.card(it.id)) }
         }
     }
-    val memories = remember(store) {
+    val memories = remember(store, corpus) {
         mutableStateMapOf<Int, MemoryFingerprint>().apply {
-            verses.forEach { put(it.id, store.memory(it.id)) }
+            corpus.verses.forEach { put(it.id, store.memory(it.id)) }
         }
     }
     var screen by remember { mutableStateOf(Screen.HOME) }
     var index by remember { mutableIntStateOf(0) }
+    var readerPage by remember { mutableIntStateOf(0) }
+    var quranFontSize by remember { mutableIntStateOf(30) }
     var stage by remember { mutableStateOf(PracticeKind.READ) }
     var hintCount by remember { mutableIntStateOf(0) }
     var revealed by remember { mutableStateOf(false) }
@@ -135,6 +154,13 @@ private fun App() {
     val studied = cards.values.count { it.repetitions > 0 }
     val independent = MemoryCoach.independentRecallPercent(memories.values)
     val attempts = memories.values.sumOf { it.attempts }
+
+    fun chooseSurah(chapter: Int) {
+        selectedSurah = chapter.coerceIn(1, 114)
+        index = 0
+        readerPage = 0
+        screen = Screen.MUSHAF
+    }
 
     fun openVerse(newIndex: Int, training: PracticeKind = PracticeKind.READ) {
         index = newIndex.coerceIn(0, verses.lastIndex)
@@ -175,7 +201,9 @@ private fun App() {
         openVerse(next)
     }
 
-    BackHandler(enabled = screen != Screen.HOME) { screen = Screen.HOME }
+    BackHandler(enabled = screen != Screen.HOME) {
+        screen = if (screen == Screen.CHAPTERS) Screen.MUSHAF else Screen.HOME
+    }
 
     Scaffold(
         containerColor = navy,
@@ -194,16 +222,16 @@ private fun App() {
                     label = { Text("الحفظ") }
                 )
                 NavigationBarItem(
+                    selected = screen == Screen.MUSHAF || screen == Screen.CHAPTERS,
+                    onClick = { screen = Screen.MUSHAF },
+                    icon = { Icon(Icons.Rounded.MenuBook, contentDescription = null) },
+                    label = { Text("المصحف") }
+                )
+                NavigationBarItem(
                     selected = screen == Screen.INSIGHTS,
                     onClick = { screen = Screen.INSIGHTS },
                     icon = { Icon(Icons.Rounded.Insights, contentDescription = null) },
                     label = { Text("تقدمي") }
-                )
-                NavigationBarItem(
-                    selected = screen == Screen.RECITERS,
-                    onClick = { screen = Screen.RECITERS },
-                    icon = { Icon(Icons.Rounded.Groups, contentDescription = null) },
-                    label = { Text("المشايخ") }
                 )
                 NavigationBarItem(
                     selected = screen == Screen.SETTINGS,
@@ -238,8 +266,9 @@ private fun App() {
             }
             when (screen) {
                 Screen.HOME -> {
-                    Section("خطة اليوم", "سورة الإخلاص • نموذج تدريبي محدود")
-                    PrimaryButton("اختبار استرجاع من آية غير البداية", Modifier.fillMaxWidth()) {
+                    Section("خطة اليوم", "سورة " + corpus.info(selectedSurah).arabicName +
+                        " • " + verses.size + " آية")
+                    PrimaryButton("اختبار استرجاع من غير بداية السورة", Modifier.fillMaxWidth()) {
                         val next = (index + 1) % verses.size
                         openVerse(next, PracticeKind.RECALL)
                     }
@@ -264,12 +293,19 @@ private fun App() {
                             PrimaryButton("ابدأ جلسة اليوم", Modifier.fillMaxWidth()) { focusToday() }
                         }
                     }
+                    PrimaryButton("افتح المصحف الكامل • ١١٤ سورة", Modifier.fillMaxWidth()) {
+                        screen = Screen.MUSHAF
+                    }
+                    OutlinedButton(onClick = { screen = Screen.RECITERS }, modifier = Modifier.fillMaxWidth()) {
+                        Text("دليل القرّاء المصريين والسعوديين")
+                    }
                     Section("الخطوات", "تعلّم → إخفاء → استرجاع → ربط → مراجعة")
                     Text("التقييم في هذه النسخة ذاتي، ولا يوجد تصحيح صوتي أو حكم آلي على التجويد.",
                         color = muted, fontSize = 13.sp)
                 }
                 Screen.PRACTICE -> {
-                    Section("جلسة الحفظ", "الآية " + verse.verse + " من " + verses.size)
+                    Section("جلسة الحفظ", "سورة " + corpus.info(selectedSurah).arabicName +
+                        " • الآية " + verse.verse + " من " + verses.size)
                     Text("سُلّم الاسترجاع • ٥ مراحل تعليمية", color = green, fontSize = 14.sp)
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                         StageButton("١ قراءة", stage == PracticeKind.READ, Modifier.weight(1f)) {
@@ -372,8 +408,84 @@ private fun App() {
                     Text("هذه درجات تقدير ذاتي وليست حكمًا على صحة التلاوة. كشف الإجابة يُحتسب كمساعدة.",
                         color = muted, fontSize = 12.sp)
                 }
+                Screen.MUSHAF -> {
+                    Section("المصحف الشريف", "تصفح آيات " + corpus.info(selectedSurah).arabicName +
+                        " كما وردت من المصدر • دون تعديل أو إخفاء")
+                    OutlinedButton(onClick = { screen = Screen.CHAPTERS },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("اختيار السورة • " + corpus.info(selectedSurah).arabicName)
+                    }
+                    Row(Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Text("حجم الخط", color = muted)
+                        Slider(
+                            value = quranFontSize.toFloat(),
+                            onValueChange = { quranFontSize = it.toInt().coerceIn(24, 44) },
+                            valueRange = 24f..44f,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(quranFontSize.toString(), color = green)
+                    }
+                    Text("الآيات " + (readerPage * 8 + 1) + "–" +
+                        minOf(readerPage * 8 + 8, verses.size) + " من " + verses.size,
+                        color = gold, fontSize = 14.sp)
+                    verses.drop(readerPage * 8).take(8).forEachIndexed { pageIndex, item ->
+                        Card(
+                            border = BorderStroke(1.dp, gold.copy(alpha = 0.24f)),
+                            shape = RoundedCornerShape(18.dp),
+                            colors = CardDefaults.cardColors(containerColor = panel)
+                        ) {
+                            Column(Modifier.fillMaxWidth().padding(17.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Text("﴿ " + item.verse + " ﴾",
+                                    color = gold, fontSize = 16.sp, textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth())
+                                Text(
+                                    item.text,
+                                    color = silver,
+                                    fontSize = quranFontSize.sp,
+                                    lineHeight = (quranFontSize * 1.85f).sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+                                OutlinedButton(onClick = { openVerse(readerPage * 8 + pageIndex) }) {
+                                    Text("تدريب الحفظ لهذه الآية")
+                                }
+                            }
+                        }
+                    }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        OutlinedButton(
+                            enabled = readerPage > 0,
+                            onClick = { readerPage = (readerPage - 1).coerceAtLeast(0) }
+                        ) { Text("السابق") }
+                        OutlinedButton(
+                            enabled = readerPage * 8 + 8 < verses.size,
+                            onClick = { readerPage += 1 }
+                        ) { Text("التالي") }
+                    }
+                    Text(QuranCorpus.SOURCE_CREDIT,
+                        color = muted, fontSize = 12.sp)
+                }
+                Screen.CHAPTERS -> {
+                    Section("السور القرآنية", "١١٤ سورة • اختر السورة لعرض آياتها")
+                    corpus.surahs.forEach { info ->
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { chooseSurah(info.number) },
+                        ) {
+                            Text(info.number.toString() + " • " + info.arabicName +
+                                " (" + info.ayahCount + " آية)",
+                                color = silver,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Start)
+                        }
+                    }
+                }
                 Screen.INSIGHTS -> {
-                    Section("بصمة الذاكرة", "المقاييس تعتمد على تقييماتك الذاتية")
+                    Section("بصمة الذاكرة", "سورة " + corpus.info(selectedSurah).arabicName +
+                        " • مقاييس التقييم الذاتي")
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         MetricCard("محاولات الاسترجاع", attempts.toString(), Modifier.weight(1f))
                         MetricCard("بدون تلميح", independent.toString() + "%", Modifier.weight(1f))
@@ -427,11 +539,20 @@ private fun App() {
                 }
                 Screen.SETTINGS -> {
                     Section("خصوصية البيانات", "كل تقدمك محفوظ محليًا على هذا الهاتف")
+                    OutlinedButton(onClick = { screen = Screen.RECITERS },
+                        modifier = Modifier.fillMaxWidth()) { Text("دليل القراء") }
+                    Text(QuranCorpus.SOURCE_CREDIT, color = gold)
+                    OutlinedButton(onClick = {
+                        context.startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse(QuranCorpus.SOURCE_LINK)))
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Text("المصدر وترخيص النص: Tanzil.net")
+                    }
                     Text("لا توجد حسابات أو رفع تسجيلات صوتية أو اتصال بخوادم في النموذج الأولي.",
                         color = silver)
                     PrimaryButton("مشاركة ملخص التقدم", Modifier.fillMaxWidth()) {
                         val summary = "حِفْظ | NEXVARY HifzAI\n" +
-                            "آيات دُرست: " + studied + " من " + verses.size + "\n" +
+                            "آيات دُرست: " + studied + " من " + corpus.verses.size + "\n" +
                             "محاولات: " + attempts + "\n" +
                             "نسبة استرجاع بدون تلميح (تقييم ذاتي): " + independent + "%"
                         val intent = Intent(Intent.ACTION_SEND).apply {
@@ -461,7 +582,7 @@ private fun App() {
                             Text("حذف تقدم الحفظ من الجهاز")
                         }
                     }
-                    Text("مصدر الآيات في نموذج سورة الإخلاص: Quran.com/112. استيراد المصحف الكامل والتحقق من سلامته مرحلة مستقلة.",
+                    Text("النص: Tanzil Uthmani 1.1 • كامل 6236 آية. مصدر النسخة مثبت ببصمة Git، والتدقيق العلمي والعرضي النهائي معلّقان.",
                         color = muted, fontSize = 12.sp)
                     PrimaryButton("معلومات نسخة لجنة المراجعة", Modifier.fillMaxWidth()) {
                         val brief = "NEXVARY HifzAI — نموذج مراجعة علماء القرآن\\n" +
