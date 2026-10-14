@@ -21,3 +21,6 @@ Maintain PR review, CI and evidence retention, and follow `docs/RELEASE_GATES.md
 
 ## Local data scope
 Private preferences hold self-reported recall, a bookmark, a non-audio session and an optional local teaching notebook with aliases and consent acknowledgments. Cache holds only temporary microphone audio. No network permission or telemetry SDK is present. Explicit Android 12 data extraction rules exclude cloud backup and device transfer; older backup rules exclude all domains. Device compromise/root remains outside these storage guarantees. The notebook does not authenticate separate people or qualify teachers; a remote academy requires a separately reviewed authorization service.
+
+## Dependency scan scope — 2026-10-14
+93 resolved debugRuntimeClasspath Maven coordinates were queried against OSV querybatch. No vulnerability records were returned, and no pagination was pending. See docs/DEPENDENCY_AUDIT_2026-10-14.json for exact versions and timestamp. This does not audit build plugins, operating-system code, unknown vulnerabilities, or replace an independent security review.

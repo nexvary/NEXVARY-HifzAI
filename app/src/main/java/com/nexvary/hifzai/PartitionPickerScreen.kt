@@ -12,6 +12,7 @@ internal fun PartitionPickerScreen(corpus: QuranCorpus, partitions: QuranPartiti
     var kind by remember { mutableStateOf(PartitionKind.PAGE) }
     var query by remember { mutableStateOf("") }
     Text("الحفظ بالأجزاء والصفحات", style = MaterialTheme.typography.headlineSmall)
+    Text("المصدر: Tanzil Metadata 1.0 • © Tanzil.info • cc-by")
     Text("حدود الآيات من بيانات Tanzil لمصحف المدينة. العرض النصي يتدفق بحسب الخط والشاشة؛ ليس صورة مطابقة لتوزيع سطور الصفحة المطبوعة.")
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         OutlinedButton(onClick = { kind = PartitionKind.PAGE; query = "" }, modifier = Modifier.weight(1f)) { Text("604 صفحات") }

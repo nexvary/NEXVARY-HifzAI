@@ -113,6 +113,7 @@ private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS,
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        java.io.File(cacheDir, "hifz_private_session.m4a").delete()
         setContent {
             MaterialTheme(
                 colorScheme = darkColorScheme(
@@ -214,6 +215,13 @@ private fun App() {
     val studied = cards.values.count { it.repetitions > 0 }
     val independent = MemoryCoach.independentRecallPercent(memories.values)
     val attempts = memories.values.sumOf { it.attempts }
+
+    fun openExternal(url: String) {
+        try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
+        catch (_: android.content.ActivityNotFoundException) {
+            message = "لا يوجد متصفح لفتح الرابط؛ ثبّت متصفحًا ثم أعد المحاولة"
+        }
+    }
 
     fun chooseSurah(chapter: Int) {
         selectedSurah = chapter.coerceIn(1, 114)
@@ -881,9 +889,13 @@ private fun App() {
                     Text("نسخة حرفية مطابقة لتنزيل Tanzil الرسمي • 114 سورة و6236 آية. المطابقة التقنية لا تعني اعتماد اللجنة.")
                     Text("CC BY 3.0 مع شرط Tanzil بعدم تغيير النص. جميع علامات النص محفوظة؛ فهرس البحث مستقل.")
                     Text("SHA-256: " + QuranCorpus.SOURCE_SHA256, fontSize = 12.sp)
+                    Text("حدود الأجزاء والصفحات: Tanzil Metadata 1.0، المصدر يحدد cc-by دون رقم إصدار؛ توضيح إصدار الرخصة والتدقيق المتخصص ضمن موانع الاعتماد النهائي.")
+                    OutlinedButton(onClick = { openExternal("https://tanzil.net/docs/Quran_Metadata") }, modifier = Modifier.fillMaxWidth()) {
+                        Text("مصدر حدود الأجزاء والصفحات")
+                    }
                     Text("خط المصحف Amiri Quran: SIL Open Font License 1.1، إشعار الحقوق مضمن. تغطية المحارف اختُبرت تقنيًا؛ تدقيق تشكيلها بصريًا ما زال مطلوبًا.")
                     Text("الكود الأصلي: MIT. مكونات AndroidX وCompose: Apache 2.0. إشعارات الحقوق كاملة ضمن ملفات المصدر.")
-                    OutlinedButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://tanzil.net/docs/Text_License"))) },
+                    OutlinedButton(onClick = { openExternal("https://tanzil.net/docs/Text_License") },
                         modifier = Modifier.fillMaxWidth()) { Text("شروط Tanzil الأصلية") }
                     Text("لا تسجيلات تلاوة خارجية مضمنة قبل توثيق الحقوق. خوارزمية المراجعة مستلهمة من الاسترجاع والمراجعة المتباعدة؛ نسب الإخفاء سياسة تصميم لم تُثبت فعاليتها لهذا التطبيق بعد.")
                 }
@@ -891,7 +903,7 @@ private fun App() {
                     Section("حول NEXVARY HifzAI", "نسخة تطوير داخلية 0.5.0-dev • مفتوحة المصدر")
                     Text("المصحف دون إنترنت، الحفظ التدريجي، المراجعات والتسميع الذاتي. لا اعتماد علمي أو إجازة قرآنية آلية.")
                     Text("لا يُرسل إلى اللجنة إلا ملف واحد بعد اجتياز جميع شروط القبول. هذه النسخة غير جاهزة لذلك الطلب.")
-                    OutlinedButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/nexvary/NEXVARY-HifzAI"))) },
+                    OutlinedButton(onClick = { openExternal("https://github.com/nexvary/NEXVARY-HifzAI") },
                         modifier = Modifier.fillMaxWidth()) { Text("الشفرة المصدرية والتوثيق") }
                 }
                 Screen.HELP -> {
@@ -946,8 +958,7 @@ private fun App() {
                         modifier = Modifier.fillMaxWidth()) { Text("دليل القراء") }
                     Text(QuranCorpus.SOURCE_CREDIT, color = gold)
                     OutlinedButton(onClick = {
-                        context.startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(QuranCorpus.SOURCE_LINK)))
+                        openExternal(QuranCorpus.SOURCE_LINK)
                     }, modifier = Modifier.fillMaxWidth()) {
                         Text("المصدر وترخيص النص: Tanzil.net")
                     }
