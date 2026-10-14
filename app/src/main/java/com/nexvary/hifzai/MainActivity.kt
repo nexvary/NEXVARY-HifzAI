@@ -220,6 +220,15 @@ private fun App() {
                 .padding(horizontal = 18.dp, vertical = 18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+            Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF5A2930))) {
+                Text(
+                    "نسخة مراجعة علمية غير معتمدة • لا يُعاد نشرها للجمهور",
+                    color = Color(0xFFFFE0DE),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
             Text("حِفْظ | NEXVARY", color = gold, fontSize = 27.sp, fontWeight = FontWeight.Bold)
             Text("مصحف تدريبي يتكيّف مع طريقة استرجاعك", color = muted, fontSize = 14.sp)
             if (message.isNotEmpty()) {
@@ -230,6 +239,10 @@ private fun App() {
             when (screen) {
                 Screen.HOME -> {
                     Section("خطة اليوم", "سورة الإخلاص • نموذج تدريبي محدود")
+                    PrimaryButton("اختبار استرجاع من آية غير البداية", Modifier.fillMaxWidth()) {
+                        val next = (index + 1) % verses.size
+                        openVerse(next, PracticeKind.RECALL)
+                    }
                     Text("الآيات المستحقة: " + dailyPlan.dueVerseIds.size +
                         " • آيات جديدة مقترحة: " + dailyPlan.newVerseIds.size,
                         color = green, fontSize = 14.sp)

@@ -2,7 +2,7 @@
 
 **Adaptive Quran Memorization** — تطبيق أندرويد عربي لتدريب الحفظ بالاسترجاع والمراجعة المتباعدة، مع نموذج أولي لبصمة الذاكرة.
 
-> **الوضع الحالي (0.2.0-dev):** نموذج تجريبي على فرع `dev/foundation`. لا يوجد تقييم تجويد آلي موثّق، ولا مصحف كامل، ولا تسجيلات صوتية مدمجة بعد. لا يُعدّ إصدارًا نهائيًا.
+> **الوضع الحالي (0.3.0-dev-dev):** نموذج تجريبي على فرع `dev/foundation`. لا يوجد تقييم تجويد آلي موثّق، ولا مصحف كامل، ولا تسجيلات صوتية مدمجة بعد. لا يُعدّ إصدارًا نهائيًا.
 
 ## الوظائف التي تم رفع كودها
 
@@ -31,7 +31,7 @@
 
 ## البناء والتحقق
 
-عند نجاح [Android CI](../../actions/workflows/android.yml)، اذهب إلى تشغيل البناء الناجح وحمّل الملف من قسم **Artifacts** باسم `NEXVARY-HifzAI-Android-0.2.0-debug`. لا يُعد وجود Workflow وحده دليلًا على نجاح البناء.
+عند نجاح [Android CI](../../actions/workflows/android.yml)، اذهب إلى تشغيل البناء الناجح وحمّل الملف من قسم **Artifacts** باسم `NEXVARY-HifzAI-Android-0.3.0-dev-debug`. لا يُعد وجود Workflow وحده دليلًا على نجاح البناء.
 
 **المفاتيح:** لا تضع API secrets في التطبيق أو GitHub؛ تستخدم Quran Foundation Content APIs خادمًا وسيطًا مع اعتماد الإنتاج. إصدار Pre-live لا يحتوي على المصحف الكامل. انظر [توثيق Quran Foundation](https://api-docs.quran.com/docs/quickstart/).
 
@@ -43,3 +43,11 @@
 - Metadata in the reciter directory does not grant rights to stream or redistribute recordings.
 
 © NEXVARY. Local software and third-party Quran content have separate license requirements.
+
+## لجنة علماء القرآن — مراجعة قبل الإصدار
+- [ملف مراجعة اللجنة: المحتوى وطريقة الحفظ والتسميع](docs/SCHOLARLY_REVIEW_DOSSIER.md)
+- [مشاريع مفتوحة المصدر تمت دراستها والأدلة العلمية](docs/OPEN_SOURCE_RESEARCH.md)
+- [بوابات عدم نشر نسخة غير معتمدة](docs/RELEASE_GATES.md)
+
+**مهم:** هذه نسخة داخلية للتطوير وعرض محدود على لجنة المراجعة؛ نجاح البناء البرمجي لا يعني صلاحية نشر المصحف أو اعتماد طريقة التعلم. حظر إصدار Release في Gradle مقصود إلى حين استكمال مستندات الاعتماد والتحقق منها.
+
