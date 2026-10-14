@@ -24,3 +24,6 @@ Private preferences hold self-reported recall, a bookmark, a non-audio session a
 
 ## Dependency scan scope — 2026-10-14
 93 resolved debugRuntimeClasspath Maven coordinates were queried against OSV querybatch. No vulnerability records were returned, and no pagination was pending. See docs/DEPENDENCY_AUDIT_2026-10-14.json for exact versions and timestamp. This does not audit build plugins, operating-system code, unknown vulnerabilities, or replace an independent security review.
+
+## Academy integration candidate
+`academy/` adds separate loopback-only SQLite/HTTP service code with adult accounts, session expiry/revocation, human teacher review, guardian-owned aliases, assigned-teacher access, atomic booking, private complaints and cascading profile deletion. Android has not been connected and still has no Internet permission. The service must not be exposed or tunneled publicly. No identity/age/guardianship verification, production TLS deployment, MFA/recovery, encrypted backup/retention or independent security audit has been completed. See [ACADEMY_SERVICE.md](docs/ACADEMY_SERVICE.md); technical tests are not child-safety approval.
