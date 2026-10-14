@@ -32,3 +32,11 @@
 التطوير الفعلي للنسخة الأولى يتم عبر الفرع `dev/foundation` وPull Requests. سيتم إضافة طريقة بناء APK آليًا عند اكتمال أساس التطبيق.
 
 © NEXVARY. كود المشروع وحقوق النص القرآني والتلاوات تخضع لكلٍ من تراخيصها الخاصة.
+
+## Open-source development and single committee submission
+
+The application source is developed on [dev/foundation](../../tree/dev/foundation), under [MIT](LICENSE). Independent Quran text, recitations, tafsir, fonts and images retain their own rights and provenance. The current repository is a **development project**, not a certified Quran edition.
+
+**Policy:** One formal scholarly committee submission **only after the complete feature contract, on-device QA, source integrity, content rights and security checks are ready**. Do not submit partial prototypes for committee approval.
+
+[Implementation plan](../../blob/dev/foundation/docs/WORK_PLAN_SINGLE_REVIEW.md) · [Premium UI design](../../blob/dev/foundation/docs/LUXURY_UI_UX_SPEC.md) · [Rights notice](../../blob/dev/foundation/NOTICE.md).
