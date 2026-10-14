@@ -128,13 +128,14 @@ private fun App() {
         }
         return
     }
+    var screen by remember { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
     val voicePractice = remember(context) { PrivateRecitationPractice(context) }
     var voiceMessage by remember { mutableStateOf("التسجيل الصوتي اختياري ويبقى داخل الهاتف") }
     val microphonePermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) {
+        if (granted && screen == Screen.PRACTICE) {
             voiceMessage = try {
                 voicePractice.start()
                 "يتم تسجيل صوتك محليًا. اضغط على إيقاف عند الانتهاء."
@@ -142,7 +143,8 @@ private fun App() {
                 "تعذّر بدء التسجيل؛ راجع إعدادات الميكروفون."
             }
         } else {
-            voiceMessage = "لم يتم السماح باستخدام الميكروفون. يمكنك استخدام التسميع الكتابي."
+            voiceMessage = if (granted) "أُغلق تدريب التسميع، لذلك لم يبدأ التسجيل."
+                else "لم يتم السماح باستخدام الميكروفون. يمكنك استخدام التسميع الكتابي."
         }
     }
     DisposableEffect(voicePractice) {
@@ -160,7 +162,6 @@ private fun App() {
             corpus.verses.forEach { put(it.id, store.memory(it.id)) }
         }
     }
-    var screen by remember { mutableStateOf(Screen.HOME) }
     var index by remember { mutableIntStateOf(0) }
     var readerPage by remember { mutableIntStateOf(0) }
     var chapterQuery by remember { mutableStateOf("") }
