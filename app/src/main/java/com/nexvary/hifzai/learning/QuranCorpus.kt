@@ -27,6 +27,7 @@ class QuranCorpus private constructor(
 
     companion object {
         const val ASSET = "quran/uthmani-v1.1.txt"
+        const val SOURCE_SHA256 = "6933e133dd56db778c801bf738848454e43648105a151e8d84d86a7cae39ec5f"
         const val SOURCE_BLOB_SHA1 = "9813920ae5afce9e50d2ac44562457e29bb4bfca"
         const val SOURCE_CREDIT = "النص القرآني: مشروع تنزيل Tanzil — الرسم العثماني 1.1"
         const val SOURCE_LINK = "https://tanzil.net/"
@@ -40,7 +41,9 @@ class QuranCorpus private constructor(
 
         fun load(context: Context): QuranCorpus {
             val original = context.assets.open(ASSET).use { it.readBytes() }
-            check(gitBlobSha1(original) == SOURCE_BLOB_SHA1) {
+            val digest = MessageDigest.getInstance("SHA-256").digest(original)
+                .joinToString("") { "%02x".format(it.toInt() and 255) }
+            check(digest == SOURCE_SHA256 && gitBlobSha1(original) == SOURCE_BLOB_SHA1) {
                 "Quran source integrity check failed; display must be blocked"
             }
             val text = original.toString(StandardCharsets.UTF_8)
