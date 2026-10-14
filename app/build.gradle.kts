@@ -11,8 +11,8 @@ android {
         applicationId = "com.nexvary.hifzai"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.3.0-dev"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -37,4 +37,23 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     testImplementation("junit:junit:4.13.2")
+}
+
+/**
+ * Fail closed: no Release APK/AAB until scholarly, Quran source, rights,
+ * security, legal and device-level sign-off is independently verified.
+ * Commit with a reviewed release policy change only AFTER approvals.
+ */
+val blockUnapprovedPublicRelease = tasks.register("blockUnapprovedPublicRelease") {
+    group = "verification"
+    doLast {
+        throw org.gradle.api.GradleException(
+            "RELEASE BLOCKED: Quran/content and legal review not approved. Use debug only for expert review."
+        )
+    }
+}
+tasks.configureEach {
+    if (name in setOf("assembleRelease", "bundleRelease", "packageRelease")) {
+        dependsOn(blockUnapprovedPublicRelease)
+    }
 }

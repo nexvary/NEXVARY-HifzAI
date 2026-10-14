@@ -22,7 +22,9 @@ class ProgressStore(context: Context) {
         attempts = prefs.getInt("attempts_" + id, 0),
         recalled = prefs.getInt("recalled_" + id, 0),
         hinted = prefs.getInt("hinted_" + id, 0),
-        transitionsMissed = prefs.getInt("transitions_" + id, 0)
+        transitionsMissed = prefs.getInt("transitions_" + id, 0),
+        wordMisses = prefs.getInt("wordMisses_" + id, 0),
+        similarityMisses = prefs.getInt("similarityMisses_" + id, 0)
     )
 
     fun save(card: ReviewCard, memory: MemoryFingerprint) {
@@ -38,6 +40,8 @@ class ProgressStore(context: Context) {
             .putInt("recalled_" + id, memory.recalled)
             .putInt("hinted_" + id, memory.hinted)
             .putInt("transitions_" + id, memory.transitionsMissed)
+            .putInt("wordMisses_" + id, memory.wordMisses)
+            .putInt("similarityMisses_" + id, memory.similarityMisses)
             .apply()
     }
 

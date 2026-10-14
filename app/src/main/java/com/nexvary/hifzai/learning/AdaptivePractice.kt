@@ -9,13 +9,18 @@ data class MemoryFingerprint(
     val attempts: Int = 0,
     val recalled: Int = 0,
     val hinted: Int = 0,
-    val transitionsMissed: Int = 0
+    val transitionsMissed: Int = 0,
+    val wordMisses: Int = 0,
+    val similarityMisses: Int = 0
 ) {
     val independentRecallRate: Double
         get() = if (attempts == 0) 0.0 else recalled.toDouble() / attempts
 }
 
 enum class PracticeKind { READ, MASK_LIGHT, MASK_HEAVY, RECALL, BRIDGE }
+
+/** Learner-observed difficulty. This is NOT an automated Quran error judgment. */
+enum class DifficultyTag { NONE, WORDS, TRANSITION, SIMILAR_VERSE }
 
 data class TrainingRecommendation(
     val kind: PracticeKind,
@@ -28,7 +33,8 @@ object MemoryCoach {
         before: MemoryFingerprint,
         grade: RecallGrade,
         hintsUsed: Int,
-        isBridgePractice: Boolean
+        isBridgePractice: Boolean,
+        difficulty: DifficultyTag = DifficultyTag.NONE
     ): MemoryFingerprint {
         require(hintsUsed >= 0)
         val remembered = grade == RecallGrade.GOOD || grade == RecallGrade.EASY
@@ -38,7 +44,11 @@ object MemoryCoach {
             recalled = before.recalled + if (independent) 1 else 0,
             hinted = before.hinted + if (hintsUsed > 0) 1 else 0,
             transitionsMissed = before.transitionsMissed +
-                if (isBridgePractice && !remembered) 1 else 0
+                if (!remembered && (isBridgePractice || difficulty == DifficultyTag.TRANSITION)) 1 else 0,
+            wordMisses = before.wordMisses +
+                if (!remembered && difficulty == DifficultyTag.WORDS) 1 else 0,
+            similarityMisses = before.similarityMisses +
+                if (!remembered && difficulty == DifficultyTag.SIMILAR_VERSE) 1 else 0
         )
     }
 
@@ -48,6 +58,10 @@ object MemoryCoach {
                 TrainingRecommendation(PracticeKind.READ, "ابدأ بقراءة الآية ثم إخفاء كلماتها", 0f)
             memory.transitionsMissed > 0 && memory.transitionsMissed * 3 >= memory.attempts ->
                 TrainingRecommendation(PracticeKind.BRIDGE, "تحتاج إلى تدريب ربط الآيات", 1f)
+            memory.similarityMisses > 0 && memory.similarityMisses * 3 >= memory.attempts ->
+                TrainingRecommendation(PracticeKind.MASK_LIGHT, "راجع الكلمات التي تختلط عليك؛ تصنيف التشابه يحتاج مراجعة معلّم", 0.35f)
+            memory.wordMisses > 0 && memory.wordMisses * 3 >= memory.attempts ->
+                TrainingRecommendation(PracticeKind.MASK_LIGHT, "تدرّب على الكلمات المتعثرة بالتدرج", 0.35f)
             memory.hinted * 2 >= memory.attempts ->
                 TrainingRecommendation(PracticeKind.MASK_LIGHT, "ابدأ بتلميحات أقل تدريجيًا", 0.35f)
             card.lapses >= 2 ->
