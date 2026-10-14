@@ -58,6 +58,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nexvary.hifzai.learning.BridgeTrainer
+import com.nexvary.hifzai.learning.DailyMemorizationPlan
+import com.nexvary.hifzai.learning.DifficultyTag
+import com.nexvary.hifzai.learning.RecallLadder
 import com.nexvary.hifzai.learning.DemoVerses
 import com.nexvary.hifzai.learning.HifzScheduler
 import com.nexvary.hifzai.learning.MemoryCoach
@@ -118,6 +121,8 @@ private fun App() {
     var stage by remember { mutableStateOf(PracticeKind.READ) }
     var hintCount by remember { mutableIntStateOf(0) }
     var revealed by remember { mutableStateOf(false) }
+    var answerWasRevealed by remember { mutableStateOf(false) }
+    var difficulty by remember { mutableStateOf(DifficultyTag.NONE) }
     var message by remember { mutableStateOf("") }
     var confirmClear by remember { mutableStateOf(false) }
     val today = LocalDate.now().toEpochDay()
@@ -126,6 +131,7 @@ private fun App() {
     val fingerprint = memories[verse.id] ?: MemoryFingerprint(verse.id)
     val recommendation = MemoryCoach.recommend(currentCard, fingerprint)
     val dueCount = MemoryCoach.dueCount(cards.values, today)
+    val dailyPlan = DailyMemorizationPlan.create(verses, cards, today)
     val studied = cards.values.count { it.repetitions > 0 }
     val independent = MemoryCoach.independentRecallPercent(memories.values)
     val attempts = memories.values.sumOf { it.attempts }
@@ -135,11 +141,15 @@ private fun App() {
         stage = training
         hintCount = 0
         revealed = false
+        answerWasRevealed = false
+        difficulty = DifficultyTag.NONE
         screen = Screen.PRACTICE
     }
 
     fun focusToday() {
-        val first = MemoryCoach.studyOrder(verses, cards, today).first()
+        val first = MemoryCoach.studyOrder(verses, cards, today)
+            .firstOrNull { it.id in dailyPlan.allVerseIds }
+            ?: MemoryCoach.studyOrder(verses, cards, today).first()
         val nextIndex = verses.indexOfFirst { it.id == first.id }.coerceAtLeast(0)
         openVerse(nextIndex, MemoryCoach.recommend(
             cards[first.id] ?: ReviewCard(first.id),
@@ -148,17 +158,19 @@ private fun App() {
     }
 
     fun grade(grade: RecallGrade) {
-        // A hinted attempt must not be presented as an unassisted "easy" recall.
-        val effectiveGrade = if (hintCount > 0 && grade == RecallGrade.EASY) RecallGrade.GOOD else grade
+        // Revealed answers must never count as independent recall.
+        val assisted = hintCount + if (answerWasRevealed) 1 else 0
+        val effectiveGrade = RecallLadder.boundedGrade(grade, hintCount, answerWasRevealed)
         val newCard = HifzScheduler.grade(currentCard, effectiveGrade, today)
         val newMemory = MemoryCoach.record(
-            fingerprint, grade, hintCount, stage == PracticeKind.BRIDGE
+            fingerprint, effectiveGrade, assisted, stage == PracticeKind.BRIDGE, difficulty
         )
         cards[verse.id] = newCard
         memories[verse.id] = newMemory
         store.save(newCard, newMemory)
-        message = "تم تسجيل تقييم الآية " + verse.verse + " • المراجعة القادمة بعد " +
-            newCard.intervalDays + " يوم"
+        message = "سُجل تقييم الآية " + verse.verse +
+            (if (assisted > 0) " (بمساعدة)" else " (بدون كشف)") +
+            " • موعد المراجعة بعد " + newCard.intervalDays + " يوم"
         val next = (index + 1) % verses.size
         openVerse(next)
     }
@@ -218,6 +230,9 @@ private fun App() {
             when (screen) {
                 Screen.HOME -> {
                     Section("خطة اليوم", "سورة الإخلاص • نموذج تدريبي محدود")
+                    Text("الآيات المستحقة: " + dailyPlan.dueVerseIds.size +
+                        " • آيات جديدة مقترحة: " + dailyPlan.newVerseIds.size,
+                        color = green, fontSize = 14.sp)
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         MetricCard("مراجعات مستحقة", dueCount.toString(), Modifier.weight(1f))
                         MetricCard("آيات دُرست", studied.toString() + " / " + verses.size, Modifier.weight(1f))
@@ -242,18 +257,24 @@ private fun App() {
                 }
                 Screen.PRACTICE -> {
                     Section("جلسة الحفظ", "الآية " + verse.verse + " من " + verses.size)
+                    Text("سُلّم الاسترجاع • ٥ مراحل تعليمية", color = green, fontSize = 14.sp)
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                        StageButton("قراءة", stage == PracticeKind.READ, Modifier.weight(1f)) {
-                            stage = PracticeKind.READ; hintCount = 0; revealed = false
+                        StageButton("١ قراءة", stage == PracticeKind.READ, Modifier.weight(1f)) {
+                            stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
                         }
-                        StageButton("إخفاء", stage == PracticeKind.MASK_HEAVY, Modifier.weight(1f)) {
-                            stage = PracticeKind.MASK_HEAVY; hintCount = 0; revealed = false
+                        StageButton("٢ إخفاء خفيف", stage == PracticeKind.MASK_LIGHT, Modifier.weight(1f)) {
+                            stage = PracticeKind.MASK_LIGHT; hintCount = 0; revealed = false; answerWasRevealed = false
                         }
-                        StageButton("تسميع", stage == PracticeKind.RECALL, Modifier.weight(1f)) {
-                            stage = PracticeKind.RECALL; hintCount = 0; revealed = false
+                        StageButton("٣ إخفاء أكبر", stage == PracticeKind.MASK_HEAVY, Modifier.weight(1f)) {
+                            stage = PracticeKind.MASK_HEAVY; hintCount = 0; revealed = false; answerWasRevealed = false
                         }
-                        StageButton("ربط", stage == PracticeKind.BRIDGE, Modifier.weight(1f)) {
-                            stage = PracticeKind.BRIDGE; hintCount = 0; revealed = false
+                    }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                        StageButton("٤ تسميع حر", stage == PracticeKind.RECALL, Modifier.weight(1f)) {
+                            stage = PracticeKind.RECALL; hintCount = 0; revealed = false; answerWasRevealed = false
+                        }
+                        StageButton("٥ ربط الآيات", stage == PracticeKind.BRIDGE, Modifier.weight(1f)) {
+                            stage = PracticeKind.BRIDGE; hintCount = 0; revealed = false; answerWasRevealed = false
                         }
                     }
                     if (stage == PracticeKind.BRIDGE) {
@@ -267,14 +288,7 @@ private fun App() {
                             color = green, fontSize = 20.sp
                         )
                     }
-                    val fraction = when {
-                        revealed || stage == PracticeKind.READ -> 0f
-                        stage == PracticeKind.MASK_LIGHT -> 0.35f
-                        stage == PracticeKind.MASK_HEAVY -> recommendation.maskFraction.coerceAtLeast(0.65f)
-                        hintCount >= 2 -> 0.55f
-                        hintCount == 1 -> 0.8f
-                        else -> 1f
-                    }
+                    val fraction = RecallLadder.concealment(stage, hintCount, revealed)
                     val visualText = VerseMask.display(verse.text, fraction, verse.id)
                     Card(
                         shape = RoundedCornerShape(20.dp),
@@ -301,11 +315,21 @@ private fun App() {
                             }
                             OutlinedButton(
                                 modifier = Modifier.weight(1f),
-                                onClick = { revealed = !revealed }
+                                onClick = {
+                                    if (!revealed) answerWasRevealed = true
+                                    revealed = !revealed
+                                }
                             ) { Text(if (revealed) "إخفاء الإجابة" else "كشف الآية") }
                         }
                     }
                     if (stage == PracticeKind.RECALL || stage == PracticeKind.BRIDGE) {
+                        Text("موضع التعثر (تقييم ذاتي وليس تصحيحًا آليًا)", color = muted, fontSize = 13.sp)
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            DifficultyButton("لا يوجد", difficulty == DifficultyTag.NONE, Modifier.weight(1f)) { difficulty = DifficultyTag.NONE }
+                            DifficultyButton("كلمات", difficulty == DifficultyTag.WORDS, Modifier.weight(1f)) { difficulty = DifficultyTag.WORDS }
+                            DifficultyButton("انتقال", difficulty == DifficultyTag.TRANSITION, Modifier.weight(1f)) { difficulty = DifficultyTag.TRANSITION }
+                            DifficultyButton("متشابهات", difficulty == DifficultyTag.SIMILAR_VERSE, Modifier.weight(1f)) { difficulty = DifficultyTag.SIMILAR_VERSE }
+                        }
                         Text("قيّم استرجاعك بعد التسميع من الذاكرة",
                             color = gold, fontSize = 17.sp)
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -316,8 +340,11 @@ private fun App() {
                         }
                     } else {
                         PrimaryButton(
-                            "انتقل إلى التسميع", Modifier.fillMaxWidth()
-                        ) { stage = PracticeKind.RECALL; hintCount = 0; revealed = false }
+                            "المرحلة التالية في سُلّم الاسترجاع", Modifier.fillMaxWidth()
+                        ) {
+                            stage = RecallLadder.next(stage)
+                            hintCount = 0; revealed = false; answerWasRevealed = false
+                        }
                     }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         OutlinedButton(
@@ -329,7 +356,7 @@ private fun App() {
                             enabled = index < verses.lastIndex
                         ) { Text("الآية التالية") }
                     }
-                    Text("لا تستخدم الذكاء الاصطناعي للحكم على صحة نطقك في هذه النسخة.",
+                    Text("هذه درجات تقدير ذاتي وليست حكمًا على صحة التلاوة. كشف الإجابة يُحتسب كمساعدة.",
                         color = muted, fontSize = 12.sp)
                 }
                 Screen.INSIGHTS -> {
@@ -350,6 +377,10 @@ private fun App() {
                                 Text("الآية " + item.verse + " • " + memory.attempts + " محاولات",
                                     color = gold, fontSize = 17.sp)
                                 Text(advice.explanation, color = silver, fontSize = 14.sp)
+                                Text("تعثر كلمات: " + memory.wordMisses +
+                                    " • انتقال: " + memory.transitionsMissed +
+                                    " • متشابهات: " + memory.similarityMisses,
+                                    color = muted, fontSize = 12.sp)
                                 Text(
                                     if (card.repetitions == 0) "لم تُراجع بعد"
                                     else if (card.dueEpochDay <= today) "المراجعة مستحقة"
@@ -419,7 +450,20 @@ private fun App() {
                     }
                     Text("مصدر الآيات في نموذج سورة الإخلاص: Quran.com/112. استيراد المصحف الكامل والتحقق من سلامته مرحلة مستقلة.",
                         color = muted, fontSize = 12.sp)
-                    Text("الإصدار التجريبي 0.2.0 — لا يوجد تقييم تجويد معتمد",
+                    PrimaryButton("معلومات نسخة لجنة المراجعة", Modifier.fillMaxWidth()) {
+                        val brief = "NEXVARY HifzAI — نموذج مراجعة علماء القرآن\\n" +
+                            "نسخة تطوير تجريبية غير معتمدة للنشر العام.\\n" +
+                            "النص المرفق: نموذج محدود من سورة الإخلاص فقط.\\n" +
+                            "الاختبارات: الإخفاء، سُلّم الاسترجاع، المراجعة المتباعدة، الربط، البصمة.\\n" +
+                            "لا يوجد تحقق صوتي أو فتوى أو حكم آلي على التجويد.\\n" +
+                            "يرجى فحص الرسم وضبط الآيات والإخفاء وتمارين الربط؛ " +
+                            "الملاحظات لا تُعتبر تصريحًا بالنشر."
+                        context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, brief)
+                        }, "إرسال ملخص لجنة المراجعة"))
+                    }
+                    Text("الإصدار التجريبي 0.3.0-dev — غير معتمد للنشر العام",
                         color = muted, fontSize = 12.sp)
                 }
             }
@@ -475,4 +519,9 @@ private fun ScoreButton(title: String, modifier: Modifier, action: () -> Unit) {
         contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 2.dp),
         colors = ButtonDefaults.buttonColors(containerColor = gold, contentColor = navy)
     ) { Text(title, fontSize = 12.sp, maxLines = 1) }
+}
+
+@Composable
+private fun DifficultyButton(title: String, selected: Boolean, modifier: Modifier, action: () -> Unit) {
+    StageButton(title, selected, modifier, action)
 }
