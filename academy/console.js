@@ -1,6 +1,6 @@
 'use strict';
 // User strings only enter textContent/value. Tokens are memory-only, never storage.
-let session = null, activePage = null;
+let session = null, activePage = null, controlId = 0;
 const $ = id => document.getElementById(id);
 const notice = message => { $('notice').textContent = message; };
 const messages = {401:'انتهت الجلسة أو بيانات الدخول غير صحيحة.',403:'لا يملك حسابك صلاحية تنفيذ هذا الإجراء.',404:'السجل غير متاح لهذا الحساب.',409:'تعذر الإجراء بسبب حالة الملف أو تعارض الموعد.',429:'توقّف مؤقتًا قبل محاولة الدخول مجددًا.'};
@@ -19,7 +19,9 @@ function field(form, title, type='text', required=true, max=500) {
   return input;
 }
 function choose(form, title, rows, display, value) {
-  const label=el('label',title,form), input=el('select',null,label);
+  const id='choice-'+(++controlId);
+  el('label',title,form,{'for':id});
+  const input=el('select',null,form,{id});
   for(const row of rows) el('option',display(row),input,{value:value(row)});
   input.required=true; return input;
 }

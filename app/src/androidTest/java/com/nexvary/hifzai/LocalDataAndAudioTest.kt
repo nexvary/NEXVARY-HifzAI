@@ -67,6 +67,30 @@ class LocalDataAndAudioTest {
         notebook.clear()
     }
 
+    @Test fun deletingOneStudentPreservesOtherStudentLessonsAndComplaints() {
+        val notebook = TeacherNotebook(context)
+        notebook.clear()
+        try {
+            notebook.addStudent("طالب أ تجريبي", true)
+            notebook.addStudent("طالب ب تجريبي", true)
+            val first = notebook.students()[0]
+            val second = notebook.students()[1]
+            notebook.addLesson(first.id, "معلم اختبار", "2026-10-20T18:30", "ملاحظة أ")
+            notebook.addLesson(second.id, "معلم اختبار", "2026-10-21T18:30", "ملاحظة ب")
+            val firstLesson = notebook.lessons().first { it.studentId == first.id }
+            val secondLesson = notebook.lessons().first { it.studentId == second.id }
+            notebook.recordComplaint(firstLesson.id, "بلاغ أ")
+            notebook.recordComplaint(secondLesson.id, "بلاغ ب")
+            assertTrue(runCatching { notebook.removeStudent("missing") }.isFailure)
+            assertEquals(2, notebook.complaints().size)
+            notebook.removeStudent(first.id)
+            val reloaded = TeacherNotebook(context)
+            assertEquals(listOf(second), reloaded.students())
+            assertEquals(listOf(secondLesson), reloaded.lessons())
+            assertEquals(listOf(NotebookComplaint(secondLesson.id, "بلاغ ب")), reloaded.complaints())
+        } finally { notebook.clear() }
+    }
+
     @Test fun recordPlayEraseAndCrashResidueCleanup() {
         val audio = PrivateRecitationPractice(context)
         try {

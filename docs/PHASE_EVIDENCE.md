@@ -1,6 +1,6 @@
 # مصفوفة المراحل 002–220 — أدلة وحالة فعلية
 
-كل المراحل الـ219 موجودة. مراجعة المصدر: `3a43cbe8ee1b65d52a3532165462a4c5a15ca3d6`.
+كل المراحل الـ219 موجودة. مراجعة المصدر: `7c5269e7c5b1778506c5852d0810f97c891183d0`.
 
 الحالة «جزئي» تصف وجود تنفيذ أو جزء من بنيته؛ لا تعني تحقيق كل وظيفة في عنوان المرحلة. لا مربعات إنجاز تُملأ آليًا. البنية القابلة للربط ليست ميزة نهائية. `PHASE_EVIDENCE.json` يحتوي ملفات التنفيذ وCommit لكل ملف والاختبارات والمانع لكل مرحلة.
 
@@ -125,23 +125,23 @@
 | 118 | Detect disengagement with consent | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 119 | Avoid addictive or misleading streaks | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 120 | Calibrate algorithm by human study outcomes | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 121 | Specify teacher registration and consent | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 122 | Design Quran teacher verification | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 123 | Verify certificates without public identity leakage | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
+| 121 | Specify teacher registration and consent | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 122 | Design Quran teacher verification | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 123 | Verify certificates without public identity leakage | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
 | 124 | Offer Egypt region filtering | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 125 | Offer Saudi Arabia region filtering | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 126 | Add teacher availability calendar | جزئي / غير مقبول نهائيًا | TeacherNotebook.kt, TeacherNotebookScreen.kt؛ الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل |
-| 127 | Design class booking workflow | جزئي / غير مقبول نهائيًا | TeacherNotebook.kt, TeacherNotebookScreen.kt؛ الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل |
-| 128 | Support students and guardians roles | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
+| 126 | Add teacher availability calendar | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 127 | Design class booking workflow | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 128 | Support students and guardians roles | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
 | 129 | Provide private live teaching sessions | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 130 | Create teacher correction notes | جزئي / غير مقبول نهائيًا | TeacherNotebook.kt, TeacherNotebookScreen.kt؛ الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل |
-| 131 | Enable human quality review queue | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 132 | Add student progress with permissions | جزئي / غير مقبول نهائيًا | TeacherNotebook.kt, TeacherNotebookScreen.kt؛ الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل |
-| 133 | Provide teacher-assigned revision plan | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 134 | Design parental consent for minors | جزئي / غير مقبول نهائيًا | TeacherNotebook.kt, TeacherNotebookScreen.kt؛ الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل |
-| 135 | Add safety and abuse-report workflow | جزئي / غير مقبول نهائيًا | TeacherNotebook.kt, TeacherNotebookScreen.kt؛ الجزء المحلي: مواعيد وملاحظات وإقرار ولي الأمر وعدد جلسات وتدوين مشكلة؛ لا تفرغ معلم أو حجز متصل أو صلاحيات حسابات أو بلاغ مرسل |
+| 130 | Create teacher correction notes | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 131 | Enable human quality review queue | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 132 | Add student progress with permissions | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 133 | Provide teacher-assigned revision plan | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 134 | Design parental consent for minors | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
+| 135 | Add safety and abuse-report workflow | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
 | 136 | Build controlled messaging policies | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 137 | Manage teacher schedule changes | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
+| 137 | Manage teacher schedule changes | جزئي / غير مقبول نهائيًا | service.py, server.py, console.html, console.js, ACADEMY_SERVICE.md, TeacherNotebook.kt؛ خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق |
 | 138 | Issue completion attestations not ijazat | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 139 | Define documented ijazah verification | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 140 | Pilot with approved Quran teachers | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |

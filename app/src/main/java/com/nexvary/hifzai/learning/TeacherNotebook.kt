@@ -76,14 +76,26 @@ class TeacherNotebook(context: Context) {
         check(prefs.edit().putString("lessons", data.toString()).commit())
     }
     fun removeStudent(id: String) {
-        val data = JSONArray()
-        students().filter { it.id != id }.forEach {
-            data.put(JSONObject().put("id", it.id).put("alias", it.alias).put("consent", it.guardianConsent))
+        val existingStudents = students()
+        require(existingStudents.any { it.id == id }) { "ملف الطالب غير موجود" }
+        val existingLessons = lessons()
+        val removedLessonIds = existingLessons.filter { it.studentId == id }.map { it.id }.toSet()
+        val studentData = JSONArray()
+        existingStudents.filter { it.id != id }.forEach {
+            studentData.put(JSONObject().put("id", it.id).put("alias", it.alias).put("consent", it.guardianConsent))
         }
-        check(prefs.edit().putString("students", data.toString()).commit())
-        saveLessons(lessons().filter { it.studentId != id })
-        // A local complaint contains no student identity; all complaint notes are cleared on deletion.
-        check(prefs.edit().remove("complaints").commit())
+        val lessonData = JSONArray()
+        existingLessons.filter { it.studentId != id }.forEach {
+            lessonData.put(JSONObject().put("id", it.id).put("student", it.studentId).put("teacher", it.teacherLabel)
+                .put("time", it.dateTime).put("note", it.note).put("completed", it.completed))
+        }
+        val complaintData = JSONArray()
+        complaints().filter { it.lessonId !in removedLessonIds }.forEach {
+            complaintData.put(JSONObject().put("lesson", it.lessonId).put("note", it.note))
+        }
+        // One editor commits all related changes atomically; unrelated students retain their records.
+        check(prefs.edit().putString("students", studentData.toString())
+            .putString("lessons", lessonData.toString()).putString("complaints", complaintData.toString()).commit())
     }
     fun complaints(): List<NotebookComplaint> = runCatching {
         val data = JSONArray(prefs.getString("complaints", "[]"))

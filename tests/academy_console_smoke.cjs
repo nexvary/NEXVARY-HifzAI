@@ -97,5 +97,10 @@ const {chromium}=require(require.resolve('playwright',{paths:[process.env.CODEX_
     await shot('08-admin-complaint-mobile');
     assert.deepEqual(errors,[]);
     fs.writeFileSync(path.join(out,'browser-result.json'),JSON.stringify({successful:true,scope:'Synthetic private academy WEB console; NOT Android screenshots or teacher approval',screenshots:8,browserVersion:browser.version(),pageErrors:errors,flows:['teacher submission','admin review synthetic fixture','account directory','teacher availability','guardian consent and booking','private complaint','assigned revision plan','guardian self-report','private export','mobile width','memory-only session']},null,2));
+  }catch(error){
+    await shot('FAILED-diagnostic');
+    fs.writeFileSync(path.join(out,'browser-failure.json'),JSON.stringify({successful:false,
+      scope:'Synthetic web console failure diagnostic, not acceptance evidence',error:String(error)},null,2));
+    throw error;
   }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exit(1);});
