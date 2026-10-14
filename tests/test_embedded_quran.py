@@ -11,6 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 ASSET = ROOT / "app/src/main/assets/quran/uthmani-v1.1.txt"
 METADATA = ROOT / "app/src/main/assets/quran/surah-metadata.txt"
+PINNED_SHA256 = "6933e133dd56db778c801bf738848454e43648105a151e8d84d86a7cae39ec5f"
 PINNED_GIT_SHA1 = "9813920ae5afce9e50d2ac44562457e29bb4bfca"
 
 class EmbeddedQuranIntegrityTests(unittest.TestCase):
@@ -23,6 +24,9 @@ class EmbeddedQuranIntegrityTests(unittest.TestCase):
     def test_verbatim_git_blob_identity(self):
         prefix = b"blob " + str(len(self.raw)).encode() + b"\0"
         self.assertEqual(hashlib.sha1(prefix + self.raw).hexdigest(), PINNED_GIT_SHA1)
+
+    def test_sha256_independent_digest(self):
+        self.assertEqual(hashlib.sha256(self.raw).hexdigest(), PINNED_SHA256)
 
     def test_license_and_source_version_preserved(self):
         self.assertIn("Tanzil Quran Text (Uthmani, Version 1.1)", self.text)
