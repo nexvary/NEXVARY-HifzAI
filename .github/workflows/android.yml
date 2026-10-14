@@ -39,10 +39,18 @@ jobs:
           gradle-version: '8.9'
       - name: Run unit tests and assemble APK
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+      - name: Verify production release guard is attached
+        run: gradle :app:assembleRelease --dry-run --no-daemon | grep -F ':app:blockUnapprovedPublicRelease'
+      - name: Calculate APK checksum
+        run: |
+          cd app/build/outputs/apk/debug
+          sha256sum *.apk > SHA256SUMS
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: NEXVARY-HifzAI-Android-0.2.0-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: NEXVARY-HifzAI-Android-0.3.0-dev-debug
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/debug/SHA256SUMS
           if-no-files-found: error
