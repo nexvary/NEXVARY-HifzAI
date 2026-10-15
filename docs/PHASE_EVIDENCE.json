@@ -1,6 +1,6 @@
 {
   "current_scope": "Device-local Android. docs/LOCAL_ONLY_SCOPE.md supersedes connected-academy/server requirements; historical remote rows are not completed and are not local-release blockers.",
-  "source_revision_audited": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
+  "source_revision_audited": "3492ee58aa7a4c44afcc930dc32874a620353994",
   "all_phase_numbers_present": true,
   "phase_count": 219,
   "final_complete_phases": 0,
@@ -29,7 +29,7 @@
         ".github/workflows/android.yml"
       ],
       "implementation_commits": {
-        ".github/workflows/android.yml": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        ".github/workflows/android.yml": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "Android CI unit/build/lint"
@@ -199,7 +199,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -227,7 +227,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -245,7 +245,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -307,7 +307,7 @@
       "implementation_commits": {
         "tools/prepare_review_bundle.py": "c2f06fa47e7608bc7b231570a0f6451a0dff8635",
         "docs/review/READINESS.json": "0e16922180fe9a85ee4a80071318e27047b42cfe",
-        "docs/SCHOLARLY_REVIEW_DOSSIER.md": "0e16922180fe9a85ee4a80071318e27047b42cfe"
+        "docs/SCHOLARLY_REVIEW_DOSSIER.md": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "tests/test_review_bundle_gate.py"
@@ -344,7 +344,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/QuranSearchIndex.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994",
         "app/src/main/java/com/nexvary/hifzai/learning/QuranSearchIndex.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea"
       },
       "tests_or_checks": [
@@ -365,7 +365,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -386,7 +386,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -407,7 +407,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -436,7 +436,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -456,7 +456,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -529,7 +529,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -550,7 +550,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -571,7 +571,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -590,7 +590,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -620,7 +620,7 @@
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/HifzEngine.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/RecallLadderTest.kt",
@@ -639,7 +639,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -685,7 +685,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -724,7 +724,7 @@
       ],
       "implementation_commits": {
         "app/src/main/res/font/amiri_quran.ttf": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994",
         "NOTICE.md": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
       },
       "tests_or_checks": [
@@ -741,7 +741,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -757,7 +757,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -783,7 +783,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -799,7 +799,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -835,7 +835,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -864,7 +864,7 @@
       ],
       "implementation_commits": {
         "app/src/main/res/font/amiri_quran.ttf": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994",
         "NOTICE.md": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
       },
       "tests_or_checks": [
@@ -883,7 +883,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -899,7 +899,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -915,7 +915,7 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
@@ -1273,11 +1273,11 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/LocalTranscription.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
-        "app/src/main/java/com/nexvary/hifzai/learning/NativeWhisper.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
+        "app/src/main/java/com/nexvary/hifzai/learning/NativeWhisper.kt": "3492ee58aa7a4c44afcc930dc32874a620353994",
         "app/src/main/java/com/nexvary/hifzai/learning/LocalWhisperModel.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
-        "app/src/main/cpp/hifz_whisper.cpp": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
-        "app/src/main/cpp/CMakeLists.txt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
-        "docs/LOCAL_ASR_MODEL.md": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/cpp/hifz_whisper.cpp": "3492ee58aa7a4c44afcc930dc32874a620353994",
+        "app/src/main/cpp/CMakeLists.txt": "3492ee58aa7a4c44afcc930dc32874a620353994",
+        "docs/LOCAL_ASR_MODEL.md": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AudioInputGateTest.kt",
@@ -1375,7 +1375,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -1413,7 +1413,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/PrivateRecitationPractice.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -1481,7 +1481,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1505,7 +1505,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1529,7 +1529,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1553,7 +1553,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1577,7 +1577,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1601,7 +1601,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1625,7 +1625,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1649,7 +1649,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1683,7 +1683,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1717,7 +1717,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -1741,7 +1741,7 @@
         "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
         "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt",
@@ -2696,7 +2696,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -2714,7 +2714,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -2732,7 +2732,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -2876,7 +2876,7 @@
         ".github/workflows/android.yml"
       ],
       "implementation_commits": {
-        ".github/workflows/android.yml": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        ".github/workflows/android.yml": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "Android CI unit/build/lint"
@@ -2953,7 +2953,7 @@
       ],
       "implementation_commits": {
         "app/src/main/res/font/amiri_quran.ttf": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994",
         "NOTICE.md": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
       },
       "tests_or_checks": [
@@ -3030,7 +3030,7 @@
       ],
       "implementation_commits": {
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
@@ -3154,7 +3154,7 @@
       ],
       "implementation_commits": {
         "app/build.gradle.kts": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
-        ".github/workflows/android.yml": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        ".github/workflows/android.yml": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "Gradle debug build and SHA256"
@@ -3172,7 +3172,7 @@
       ],
       "implementation_commits": {
         "app/build.gradle.kts": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
-        ".github/workflows/android.yml": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        ".github/workflows/android.yml": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "Gradle debug build and SHA256"
@@ -3210,7 +3210,7 @@
       ],
       "implementation_commits": {
         "app/build.gradle.kts": "853600b2e1f64f64ce83ecd47d487f71d89efe7e",
-        ".github/workflows/android.yml": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        ".github/workflows/android.yml": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
       "tests_or_checks": [
         "Gradle debug build and SHA256"

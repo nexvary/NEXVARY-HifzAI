@@ -26,3 +26,13 @@ class AsrAssetPolicyTests(unittest.TestCase):
             self.assertIn('MIT License',(ROOT/'app/src/main/assets/licenses'/filename).read_text())
         raw=(ROOT/'app/src/main/assets/quran/uthmani-v1.1.txt').read_bytes()
         self.assertEqual('6933e133dd56db778c801bf738848454e43648105a151e8d84d86a7cae39ec5f',hashlib.sha256(raw).hexdigest())
+
+
+class OfflineLicensePolicyTest(unittest.TestCase):
+    def test_canonical_footer_and_project_license_are_preserved_offline(self):
+        source=(ROOT/'app/src/main/assets/quran/uthmani-v1.1.txt').read_bytes()
+        footer=b''.join(line for line in source.splitlines(keepends=True) if line.startswith(b'#'))
+        assets=ROOT/'app/src/main/assets/licenses'
+        self.assertEqual(footer,(assets/'TANZIL-NOTICE.txt').read_bytes())
+        self.assertEqual((ROOT/'LICENSE').read_bytes(),(assets/'NEXVARY-MIT.txt').read_bytes())
+        self.assertEqual('cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30',hashlib.sha256((assets/'Apache-2.0.txt').read_bytes()).hexdigest())

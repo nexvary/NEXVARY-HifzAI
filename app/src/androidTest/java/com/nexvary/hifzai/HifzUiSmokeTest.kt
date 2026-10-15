@@ -3,8 +3,10 @@ package com.nexvary.hifzai
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -104,10 +106,25 @@ class HifzUiSmokeTest {
             "دفتر المعلم المحلي" to "teachers", "المساعدة" to "help", "حول التطبيق" to "about").forEach { (label, name) ->
             click(label)
             screenshot("hifz-$name.png")
+            if (name == "sources") {
+                click("ترخيص كود NEXVARY MIT")
+                rule.waitUntil(5000) {
+                    rule.onAllNodesWithText("Copyright (c) 2026 NEXVARY", substring = true)
+                        .fetchSemanticsNodes().isNotEmpty()
+                }
+                click("إخفاء: ترخيص كود NEXVARY MIT")
+                click("شروط Tanzil المحفوظة مع النص الأصلي")
+                rule.waitUntil(5000) {
+                    rule.onAllNodesWithText("CHANGING IT IS NOT ALLOWED", substring = true)
+                        .fetchSemanticsNodes().isNotEmpty()
+                }
+                click("إخفاء: شروط Tanzil المحفوظة مع النص الأصلي")
+            }
             rule.onNodeWithText("الإعدادات").performClick()
         }
         click("تفريغ صوتي محلي تجريبي")
         rule.onNodeWithText("ابدأ تسميعًا محليًا تجريبيًا").assertExists()
+        rule.onAllNodesWithText("سُجل تقييم", substring = true).assertCountEquals(0)
         screenshot("hifz-asr.png")
         rule.onNodeWithText("الإعدادات").performClick()
         click("دليل القراء")

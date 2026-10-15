@@ -397,7 +397,7 @@ private fun App() {
                 }) { Text("رجوع") }
             }
             Text("مصحف تدريبي يتكيّف مع طريقة استرجاعك", color = muted, fontSize = 14.sp)
-            if (message.isNotEmpty()) {
+            if (message.isNotEmpty() && screen != Screen.LOCAL_TRANSCRIPTION) {
                 Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF103B37))) {
                     Text(message, modifier = Modifier.padding(12.dp), color = green)
                 }
@@ -867,6 +867,10 @@ private fun App() {
                         Text("مصدر حدود الأجزاء والصفحات")
                     }
                     Text("خط المصحف Amiri Quran: SIL Open Font License 1.1، إشعار الحقوق مضمن. تغطية المحارف اختُبرت تقنيًا؛ تدقيق تشكيلها بصريًا ما زال مطلوبًا.")
+                    BundledLicenseText("شروط Tanzil المحفوظة مع النص الأصلي", "licenses/TANZIL-NOTICE.txt")
+                    BundledLicenseText("ترخيص خط Amiri Quran", "licenses/AMIRI-OFL.txt")
+                    BundledLicenseText("ترخيص كود NEXVARY MIT", "licenses/NEXVARY-MIT.txt")
+                    BundledLicenseText("نص Apache 2.0 لمكونات AndroidX وKotlin", "licenses/Apache-2.0.txt")
                     Text("الكود الأصلي: MIT. مكونات AndroidX وCompose: Apache 2.0. إشعارات الحقوق كاملة ضمن ملفات المصدر.")
                     OutlinedButton(onClick = { openExternal("https://tanzil.net/docs/Text_License") },
                         modifier = Modifier.fillMaxWidth()) { Text("شروط Tanzil الأصلية") }

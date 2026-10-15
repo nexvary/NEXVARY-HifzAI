@@ -31,3 +31,5 @@ FetchContent_MakeAvailable(whisper)
 add_library(hifz_whisper SHARED hifz_whisper.cpp)
 target_include_directories(hifz_whisper PRIVATE ${whisper_SOURCE_DIR}/include)
 target_link_libraries(hifz_whisper PRIVATE whisper)
+# Keep a consistent 16KiB ELF layout, including NDK 32-bit outputs (4KiB OS pages still work).
+target_link_options(hifz_whisper PRIVATE "-Wl,-z,max-page-size=16384")

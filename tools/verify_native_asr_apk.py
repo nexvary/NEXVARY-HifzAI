@@ -60,7 +60,10 @@ def verify(apk, abis):
         if actual != sorted(abis): raise ValueError('Unexpected native ABI coverage')
         for abi in abis:
             info = archive.getinfo(f'lib/{abi}/libhifz_whisper.so')
-            alignments = elf_load_alignments(archive.read(info), MACHINES[abi])
+            try:
+                alignments = elf_load_alignments(archive.read(info), MACHINES[abi])
+            except ValueError as error:
+                raise ValueError(f"{abi}: {error}") from error
             with apk.open('rb') as source:
                 source.seek(info.header_offset)
                 header = source.read(30)
