@@ -3347,5 +3347,6 @@
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
       "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
     }
-  ]
+  ],
+  "current_scope": "Device-local Android. docs/LOCAL_ONLY_SCOPE.md supersedes connected-academy/server requirements; historical remote rows are not completed and are not local-release blockers."
 }

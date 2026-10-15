@@ -35,7 +35,7 @@ internal fun TeacherNotebookScreen() {
         catch (e: Exception) { e.message?.take(160) ?: "تعذر حفظ البيانات" }
     }
     Text("دفتر المعلم المحلي", style = MaterialTheme.typography.headlineSmall)
-    Text("تنظيم الطلاب والجلسات على جهازك فقط. لا حسابات معلمين موثقة أو إجازات آلية. الأكاديمية المتصلة والتحقق البشري لم يكتملَا.")
+    Text("تنظيم الطلاب والجلسات على جهازك فقط، دون حساب أو خادم. الملاحظات لا تُرسل لأحد، والمواعيد ليست حجزًا لدى معلم خارجي. لا تحقق من المؤهلات أو إجازات آلية.")
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedButton(onClick = { page = 0 }, modifier = Modifier.weight(1f)) { Text("الطلاب") }
         OutlinedButton(onClick = { page = 1 }, modifier = Modifier.weight(1f)) { Text("الجلسات") }

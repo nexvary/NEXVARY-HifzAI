@@ -71,6 +71,9 @@
 - أيقونة تطبيق متجهية بهوية كحلية وذهبية وزمردية، مع تنقل من خمسة تبويبات.
 - لا تزال تشغيل تلاوات المشايخ وتصحيح التجويد وأكاديمية المحفظين وظائف غير مكتملة تحتاج أصولًا مرخصة واعتمادًا بشريًا.
 
+## نطاق محلي معتمد — 2026-10-15
+كل وظائف القارئ على جهازه، دون حساب سحابي أو خادم أو رفع صوت. الأكاديمية المتصلة ليست شرطًا للإصدار المحلي؛ يبقى دفتر المعلم المحلي، وكود الخادم السابق منفصلًا واختياريًا. الصوت المرخص والتعرف المحلي لم يكتملَا. انظر [قرار النطاق المحلي وحدوده](docs/LOCAL_ONLY_SCOPE.md).
+
 ## Verified development additions — not final acceptance
 Official Tanzil download byte comparison, immutable corpus views, derived Quran search, direct ayah navigation, opening basmala references, Amiri Quran OFL font, session resume, retained hint accounting, lapse prioritisation, private voice cleanup, local teacher notebook, and safety-gated adapters for future approved audio/ASR. No external recording/model is bundled.
 

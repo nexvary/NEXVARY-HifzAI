@@ -50,6 +50,15 @@ jobs:
           gradle-version: '8.9'
       - name: Run unit tests and assemble APK
         run: gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
+      - name: Enforce local-only permissions in built APK
+        run: python tools/verify_local_only.py --apk app/build/outputs/apk/debug/app-debug.apk --aapt2 "$ANDROID_HOME/build-tools/35.0.0/aapt2"
+      - name: Preserve local-only APK evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-local-only-permissions
+          path: build/local-only/permissions.json
+          if-no-files-found: error
       - name: Verify production release guard is attached
         run: gradle :app:assembleRelease --dry-run --no-daemon | grep -F ':app:blockUnapprovedPublicRelease'
       - name: Calculate APK checksum

@@ -61,9 +61,9 @@ def main():
                      'implementation':files,'implementation_commits':commits,'tests_or_checks':tests,
                      'verification':'Referenced tests must be matched to reports for the exact source revision; no overall completion claim',
                      'problems':problem})
-    data={'source_revision_audited':revision,'all_phase_numbers_present':True,'phase_count':len(rows),'final_complete_phases':0,'phases':rows}
+    data={'current_scope':'Device-local Android. docs/LOCAL_ONLY_SCOPE.md supersedes connected-academy/server requirements; historical remote rows are not completed and are not local-release blockers.', 'source_revision_audited':revision,'all_phase_numbers_present':True,'phase_count':len(rows),'final_complete_phases':0,'phases':rows}
     (ROOT/'docs/PHASE_EVIDENCE.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
-    lines=['# مصفوفة المراحل 002–220 — أدلة وحالة فعلية','',f'كل المراحل الـ219 موجودة. مراجعة المصدر: `{revision}`.','',
+    lines=['# مصفوفة المراحل 002–220 — أدلة وحالة فعلية','','> نطاق القارئ محلي وفق LOCAL_ONLY_SCOPE.md. متطلبات الأكاديمية المتصلة في السجل التاريخي اختيارية وخارج الإصدار المحلي؛ ليست منجزة ولا تمنع الإصدار المحلي بمفردها. الخصوصية المحلية والحقوق والتقييم والعرض ما زالت مطلوبة.','',f'كل المراحل الـ219 موجودة. مراجعة المصدر: `{revision}`.','',
            'الحالة «جزئي» تصف وجود تنفيذ أو جزء من بنيته؛ لا تعني تحقيق كل وظيفة في عنوان المرحلة. لا مربعات إنجاز تُملأ آليًا. البنية القابلة للربط ليست ميزة نهائية. `PHASE_EVIDENCE.json` يحتوي ملفات التنفيذ وCommit لكل ملف والاختبارات والمانع لكل مرحلة.','',
            '| المرحلة | الوظيفة المطلوبة | الحالة | التنفيذ والقيود |','|---|---|---|---|']
     for row in rows:

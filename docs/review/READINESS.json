@@ -36,7 +36,8 @@
     "academy_authorization_and_child_safety": {
       "status": "pending",
       "reviewer": null,
-      "evidence": []
+      "evidence": [],
+      "scope": "Local notebook and child/shared-device privacy; connected academy excluded by owner. Not verified."
     },
     "android_ci": {
       "status": "pending",
@@ -73,5 +74,7 @@
       "reviewer": null,
       "evidence": []
     }
-  }
+  },
+  "deployment_scope": "device_local_only",
+  "scope_decision": "docs/LOCAL_ONLY_SCOPE.md"
 }
