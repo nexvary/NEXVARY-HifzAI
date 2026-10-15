@@ -1,0 +1,74 @@
+name: Android Small Phone and Tablet Proof
+on:
+  push:
+    branches: [dev/foundation]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: hifz-layout-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  emulator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api: 26
+            profile: Nexus S
+            kind: small-phone
+          - api: 35
+            profile: pixel_c
+            kind: tablet
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Install pinned native ASR build tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          "$SDKMANAGER" "ndk;28.2.13676358" "cmake;3.22.1"
+      - name: Enable KVM permissions
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Hardware-accelerated Android emulator smoke test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          target: google_apis
+          arch: x86_64
+          profile: ${{ matrix.profile }}
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: bash tools/run_device_proof.sh
+      - name: Upload genuine emulator screenshots
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-0.5.0-dev-layout-${{ matrix.kind }}-API-${{ matrix.api }}
+          path: ui-proof/
+          if-no-files-found: error
+      - name: Keep XML instrumentation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-layout-instrumentation-${{ matrix.kind }}-API-${{ matrix.api }}
+          path: |
+            app/build/outputs/androidTest-results/
+            ui-proof/instrumentation.txt
+          if-no-files-found: ignore

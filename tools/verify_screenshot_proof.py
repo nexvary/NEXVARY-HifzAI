@@ -42,6 +42,9 @@ def main():
     report = {'source_commit':source,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),
               'origin':'Compose captureToImage during Android instrumented tests; no generated mockups',
               'android_api':subprocess.check_output(['adb','shell','getprop','ro.build.version.sdk'],text=True).strip(),
+              'device_model':subprocess.check_output(['adb','shell','getprop','ro.product.model'],text=True).strip(),
+              'display_size':subprocess.check_output(['adb','shell','wm','size'],text=True).strip(),
+              'display_density':subprocess.check_output(['adb','shell','wm','density'],text=True).strip(),
               'system_font_scale':subprocess.check_output(['adb','shell','settings','get','system','font_scale'],text=True).strip(),
               'screenshots':files,'visual_scholarly_acceptance':False}
     (directory / 'PROOF_MANIFEST.json').write_text(json.dumps(report,indent=2)+'\n')

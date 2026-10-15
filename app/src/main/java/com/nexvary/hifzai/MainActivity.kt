@@ -62,6 +62,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.Font
@@ -337,6 +338,7 @@ private fun App() {
         screen = if (screen == Screen.CHAPTERS) Screen.MUSHAF else Screen.HOME
     }
 
+    val contentPadding = maxOf(18, (LocalConfiguration.current.screenWidthDp - 840) / 2).dp
     Scaffold(
         containerColor = navy,
         bottomBar = {
@@ -377,7 +379,7 @@ private fun App() {
         Column(
             modifier = Modifier.fillMaxSize().padding(inset)
                 .verticalScroll(scrollState)
-                .padding(horizontal = 18.dp, vertical = 18.dp),
+                .padding(horizontal = contentPadding, vertical = 18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF5A2930))) {

@@ -7,6 +7,7 @@ python3 tools/verify_native_asr_apk.py app/build/outputs/apk/debug/app-debug.apk
 cp build/native-asr/packaging.json ui-proof/native-packaging.json
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell settings put system font_scale 1.0
 adb shell am instrument -w com.nexvary.hifzai.test/androidx.test.runner.AndroidJUnitRunner | tee ui-proof/instrumentation.txt
 grep -Eq '^OK \([1-9][0-9]* tests?\)' ui-proof/instrumentation.txt
 if grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=' ui-proof/instrumentation.txt; then exit 1; fi

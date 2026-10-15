@@ -18,3 +18,6 @@ __pycache__/
 *.db-*
 
 node_modules/
+
+# Android native build intermediates and fetched dependency source
+.cxx/
