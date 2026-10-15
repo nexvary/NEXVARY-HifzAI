@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 internal class LocalTranscription(context: Context, private val changed: (State) -> Unit) {
     sealed class State {
         data object Idle : State()
+        data object Preparing : State()
         data object Recording : State()
         data object Processing : State()
         data class Unable(val reason: String) : State()
@@ -46,7 +47,7 @@ internal class LocalTranscription(context: Context, private val changed: (State)
         }
         val id = generation.incrementAndGet()
         stopCapture = false
-        changed(State.Recording)
+        changed(State.Preparing)
         worker.execute {
             var samples: FloatArray? = null
             var active: AudioRecord? = null
@@ -67,6 +68,8 @@ internal class LocalTranscription(context: Context, private val changed: (State)
                 val chunk = ShortArray(2048)
                 var count = 0
                 input.startRecording()
+                check(input.recordingState == AudioRecord.RECORDSTATE_RECORDING)
+                emit(id, State.Recording)
                 while (!stopCapture && generation.get()==id && count<buffer.size) {
                     val read = input.read(chunk,0,minOf(chunk.size,buffer.size-count),AudioRecord.READ_BLOCKING)
                     if (read <= 0) break

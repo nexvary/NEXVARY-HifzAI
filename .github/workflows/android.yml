@@ -68,12 +68,29 @@ jobs:
           name: HifzAI-local-only-permissions
           path: build/local-only/permissions.json
           if-no-files-found: error
+      - name: Verify APK signature and alignment
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/app-debug.apk
+          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -P 16 4 app/build/outputs/apk/debug/app-debug.apk
       - name: Verify production release guard is attached
         run: gradle :app:assembleRelease --dry-run --no-daemon | grep -F ':app:blockUnapprovedPublicRelease'
       - name: Calculate APK checksum
         run: |
           cd app/build/outputs/apk/debug
           sha256sum *.apk > SHA256SUMS
+      - name: Encrypt explicitly requested internal test build
+        # A public certificate is not a secret. The private key never enters GitHub or the APK.
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/dev/foundation' && contains(github.event.head_commit.message, '[internal-apk]')
+        run: python tools/encrypt_internal_apk.py --apk app/build/outputs/apk/debug/app-debug.apk --certificate docs/review/INTERNAL_BUILD_TRANSPORT_CERT.pem --output build/private-apk
+      - name: Preserve encrypted internal build transport
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/dev/foundation' && contains(github.event.head_commit.message, '[internal-apk]')
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-encrypted-internal-test
+          path: build/private-apk/
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
       - name: Upload APK
         # Never distribute an unapproved APK from this public repository.
         if: success() && github.event.repository.private == true

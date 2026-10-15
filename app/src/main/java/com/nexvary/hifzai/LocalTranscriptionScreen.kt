@@ -35,6 +35,10 @@ internal fun LocalTranscriptionScreen() {
     Text("المعالجة على هاتفك بنموذج Whisper Tiny، دون خادم. تحدث حتى 30 ثانية، ثم أوقف التسجيل لعرض مسودة التفريغ.")
     Text("غير قادر على التأكد من صحة التسميع: لم تُقَس دقة هذا النموذج للقرآن بشكل مستقل. لا درجات آلية أو حكم تجويد أو تعديل للمصحف.", color=MaterialTheme.colorScheme.primary)
     when (val value = state) {
+        LocalTranscription.State.Preparing -> {
+            Text("جارٍ تجهيز الميكروفون المحلي…")
+            LinearProgressIndicator(modifier=Modifier.fillMaxWidth())
+        }
         LocalTranscription.State.Recording -> {
             Text("الميكروفون يعمل الآن • الصوت في الذاكرة المؤقتة فقط")
             Button(onClick={ engine.finishCapture(); state=LocalTranscription.State.Processing },modifier=Modifier.fillMaxWidth()) { Text("أوقف التسجيل وافرغ محليًا") }
@@ -50,7 +54,7 @@ internal fun LocalTranscriptionScreen() {
         is LocalTranscription.State.Unable -> Text(value.reason)
         else -> Text("لا تسجيل ولا تفريغ محفوظ في هذه الصفحة.")
     }
-    val busy = state == LocalTranscription.State.Recording || state == LocalTranscription.State.Processing
+    val busy = state == LocalTranscription.State.Preparing || state == LocalTranscription.State.Recording || state == LocalTranscription.State.Processing
     if (!busy) Button(onClick={
         state=LocalTranscription.State.Idle
         if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED) engine.start()
