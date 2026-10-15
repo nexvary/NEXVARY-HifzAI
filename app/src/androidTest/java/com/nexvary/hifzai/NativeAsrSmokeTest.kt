@@ -25,7 +25,7 @@ class NativeAsrSmokeTest {
         val start = SystemClock.elapsedRealtime()
         try {
             val result = NativeWhisper.transcribe(session,model.absolutePath,input)
-            assertNotNull("Model loading and actual CPU inference must succeed",result)
+            assertNotNull("CPU inference must succeed; native status=${NativeWhisper.status(session)}, elapsed=${SystemClock.elapsedRealtime()-start}ms",result)
             assertTrue(result!!.size <= 8192)
             result.fill(0)
         } finally { NativeWhisper.release(session); input.fill(0f) }

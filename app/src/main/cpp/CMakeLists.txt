@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.22)
 project(hifz_whisper LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+# AGP Debug otherwise compiles CPU tensor kernels at -O0, making real inference unusable.
+# Keep debug symbols and app debugging; optimize the native math in every variant.
+add_compile_options(-O3)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(WHISPER_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(WHISPER_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)

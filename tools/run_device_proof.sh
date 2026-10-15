@@ -3,6 +3,8 @@ set -euo pipefail
 mkdir -p ui-proof
 # Run instrumentation explicitly so AGP cannot uninstall the app before PNG extraction.
 gradle :app:assembleDebug :app:assembleDebugAndroidTest -PhifzTestAbi=x86_64 --no-daemon --stacktrace
+python3 tools/verify_native_asr_apk.py app/build/outputs/apk/debug/app-debug.apk --abi x86_64
+cp build/native-asr/packaging.json ui-proof/native-packaging.json
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 adb shell am instrument -w com.nexvary.hifzai.test/androidx.test.runner.AndroidJUnitRunner | tee ui-proof/instrumentation.txt
