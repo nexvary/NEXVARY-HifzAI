@@ -25,3 +25,6 @@ Amiri Quran, unmodified from aliftype/amiri commit d3d0c5cb6fe7196cb4a58608fc5c8
 
 ### Tanzil structural metadata
 Official unmodified quran-data.xml metadata 1.0: https://tanzil.net/res/text/metadata/quran-data.xml . Root identifies copyright (C) 2008-2009 Tanzil.info and license cc-by, without a version suffix. Preserved verbatim in quran/metadata-v1.0.xml; SHA-256 8867c1d88191472adec9db694b3cd9f135b1a2ef580574d32cf888dcb22c5c7a. Numerical partition addresses are used without altering Quran text. License-version clarification and internal specialist boundary/display review remain part of final rights acceptance.
+
+## Local experimental transcription
+OpenAI Whisper Tiny model weights (MIT), upstream ggerganov/whisper.cpp revision 5359861c739e955e79d9a303bcbc70fb988958b1; SHA-256 be07e048e1e599ad46341c8d2a135645097a538221678b7acdd1b1919c6e1b21. whisper.cpp/ggml 1.9.5, commit d1be6fde11ac6e0407606b4e42fe72d34add8037, MIT. Full MIT texts and the pinned Android NDK native-runtime NOTICE are included in application assets and readable offline. See docs/LOCAL_ASR_MODEL.md for exact provenance and limitations. This is CPU transcription, not Quran generation, authoritative Quran text, an evaluated tajweed judge or scholarly approval. No external recordings were imported.

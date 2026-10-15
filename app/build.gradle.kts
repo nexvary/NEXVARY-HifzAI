@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.nexvary.hifzai"
     compileSdk = 35
+    ndkVersion = "28.2.13676358"
 
     defaultConfig {
         applicationId = "com.nexvary.hifzai"
@@ -13,6 +14,14 @@ android {
         targetSdk = 35
         versionCode = 5
         versionName = "0.5.0-dev"
+        ndk {
+            val proofAbi = providers.gradleProperty("hifzTestAbi").orNull
+            if (proofAbi != null) {
+                require(proofAbi == "x86_64") { "Only x86_64 is allowed for emulator-only proofs" }
+                abiFilters += proofAbi
+            } else abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        }
+        externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static") } }
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -26,6 +35,8 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true }
+    externalNativeBuild { cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" } }
+    sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/asr-assets"))
 }
 dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
@@ -65,3 +76,13 @@ tasks.configureEach {
 
 // Test tooling only; never shipped in the application.
 dependencies { androidTestImplementation("androidx.test:rules:1.6.1") }
+
+// Host build step only. Runtime ASR reads the bundled, digest-checked local model.
+val prepareLocalWhisperModel = tasks.register<Exec>("prepareLocalWhisperModel") {
+    workingDir(rootProject.projectDir)
+    commandLine("python3", "tools/prepare_whisper_model.py")
+    inputs.file(rootProject.file("tools/prepare_whisper_model.py"))
+    outputs.file(layout.buildDirectory.file("generated/asr-assets/asr/ggml-tiny.bin"))
+    outputs.file(layout.buildDirectory.file("generated/asr-assets/licenses/Android-NDK-NOTICE.txt"))
+}
+tasks.named("preBuild") { dependsOn(prepareLocalWhisperModel) }

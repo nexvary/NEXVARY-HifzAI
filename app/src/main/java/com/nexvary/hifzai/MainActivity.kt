@@ -108,7 +108,7 @@ private val gold = Color(0xFFD6B465)
 private val green = Color(0xFF43C8AA)
 private val muted = Color(0xFFB9C6CF)
 
-private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE }
+private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE, LOCAL_TRANSCRIPTION }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -787,6 +787,7 @@ private fun App() {
                         }
                     }
                 }
+                Screen.LOCAL_TRANSCRIPTION -> LocalTranscriptionScreen()
                 Screen.RECITERS -> {
                     Section("دليل قرّاء مصر والسعودية", "أسماء مبدئية • التسجيلات تحتاج مراجعة التراخيص")
                     ReciterCatalog.all.groupBy { it.country }.forEach { (country, people) ->
@@ -856,6 +857,10 @@ private fun App() {
                     OutlinedButton(onClick = { screen = Screen.SETTINGS }, modifier = Modifier.fillMaxWidth()) { Text("إدارة التقدم وحذف البيانات") }
                 }
                 Screen.SOURCES -> {
+                    Text("التفريغ المحلي التجريبي: Whisper Tiny من OpenAI وwhisper.cpp 1.9.5 / ggml، بتراخيص MIT. لا اعتماد لدقة القرآن أو التجويد. النموذج محفوظ محليًا، وبصمته تُفحص قبل التشغيل.")
+                    BundledLicenseText("ترخيص نموذج Whisper", "licenses/Whisper-model-MIT.txt")
+                    BundledLicenseText("ترخيص whisper.cpp / ggml", "licenses/whisper-cpp-MIT.txt")
+                    BundledLicenseText("إشعارات وقت التشغيل الأصلي Android NDK", "licenses/Android-NDK-NOTICE.txt")
                     Section("المصادر والتراخيص", "الكود والمحتوى لهما حقوق منفصلة")
                     Text(QuranCorpus.SOURCE_CREDIT, color = gold)
                     Text("نسخة حرفية مطابقة لتنزيل Tanzil الرسمي • 114 سورة و6236 آية. المطابقة التقنية لا تعني اعتماد اللجنة.")
@@ -917,6 +922,9 @@ private fun App() {
                 Screen.TEACHERS -> TeacherNotebookScreen()
                 Screen.EXERCISES -> VerseExercisesScreen(corpus, verses, index, ::openCorpusVerse)
                 Screen.SETTINGS -> {
+                    OutlinedButton(onClick = { screen = Screen.LOCAL_TRANSCRIPTION }, modifier = Modifier.fillMaxWidth()) {
+                        Text("تفريغ صوتي محلي تجريبي")
+                    }
                     Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
                     OutlinedButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth()) {
                         Text(if (advanced) "الوضع الحالي: متقدم • التحويل إلى مبسط" else "الوضع الحالي: مبسط • التحويل إلى متقدم")

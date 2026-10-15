@@ -106,6 +106,10 @@ class HifzUiSmokeTest {
             screenshot("hifz-$name.png")
             rule.onNodeWithText("الإعدادات").performClick()
         }
+        click("تفريغ صوتي محلي تجريبي")
+        rule.onNodeWithText("ابدأ تسميعًا محليًا تجريبيًا").assertExists()
+        screenshot("hifz-asr.png")
+        rule.onNodeWithText("الإعدادات").performClick()
         click("دليل القراء")
         screenshot("hifz-reciters.png")
     }

@@ -72,10 +72,10 @@
 - لا تزال تشغيل تلاوات المشايخ وتصحيح التجويد وأكاديمية المحفظين وظائف غير مكتملة تحتاج أصولًا مرخصة واعتمادًا بشريًا.
 
 ## نطاق محلي معتمد — 2026-10-15
-كل وظائف القارئ على جهازه، دون حساب سحابي أو خادم أو رفع صوت. الأكاديمية المتصلة ليست شرطًا للإصدار المحلي؛ يبقى دفتر المعلم المحلي، وكود الخادم السابق منفصلًا واختياريًا. الصوت المرخص والتعرف المحلي لم يكتملَا. انظر [قرار النطاق المحلي وحدوده](docs/LOCAL_ONLY_SCOPE.md).
+كل وظائف القارئ على جهازه، دون حساب سحابي أو خادم أو رفع صوت. الأكاديمية المتصلة ليست شرطًا للإصدار المحلي؛ يبقى دفتر المعلم المحلي، وكود الخادم السابق منفصلًا واختياريًا. الصوت الخارجي المرخص لم يكتمل. أُضيف تفريغ Whisper Tiny محلي تجريبي؛ دقته القرآنية غير مقيسة ولا يصحح التجويد. انظر [قرار النطاق المحلي وحدوده](docs/LOCAL_ONLY_SCOPE.md).
 
 ## Verified development additions — not final acceptance
-Official Tanzil download byte comparison, immutable corpus views, derived Quran search, direct ayah navigation, opening basmala references, Amiri Quran OFL font, session resume, retained hint accounting, lapse prioritisation, private voice cleanup, local teacher notebook, and safety-gated adapters for future approved audio/ASR. No external recording/model is bundled.
+Official Tanzil download byte comparison, immutable corpus views, derived Quran search, direct ayah navigation, opening basmala references, Amiri Quran OFL font, session resume, retained hint accounting, lapse prioritisation, private voice cleanup, local teacher notebook, real local audio playback controls, and an experimental bundled MIT Whisper Tiny CPU transcription engine. No external reciter recording is bundled. Recognition accuracy has not been independently evaluated.
 
 - [Initial code/CI audit](docs/AUDIT_2026-10-14.md)
 - [Every numbered phase: implementation and remaining evidence](docs/PHASE_EVIDENCE.md)
