@@ -575,17 +575,7 @@ private fun App() {
                             }
                         }
                         if (voicePractice.hasRecording) {
-                            Row(Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                OutlinedButton(onClick = {
-                                    voiceMessage = if (voicePractice.play()) "تشغيل صوتك الآن"
-                                        else "تعذر تشغيل التسجيل"
-                                }, modifier = Modifier.weight(1f)) { Text("استمع لصوتك") }
-                                OutlinedButton(onClick = {
-                                    voicePractice.erase()
-                                    voiceMessage = "تم حذف التسجيل المحلي"
-                                }, modifier = Modifier.weight(1f)) { Text("احذف التسجيل") }
-                            }
+                            PrivateAudioControls(voicePractice) { voiceMessage = it }
                         }
                         Text("تمرين اختياري: اكتب ما تحفظه، ثم قارن بنفسك. لا يُستخدم لتقييم التجويد.",
                             color = muted, fontSize = 13.sp)

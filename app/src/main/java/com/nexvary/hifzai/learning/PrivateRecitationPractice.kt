@@ -1,7 +1,6 @@
 package com.nexvary.hifzai.learning
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import java.io.File
@@ -17,7 +16,7 @@ class PrivateRecitationPractice(context: Context) {
     private val file = File(context.cacheDir, "hifz_private_session.m4a")
     private val appContext = context.applicationContext
     private var recorder: MediaRecorder? = null
-    private var player: MediaPlayer? = null
+    private val player = LocalAudioPlayer(appContext)
 
     init {
         // A previous process may have crashed before session cleanup.
@@ -69,37 +68,24 @@ class PrivateRecitationPractice(context: Context) {
 
     fun play(): Boolean {
         if (!hasRecording) return false
-        player?.release()
-        player = null
-        val next = MediaPlayer()
-        return try {
-            next.setDataSource(file.absolutePath)
-            next.prepare()
-            next.setOnCompletionListener {
-                it.release()
-                if (player === it) player = null
+        return runCatching {
+            if (player.snapshot().phase == LocalAudioPlayer.Phase.EMPTY) {
+                val settings = player.snapshot()
+                player.open(file)
+                player.speed(settings.speed)
+                player.repeats(settings.extraRepeats)
             }
-            next.setOnErrorListener { failed, _, _ ->
-                if (player === failed) player = null
-                failed.release()
-                true
-            }
-            player = next
-            next.start()
-            true
-        } catch (_: Exception) {
-            next.release()
-            player = null
-            false
-        }
+            player.play()
+        }.getOrDefault(false)
     }
+    fun pause() = player.pause()
+    fun playback() = player.snapshot()
+    fun speed(value: Float) = player.speed(value)
+    fun repeats(value: Int) = player.repeats(value)
+    fun seek(positionMs: Int) = player.seek(positionMs)
 
     fun erase() {
-        player?.run {
-            try { if (isPlaying) stop() } catch (_: IllegalStateException) {}
-            release()
-        }
-        player = null
+        player.close()
         if (isRecording) stop()
         file.delete()
     }

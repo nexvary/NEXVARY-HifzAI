@@ -23,3 +23,6 @@ Tanzil official metadata 1.0, unmodified quran-data.xml, copyright and cc-by lab
 
 ## Academy console test tooling
 Playwright 1.62.1 / playwright-core 1.62.1 (Apache-2.0) and optional macOS fsevents 2.3.2 (MIT) are pinned in `academy/test/package-lock.json`. They are development/test dependencies, not bundled in the Android APK. No third-party academy application code or audio/model assets are imported. Browser binaries are installed on the CI runner for tests, not redistributed with the app. See https://github.com/microsoft/playwright/blob/main/LICENSE .
+
+## بحث الصوت بتاريخ 2026-10-15
+لا تسجيلات خارجية مستوردة. وثائق المصادر وحدود التحقق في LOCAL_AUDIO_IMPLEMENTATION.md. ملفات WAV التي تولدها اختبارات Android نغمات اصطناعية مؤقتة من كود المشروع، وليست قرآنًا أو تسجيل شيخ أو مجموعة تقييم ASR، ولا تُحزم داخل تطبيق المستخدم.

@@ -2,6 +2,7 @@ package com.nexvary.hifzai
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.core.app.ActivityScenario
 import androidx.test.rule.GrantPermissionRule
 import com.nexvary.hifzai.learning.*
 import android.Manifest
@@ -92,6 +93,7 @@ class LocalDataAndAudioTest {
     }
 
     @Test fun recordPlayEraseAndCrashResidueCleanup() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
         val audio = PrivateRecitationPractice(context)
         try {
             assertFalse(audio.hasRecording)
@@ -112,6 +114,6 @@ class LocalDataAndAudioTest {
             audio.start()
             audio.erase() // Rapid start/stop must fail safely and erase any output.
             assertFalse(audio.hasRecording)
-        } finally { audio.close() }
+        } finally { audio.close(); scenario.close() }
     }
 }
