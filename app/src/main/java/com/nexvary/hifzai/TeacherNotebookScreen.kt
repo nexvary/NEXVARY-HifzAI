@@ -23,6 +23,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
     var revision by remember { mutableIntStateOf(0) }
     val students = remember(revision) { notebook.students() }
     val lessons = remember(revision) { notebook.lessons() }
+    val assignments = remember(revision) { notebook.assignments() }
     var page by remember { mutableIntStateOf(0) }
     var alias by remember { mutableStateOf("") }
     var consent by remember { mutableStateOf(false) }
@@ -69,8 +70,8 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                     Text("جلسات: " + lessons.count { it.studentId == student.id } +
                         " • مكتملة: " + lessons.count { it.studentId == student.id && it.completed })
                     OutlinedButton(onClick = { studentId = student.id; page = 1 }) { Text("جدولة جلسة لهذا الطالب") }
-                    OutlinedButton(onClick = { assignmentStudent = student.id }) { Text("تعيين نطاق مراجعة محلي") }
-                    notebook.assignments().filter { it.studentId == student.id }.forEach { task ->
+                    OutlinedButton(onClick = { assignmentStudent = student.id; message = "" }) { Text("تعيين نطاق مراجعة محلي") }
+                    assignments.filter { it.studentId == student.id }.forEach { task ->
                         Text("مراجعة " + corpus.info(task.chapter).arabicName + " • " + task.firstAyah + "–" + task.lastAyah +
                             " • " + task.dueDate)
                         OutlinedButton(onClick = { act { notebook.completeAssignment(task.id, !task.completed) } }) {
@@ -115,7 +116,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                     Text(lesson.teacherLabel + " • " + NotebookRules.displayDateTime(lesson.dateTime))
                     Text(lesson.note)
                     OutlinedButton(onClick = {
-                        editing = lesson; editedTime = lesson.dateTime; editedNote = lesson.note
+                        editing = lesson; editedTime = lesson.dateTime; editedNote = lesson.note; message = ""
                     }) { Text("تعديل الموعد والملاحظات") }
                     OutlinedButton(onClick = { act { notebook.updateLesson(lesson.id, lesson.note, !lesson.completed) } }) {
                         Text(if (lesson.completed) "مكتملة • أعد فتحها" else "سجّل اكتمال الجلسة")
@@ -146,6 +147,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                 }) { Text(NotebookRules.displayDateTime(editedTime)) }
                 OutlinedTextField(value = editedNote, onValueChange = { editedNote = it.take(500) },
                     label = { Text("ملاحظات الجلسة") })
+                if (message.isNotEmpty()) Text(message)
             } }, confirmButton = { TextButton(onClick = { act {
                 notebook.rescheduleLesson(lesson.id, editedTime, editedNote); editing = null
             } }) { Text("احفظ التعديل") } },
@@ -165,6 +167,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                         assignmentDue = LocalDate.of(year, month+1, day).toString()
                     }, initial.year, initial.monthValue-1, initial.dayOfMonth).show()
                 }) { Text("تاريخ المراجعة: " + assignmentDue) }
+                if (message.isNotEmpty()) Text(message)
             } }, confirmButton = { TextButton(onClick = { act {
                 val first = QuranSearchIndex.address(assignmentStart)
                 val last = QuranSearchIndex.address(assignmentEnd)

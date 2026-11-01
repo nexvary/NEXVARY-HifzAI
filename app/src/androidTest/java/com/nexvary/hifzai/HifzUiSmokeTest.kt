@@ -32,10 +32,10 @@ class HifzUiSmokeTest {
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()
 
     @Before fun cleanSyntheticTestState() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        ProgressStore(context).clear()
-        TeacherNotebook(context).clear()
-        rule.activityRule.scenario.recreate()
+        rule.awaitHifzReady()
+        click("الإعدادات")
+        click("حذف تقدم الحفظ من الجهاز")
+        click("حذف البيانات")
         rule.awaitHifzReady()
     }
 

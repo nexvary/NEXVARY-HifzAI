@@ -251,6 +251,8 @@ private fun AppContent(resetRuntime: () -> Unit) {
     fun chooseSurah(chapter: Int) {
         selectedSurah = chapter.coerceIn(1, 114)
         index = 0
+        stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
+        difficulty = DifficultyTag.NONE; rangeStart = 0; rangeEnd = 0
         readerPage = 0
         insightsPage = 0
         chapterQuery = ""
@@ -259,6 +261,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
     }
 
     fun openCorpusVerse(chosen: VerifiedVerse) {
+        rangeStart = 0; rangeEnd = 0
         selectedSurah = chosen.chapter
         index = chosen.verse - 1
         readerPage = index / 8
@@ -272,6 +275,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
     }
 
     fun openVerse(newIndex: Int, training: PracticeKind = PracticeKind.READ) {
+        rangeStart = 0; rangeEnd = 0
         index = newIndex.coerceIn(0, verses.lastIndex)
         stage = training
         hintCount = 0
@@ -305,6 +309,8 @@ private fun AppContent(resetRuntime: () -> Unit) {
         if (found == null) { message = "رقم السورة أو الآية غير موجود"; return }
         selectedSurah = chapter
         index = ayah - 1
+        stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
+        difficulty = DifficultyTag.NONE; rangeStart = 0; rangeEnd = 0
         readerPage = index / 8
         screen = Screen.MUSHAF
         message = "تم الانتقال إلى " + corpus.info(chapter).arabicName + " • " + ayah
@@ -775,12 +781,18 @@ private fun AppContent(resetRuntime: () -> Unit) {
                         MetricCard("محاولات الاسترجاع", attempts.toString(), Modifier.weight(1f))
                         MetricCard("بدون تلميح", independent.toString() + "%", Modifier.weight(1f))
                     }
-                    val observations = remember(attempts) { corpus.verses.flatMap { store.history(it.id) } }
-                    WeeklyLearningCard(LearningTrends.week(observations, today), LearningTrends.week(observations, today - 7))
-                    LearningTrends.byMode(observations, today).forEach { (kind, summary) ->
-                        Text((if (kind == PracticeKind.BRIDGE) "ربط الآيات" else "استرجاع الآية") +
-                            " • " + summary.attempts + " محاولة • " +
-                            (summary.independentPercent?.let { "$it% دون مساعدة" } ?: "لا بيانات"))
+                    val observations by produceState<List<RecallObservation>?>(null, attempts) {
+                        value = withContext(Dispatchers.IO) { corpus.verses.flatMap { store.history(it.id) } }
+                    }
+                    val retained = observations
+                    if (retained == null) Text("جارٍ قراءة المحاولات المحلية…")
+                    else {
+                        WeeklyLearningCard(LearningTrends.week(retained, today), LearningTrends.week(retained, today - 7))
+                        LearningTrends.byMode(retained, today).forEach { (kind, summary) ->
+                            Text((if (kind == PracticeKind.BRIDGE) "ربط الآيات" else "استرجاع الآية") +
+                                " • " + summary.attempts + " محاولة • " +
+                                (summary.independentPercent?.let { "$it% دون مساعدة" } ?: "لا بيانات"))
+                        }
                     }
                     verses.drop(insightsPage * 15).take(15).forEachIndexed { pageOffset, item ->
                         val i = insightsPage * 15 + pageOffset

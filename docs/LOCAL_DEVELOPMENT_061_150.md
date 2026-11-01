@@ -46,6 +46,17 @@ alignment/rights expiry, audio import quotas/digests and failure cleanup. Instru
 adds persistence/migration, notebook assignment/cascade and actual UI reset tests.
 UI tests wait for asynchronous canonical verification rather than sleeping.
 
+Local checks after the added result-summary regression tests: **56 Python tests**
+pass, with no failures/errors/skips. A standalone pinned Kotlin 2.0.21/JUnit 4.13.2
+run passes **41 JVM tests** (the pure-domain subset including the new tests). This
+does not replace the full Gradle/Lint/Android build or instrumentation matrix.
+
+The first PR CI confirms the original 53 Python tests and the optional web console
+checks ran successfully, but artifact uploads fail because the account's Actions
+artifact storage quota is exhausted. Counts/hashes are additionally emitted into
+job logs/summaries; required artifact upload failures remain visible. No existing
+artifacts are deleted and no gate is downgraded to make the workflow appear green.
+
 Match the PR's exact commit to Android CI/device reports before claiming Android
 validation. No local Android SDK/Gradle was available in the editing container. No
 new physical-device, real speech, usability or human editorial results are claimed.
