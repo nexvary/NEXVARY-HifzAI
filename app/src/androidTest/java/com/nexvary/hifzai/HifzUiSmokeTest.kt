@@ -33,7 +33,8 @@ class HifzUiSmokeTest {
 
     @Before fun cleanSyntheticTestState() {
         rule.awaitHifzReady()
-        click("الإعدادات")
+        rule.onNodeWithText("الإعدادات").performClick()
+        rule.waitForIdle()
         click("حذف تقدم الحفظ من الجهاز")
         click("حذف البيانات")
         rule.awaitHifzReady()

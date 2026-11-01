@@ -18,7 +18,12 @@ import org.junit.runner.RunWith
 class LearningDevelopmentUiTest {
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
-    private fun click(text: String) { rule.onNodeWithText(text).performScrollTo().performClick(); rule.waitForIdle() }
+    private fun click(text: String) {
+        val node = rule.onNodeWithText(text)
+        if (text == "الحفظ" || text == "الإعدادات") node.performClick()
+        else node.performScrollTo().performClick()
+        rule.waitForIdle()
+    }
     @Before fun reset() {
         rule.awaitHifzReady()
         click("الإعدادات")
