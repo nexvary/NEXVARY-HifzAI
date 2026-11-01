@@ -49,6 +49,51 @@ class LocalDataAndAudioTest {
         assertTrue(store.history(2255).isEmpty())
     }
 
+    @Test fun goalsFavoriteAndLegacyHistorySurviveReloadWithoutInventingModes() {
+        val store = ProgressStore(context)
+        store.clear()
+        try {
+            store.learningGoal = LearningGoal(5, 20, StudyMode.REVIEW_ONLY)
+            store.favoriteReciter = ReciterCatalog.all.first().slug
+            store.observe(1001, RecallObservation(10, RecallGrade.GOOD, 0, false, DifficultyTag.NONE))
+            store.observe(1001, RecallObservation(11, RecallGrade.HARD, 1, false, DifficultyTag.TRANSITION, PracticeKind.BRIDGE))
+            val reloaded = ProgressStore(context)
+            assertEquals(LearningGoal(5, 20, StudyMode.REVIEW_ONLY), reloaded.learningGoal)
+            assertEquals(ReciterCatalog.all.first().slug, reloaded.favoriteReciter)
+            assertNull(reloaded.history(1001).first().kind)
+            assertEquals(PracticeKind.BRIDGE, reloaded.history(1001).last().kind)
+            context.getSharedPreferences("hifz_progress_v1", 0).edit()
+                .putString("goal_mode", "corrupted").putString("favorite_reciter", "unknown").commit()
+            assertEquals(LearningGoal(), reloaded.learningGoal)
+            assertNull(reloaded.favoriteReciter)
+        } finally { store.clear() }
+    }
+
+    @Test fun notebookAssignmentBoundsReschedulingAndCascadingDeletion() {
+        val notebook = TeacherNotebook(context)
+        notebook.clear()
+        try {
+            val corpus = QuranCorpus.load(context)
+            notebook.addStudent("اختبار محلي أ", true)
+            notebook.addStudent("اختبار محلي ب", true)
+            val first = notebook.students()[0]; val second = notebook.students()[1]
+            assertTrue(runCatching { notebook.assignRange(first.id, 1, 1, 8, "2026-11-10", corpus) }.isFailure)
+            notebook.assignRange(first.id, 1, 1, 7, "2026-11-10", corpus)
+            notebook.assignRange(second.id, 114, 1, 6, "2026-11-11", corpus)
+            val task = notebook.assignments().first()
+            notebook.completeAssignment(task.id, true)
+            assertTrue(TeacherNotebook(context).assignments().first().completed)
+            notebook.addLesson(first.id, "معلم اختبار", "2026-11-10T18:30", "قبل")
+            val lesson = notebook.lessons().single()
+            notebook.rescheduleLesson(lesson.id, "2026-11-11T19:30", "بعد")
+            assertEquals("بعد", notebook.lessons().single().note)
+            assertEquals("2026-11-11T19:30", notebook.lessons().single().dateTime)
+            notebook.removeStudent(first.id)
+            assertEquals(second.id, notebook.assignments().single().studentId)
+            assertTrue(notebook.lessons().isEmpty())
+        } finally { notebook.clear() }
+    }
+
     @Test fun localTeacherDataConsentSchedulingAndDeletion() {
         val notebook = TeacherNotebook(context)
         notebook.clear()

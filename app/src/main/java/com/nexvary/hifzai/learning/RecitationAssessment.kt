@@ -21,20 +21,12 @@ object RecitationComparator {
         if (!result.confidence.isFinite() || result.confidence !in 0.0..1.0 ||
             result.confidence < independentlyCalibratedThreshold) return RecitationAssessment.UnableToConfirm("غير قادر على التأكد: ثقة منخفضة")
         if (result.riwayah != "hafs-an-asim") return RecitationAssessment.UnableToConfirm("الرواية غير مطابقة للمرجع")
-        val expected = QuranSearchIndex.normalize(reference.text).trim().split(Regex("\\s+"))
-        val heard = QuranSearchIndex.normalize(result.text).trim().split(Regex("\\s+"))
-        if (result.text.isBlank() || expected.size > 512 || heard.size > 512)
+        if (result.text.isBlank() || reference.text.length > 20_000 || result.text.length > 20_000)
             return RecitationAssessment.UnableToConfirm("التسميع غير كافٍ أو أطول من نطاق التقييم")
-        var previous = IntArray(heard.size + 1) { it }
-        expected.forEachIndexed { i, word ->
-            val current = IntArray(heard.size + 1)
-            current[0] = i + 1
-            heard.forEachIndexed { j, other ->
-                current[j + 1] = minOf(previous[j + 1] + 1, current[j] + 1,
-                    previous[j] + if (word == other) 0 else 1)
-            }
-            previous = current
-        }
-        return RecitationAssessment.LexicalComparison(previous.last(), expected.size)
+        val aligned = runCatching { LexicalAligner.align(reference.text, result.text) }.getOrNull()
+            ?: return RecitationAssessment.UnableToConfirm("النص أطول من نطاق التقييم")
+        if (aligned.referenceWords == 0 || aligned.edits.none { it.heardIndex != null })
+            return RecitationAssessment.UnableToConfirm("لا توجد كلمات كافية للمقارنة")
+        return RecitationAssessment.LexicalComparison(aligned.distance, aligned.referenceWords)
     }
 }

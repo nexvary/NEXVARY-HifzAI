@@ -30,5 +30,6 @@ data class RecallObservation(
     val grade: RecallGrade,
     val hints: Int,
     val exposed: Boolean,
-    val difficulty: DifficultyTag
+    val difficulty: DifficultyTag,
+    val kind: PracticeKind? = null
 )

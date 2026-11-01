@@ -3,10 +3,20 @@ package com.nexvary.hifzai.learning
 import android.content.Context
 import java.io.File
 import java.security.MessageDigest
+import android.os.Handler
+import android.os.Looper
 
 /** Offline adapter for future approved assets. No external recordings bundled or fetched. */
 class LicensedRecitationPlayer(context: Context) {
     private val player = LocalAudioPlayer(context)
+    private var currentRights: RecitationRights? = null
+    private val main = Handler(Looper.getMainLooper())
+    private val expiryCheck = object : Runnable {
+        override fun run() {
+            if (currentRights?.permitsUse(offline = true) != true) { close(); return }
+            main.postDelayed(this, 1000)
+        }
+    }
     fun open(file: File, rights: RecitationRights, repeatCount: Int = 0) {
         close()
         require(rights.permitsUse(offline = true)) { "Recording rights are not cleared" }
@@ -20,11 +30,20 @@ class LicensedRecitationPlayer(context: Context) {
         check(digest.digest().joinToString("") { "%02x".format(it.toInt() and 255) } == rights.sha256) { "Recording hash mismatch" }
         player.open(file)
         player.repeats(repeatCount)
+        currentRights = rights
+        main.post(expiryCheck)
     }
-    fun play(): Boolean = player.play()
+    fun play(): Boolean {
+        if (currentRights?.permitsUse(offline = true) != true) { close(); return false }
+        return player.play()
+    }
     fun pause() = player.pause()
     fun speed(value: Float) = player.speed(value)
     fun seek(positionMs: Int) = player.seek(positionMs)
     fun snapshot() = player.snapshot()
-    fun close() = player.close()
+    fun close() {
+        main.removeCallbacks(expiryCheck)
+        currentRights = null
+        player.close()
+    }
 }

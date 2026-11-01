@@ -59,6 +59,22 @@ class ProgressStore(context: Context) {
         get() = runCatching { prefs.getBoolean("advanced", false) }.getOrDefault(false)
         set(value) { prefs.edit().putBoolean("advanced", value).apply() }
 
+    var learningGoal: LearningGoal
+        get() = runCatching {
+            LearningGoal(intValue("goal_new", 2).coerceIn(0, 20), intValue("goal_reviews", 15).coerceIn(1, 100),
+                StudyMode.valueOf(prefs.getString("goal_mode", StudyMode.BALANCED.name)!!))
+        }.getOrDefault(LearningGoal())
+        set(value) { prefs.edit().putInt("goal_new", value.newVerses).putInt("goal_reviews", value.reviews)
+            .putString("goal_mode", value.mode.name).apply() }
+
+    var favoriteReciter: String?
+        get() = runCatching { prefs.getString("favorite_reciter", null) }.getOrNull()
+            ?.takeIf { slug -> ReciterCatalog.all.any { it.slug == slug } }
+        set(value) {
+            require(value == null || ReciterCatalog.all.any { it.slug == value })
+            prefs.edit().putString("favorite_reciter", value).apply()
+        }
+
     fun bookmark(chapter: Int, ayah: Int) {
         require(chapter in 1..114 && ayah in 1..286)
         prefs.edit().putInt("bookmark_chapter", chapter).putInt("bookmark_ayah", ayah).apply()
@@ -91,7 +107,8 @@ class ProgressStore(context: Context) {
             val j = a.getJSONObject(i)
             RecallObservation(j.getLong("day"), RecallGrade.valueOf(j.getString("grade")),
                 j.getInt("hints"), j.getBoolean("exposed"),
-                DifficultyTag.valueOf(j.getString("difficulty")))
+                DifficultyTag.valueOf(j.getString("difficulty")),
+                j.optString("kind").takeIf { it.isNotEmpty() }?.let { PracticeKind.valueOf(it) })
         }
     }.getOrDefault(emptyList())
     fun observe(id: Int, observation: RecallObservation) {
@@ -99,7 +116,7 @@ class ProgressStore(context: Context) {
         (history(id).takeLast(29) + observation).forEach { o ->
             a.put(JSONObject().put("day", o.epochDay).put("grade", o.grade.name)
                 .put("hints", o.hints).put("exposed", o.exposed)
-                .put("difficulty", o.difficulty.name))
+                .put("difficulty", o.difficulty.name).put("kind", o.kind?.name ?: ""))
         }
         prefs.edit().putString("history_$id", a.toString()).apply()
     }

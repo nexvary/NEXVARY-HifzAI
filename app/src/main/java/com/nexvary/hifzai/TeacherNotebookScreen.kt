@@ -11,9 +11,13 @@ import androidx.compose.ui.unit.dp
 import com.nexvary.hifzai.learning.TeacherNotebook
 import java.time.LocalDateTime
 import com.nexvary.hifzai.learning.NotebookRules
+import com.nexvary.hifzai.learning.QuranCorpus
+import com.nexvary.hifzai.learning.QuranSearchIndex
+import com.nexvary.hifzai.learning.NotebookLesson
+import java.time.LocalDate
 
 @Composable
-internal fun TeacherNotebookScreen() {
+internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
     val context = LocalContext.current
     val notebook = remember(context) { TeacherNotebook(context) }
     var revision by remember { mutableIntStateOf(0) }
@@ -30,6 +34,13 @@ internal fun TeacherNotebookScreen() {
     var complaintLesson by remember { mutableStateOf<String?>(null) }
     var message by remember { mutableStateOf("") }
     var deleteStudent by remember { mutableStateOf<String?>(null) }
+    var editing by remember { mutableStateOf<NotebookLesson?>(null) }
+    var editedTime by remember { mutableStateOf("") }
+    var editedNote by remember { mutableStateOf("") }
+    var assignmentStudent by remember { mutableStateOf<String?>(null) }
+    var assignmentStart by remember { mutableStateOf("") }
+    var assignmentEnd by remember { mutableStateOf("") }
+    var assignmentDue by remember { mutableStateOf(LocalDate.now().toString()) }
     fun act(operation: () -> Unit) {
         message = try { operation(); revision++; "تم حفظ التغيير محليًا" }
         catch (e: Exception) { e.message?.take(160) ?: "تعذر حفظ البيانات" }
@@ -58,6 +69,14 @@ internal fun TeacherNotebookScreen() {
                     Text("جلسات: " + lessons.count { it.studentId == student.id } +
                         " • مكتملة: " + lessons.count { it.studentId == student.id && it.completed })
                     OutlinedButton(onClick = { studentId = student.id; page = 1 }) { Text("جدولة جلسة لهذا الطالب") }
+                    OutlinedButton(onClick = { assignmentStudent = student.id }) { Text("تعيين نطاق مراجعة محلي") }
+                    notebook.assignments().filter { it.studentId == student.id }.forEach { task ->
+                        Text("مراجعة " + corpus.info(task.chapter).arabicName + " • " + task.firstAyah + "–" + task.lastAyah +
+                            " • " + task.dueDate)
+                        OutlinedButton(onClick = { act { notebook.completeAssignment(task.id, !task.completed) } }) {
+                            Text(if (task.completed) "مكتملة • أعد فتح المهمة" else "سجّل اكتمال المراجعة")
+                        }
+                    }
                     OutlinedButton(onClick = { deleteStudent = student.id }) { Text("حذف الطالب وجلساته") }
                 }
             }
@@ -95,6 +114,9 @@ internal fun TeacherNotebookScreen() {
                     Text(students.firstOrNull { it.id == lesson.studentId }?.alias ?: "طالب محذوف")
                     Text(lesson.teacherLabel + " • " + NotebookRules.displayDateTime(lesson.dateTime))
                     Text(lesson.note)
+                    OutlinedButton(onClick = {
+                        editing = lesson; editedTime = lesson.dateTime; editedNote = lesson.note
+                    }) { Text("تعديل الموعد والملاحظات") }
                     OutlinedButton(onClick = { act { notebook.updateLesson(lesson.id, lesson.note, !lesson.completed) } }) {
                         Text(if (lesson.completed) "مكتملة • أعد فتحها" else "سجّل اكتمال الجلسة")
                     }
@@ -110,6 +132,47 @@ internal fun TeacherNotebookScreen() {
             confirmButton = { TextButton(onClick = {
                 act { notebook.removeStudent(id) }; if (studentId == id) studentId = null; deleteStudent = null
             }) { Text("احذف") } }, dismissButton = { TextButton(onClick = { deleteStudent = null }) { Text("إلغاء") } })
+    }
+    editing?.let { lesson ->
+        AlertDialog(onDismissRequest = { editing = null }, title = { Text("تعديل الجلسة المحلية") },
+            text = { Column {
+                OutlinedButton(onClick = {
+                    val initial = runCatching { LocalDateTime.parse(editedTime) }.getOrDefault(LocalDateTime.now())
+                    DatePickerDialog(context, { _, year, month, day ->
+                        TimePickerDialog(context, { _, hour, minute ->
+                            editedTime = LocalDateTime.of(year, month+1, day, hour, minute).toString()
+                        }, initial.hour, initial.minute, true).show()
+                    }, initial.year, initial.monthValue-1, initial.dayOfMonth).show()
+                }) { Text(NotebookRules.displayDateTime(editedTime)) }
+                OutlinedTextField(value = editedNote, onValueChange = { editedNote = it.take(500) },
+                    label = { Text("ملاحظات الجلسة") })
+            } }, confirmButton = { TextButton(onClick = { act {
+                notebook.rescheduleLesson(lesson.id, editedTime, editedNote); editing = null
+            } }) { Text("احفظ التعديل") } },
+            dismissButton = { TextButton(onClick = { editing = null }) { Text("إلغاء") } })
+    }
+    assignmentStudent?.let { id ->
+        AlertDialog(onDismissRequest = { assignmentStudent = null }, title = { Text("نطاق مراجعة محلي") },
+            text = { Column {
+                Text("تنظيم شخصي؛ لا تُرسل المهمة للطالب أو لمعلم خارجي.")
+                OutlinedTextField(value = assignmentStart, onValueChange = { assignmentStart = it.take(15) },
+                    label = { Text("البداية • سورة:آية") })
+                OutlinedTextField(value = assignmentEnd, onValueChange = { assignmentEnd = it.take(15) },
+                    label = { Text("النهاية في السورة نفسها • سورة:آية") })
+                OutlinedButton(onClick = {
+                    val initial = LocalDate.parse(assignmentDue)
+                    DatePickerDialog(context, { _, year, month, day ->
+                        assignmentDue = LocalDate.of(year, month+1, day).toString()
+                    }, initial.year, initial.monthValue-1, initial.dayOfMonth).show()
+                }) { Text("تاريخ المراجعة: " + assignmentDue) }
+            } }, confirmButton = { TextButton(onClick = { act {
+                val first = QuranSearchIndex.address(assignmentStart)
+                val last = QuranSearchIndex.address(assignmentEnd)
+                require(first != null && last != null && first.first == last.first) { "اختر نطاقًا صحيحًا في سورة واحدة" }
+                notebook.assignRange(id, first.first, first.second, last.second, assignmentDue, corpus)
+                assignmentStudent = null; assignmentStart = ""; assignmentEnd = ""
+            } }, enabled = assignmentStart.isNotBlank() && assignmentEnd.isNotBlank()) { Text("احفظ النطاق") } },
+            dismissButton = { TextButton(onClick = { assignmentStudent = null }) { Text("إلغاء") } })
     }
     complaintLesson?.let { id ->
         AlertDialog(onDismissRequest = { complaintLesson = null }, title = { Text("تدوين مشكلة محليًا") },

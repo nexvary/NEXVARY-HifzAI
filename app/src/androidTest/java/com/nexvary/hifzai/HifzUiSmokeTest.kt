@@ -35,6 +35,8 @@ class HifzUiSmokeTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         ProgressStore(context).clear()
         TeacherNotebook(context).clear()
+        rule.activityRule.scenario.recreate()
+        rule.awaitHifzReady()
     }
 
     private fun click(text: String) {
