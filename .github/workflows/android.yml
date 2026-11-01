@@ -55,22 +55,8 @@ jobs:
         run: python tools/summarize_test_results.py app/build/test-results/testDebugUnitTest
       - name: Verify pinned ASR model, licenses and native packaging
         run: python tools/verify_native_asr_apk.py app/build/outputs/apk/debug/app-debug.apk
-      - name: Preserve native packaging evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: HifzAI-native-asr-packaging
-          path: build/native-asr/packaging.json
-          if-no-files-found: error
       - name: Enforce local-only permissions in built APK
         run: python tools/verify_local_only.py --apk app/build/outputs/apk/debug/app-debug.apk --aapt2 "$ANDROID_HOME/build-tools/35.0.0/aapt2"
-      - name: Preserve local-only APK evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: HifzAI-local-only-permissions
-          path: build/local-only/permissions.json
-          if-no-files-found: error
       - name: Verify APK signature and alignment
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/app-debug.apk
@@ -113,3 +99,17 @@ jobs:
             app/build/test-results/
             app/build/reports/tests/
             app/build/reports/lint-results-debug.*
+      - name: Preserve native packaging evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-native-asr-packaging
+          path: build/native-asr/packaging.json
+          if-no-files-found: error
+      - name: Preserve local-only APK evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-local-only-permissions
+          path: build/local-only/permissions.json
+          if-no-files-found: error
