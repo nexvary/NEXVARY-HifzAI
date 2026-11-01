@@ -3,6 +3,7 @@ package com.nexvary.hifzai
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.core.app.ActivityScenario
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.rule.GrantPermissionRule
 import com.nexvary.hifzai.learning.*
 import android.Manifest
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LocalDataAndAudioTest {
     @get:Rule val microphone: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.RECORD_AUDIO)
+    @get:Rule val ui = createEmptyComposeRule()
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test fun corpusOrderAddressBasmalaAndSearchOnDevice() {
@@ -141,6 +143,7 @@ class LocalDataAndAudioTest {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         val audio = PrivateRecitationPractice(context)
         try {
+            ui.awaitHifzReady()
             assertFalse(audio.hasRecording)
             assertFalse(audio.play())
             audio.start()
