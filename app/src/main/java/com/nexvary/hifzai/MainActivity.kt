@@ -99,7 +99,6 @@ import com.nexvary.hifzai.learning.VerifiedVerse
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
 import androidx.compose.runtime.key
-import androidx.compose.runtime.produceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.nexvary.hifzai.learning.LearningGoal
@@ -148,8 +147,9 @@ private fun App() {
 @Composable
 private fun AppContent(resetRuntime: () -> Unit) {
     val context = LocalContext.current
-    val corpusResult by produceState<Result<QuranCorpus>?>(null, context) {
-        value = withContext(Dispatchers.IO) { runCatching { QuranCorpus.load(context) } }
+    var corpusResult by remember(context) { mutableStateOf<Result<QuranCorpus>?>(null) }
+    LaunchedEffect(context) {
+        corpusResult = withContext(Dispatchers.IO) { runCatching { QuranCorpus.load(context) } }
     }
     if (corpusResult == null) {
         Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
@@ -781,8 +781,9 @@ private fun AppContent(resetRuntime: () -> Unit) {
                         MetricCard("محاولات الاسترجاع", attempts.toString(), Modifier.weight(1f))
                         MetricCard("بدون تلميح", independent.toString() + "%", Modifier.weight(1f))
                     }
-                    val observations by produceState<List<RecallObservation>?>(null, attempts) {
-                        value = withContext(Dispatchers.IO) { corpus.verses.flatMap { store.history(it.id) } }
+                    var observations by remember(attempts) { mutableStateOf<List<RecallObservation>?>(null) }
+                    LaunchedEffect(attempts, store, corpus) {
+                        observations = withContext(Dispatchers.IO) { corpus.verses.flatMap { store.history(it.id) } }
                     }
                     val retained = observations
                     if (retained == null) Text("جارٍ قراءة المحاولات المحلية…")
