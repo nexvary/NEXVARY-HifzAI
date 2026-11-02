@@ -21,8 +21,17 @@ service is preserved, not deployed or connected to Android.
   list. Counters persist/reload, reset on the next recorded day and clear with user
   data. Legacy history has no invented first-study classifications; daily counts
   begin with newly classified assessments in this increment.
-- "Start today's session" follows the selected surah's current plan/mode and stops
-  at its remaining daily proposal, returning to Today. That guided mode is persisted
+- Home, Today and "Start today's session" now share one plan: due reviews from
+  the entire corpus, then new study from the explicitly selected chapter. Previously
+  Today listed global reviews while Start silently planned only the selected chapter.
+  Guided navigation resolves canonical chapter/ayah addresses directly, including
+  transitions between short and long chapters; it never clamps an index into the old
+  chapter. The new-study chapter is pinned in the session while reviews move to other
+  chapters and survives recreation/Home resume. Legacy guided sessions default their
+  anchor to their saved chapter; invalid anchors are rejected. Completed sessions
+  return to the chosen new-study chapter and clear the saved session.
+- "Start today's session" follows the current mode and remaining daily proposal,
+  returning to Today when exhausted. That guided mode is persisted
   across recreation/resume. Direct verse/tab selection is manual practice and remains
   available beyond the proposal. Failed attempts can be retried immediately without
   charging a second distinct verse. Assessment progress, history, day counts and the
@@ -86,7 +95,7 @@ UI tests wait for asynchronous canonical verification rather than sleeping.
 
 Local checks after the continuation: **56 Python tests**
 pass, with no failures/errors/skips. A standalone pinned Kotlin 2.0.21/JUnit 4.13.2
-run passes **80 JVM tests** (all repository JVM tests, using compile-only Android API
+run passes **85 JVM tests** (all repository JVM tests, using compile-only Android API
 signatures and host JSON; no Android storage/UI runtime assertion). This
 does not replace the full Gradle/Lint/Android build or instrumentation matrix.
 
@@ -99,6 +108,11 @@ artifacts are deleted and no gate is downgraded to make the workflow appear gree
 Match the PR's exact commit to Android CI/device reports before claiming Android
 validation. No local Android SDK/Gradle was available in the editing container. No
 new physical-device, real speech, usability or human editorial results are claimed.
+
+The repository is public. The existing Android workflow guards plaintext APK upload
+with `github.event.repository.private == true`; source visibility does not approve
+APK distribution or change the production release guard. Match current-head Actions
+results before claiming evidence-upload success; earlier quota failures remain history.
 
 ## Remaining dependencies
 

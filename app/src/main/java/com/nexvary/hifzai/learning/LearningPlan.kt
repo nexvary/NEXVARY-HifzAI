@@ -16,6 +16,19 @@ data class LearningGoal(val newVerses: Int = 2, val reviews: Int = 15,
             maxDue = if (mode == StudyMode.NEW_ONLY) 0 else (reviews - work.reviewVerseIds.size).coerceAtLeast(0),
             maxNew = if (mode == StudyMode.REVIEW_ONLY) 0 else (newVerses - work.newVerseIds.size).coerceAtLeast(0))
     }
+    /** Reviews come from the whole corpus; new study stays in the learner's chosen chapter. */
+    fun planFor(corpus: QuranCorpus, cards: Map<Int, ReviewCard>, today: Long, newChapter: Int,
+        work: DailyWork = DailyWork(today)): DailyPlan {
+        require(newChapter in 1..114 && work.epochDay == today)
+        val covered = work.allVerseIds
+        val due = DailyMemorizationPlan.create(corpus.verses.filter { it.id !in covered }, cards, today,
+            maxDue = if (mode == StudyMode.NEW_ONLY) 0 else (reviews - work.reviewVerseIds.size).coerceAtLeast(0),
+            maxNew = 0)
+        val new = DailyMemorizationPlan.create(corpus.chapter(newChapter).filter { it.id !in covered }, cards, today,
+            maxDue = 0,
+            maxNew = if (mode == StudyMode.REVIEW_ONLY) 0 else (newVerses - work.newVerseIds.size).coerceAtLeast(0))
+        return DailyPlan(due.dueVerseIds, new.newVerseIds)
+    }
 }
 
 data class WeeklyLearningSummary(val attempts: Int, val independent: Int, val assisted: Int,

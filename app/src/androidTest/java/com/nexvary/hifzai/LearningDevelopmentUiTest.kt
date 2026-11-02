@@ -127,6 +127,53 @@ class LearningDevelopmentUiTest {
         assertEquals(3, ProgressStore(context).workload(today).newVerseIds.size)
     }
 
+    @Test fun listedGlobalReviewsAndGuidedSessionShareOnePlanAndKeepTheNewChapterOnResume() {
+        val today = LocalDate.now().toEpochDay()
+        val store = ProgressStore(context)
+        val corpus = QuranCorpus.load(context)
+        fun seed(id: Int, due: Long) = store.save(
+            ReviewCard(id, repetitions = 1, intervalDays = 1, dueEpochDay = due),
+            MemoryFingerprint(id, attempts = 1, recalled = 1))
+        fun grade(label: String) {
+            repeat(5) {
+                if (rule.onAllNodesWithText(label).fetchSemanticsNodes().isEmpty())
+                    click("المرحلة التالية في سُلّم الاسترجاع")
+            }
+            click(label)
+        }
+        seed(114006, today - 2); seed(2001, today - 1); seed(1001, today + 1)
+        store.learningGoal = LearningGoal(1, 2)
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        rule.onNodeWithText("الآيات المستحقة: 2 • آيات جديدة مقترحة: 1").assertExists()
+        click("تفاصيل الخطة اليومية والمراجعات")
+        rule.onNodeWithText(corpus.info(114).arabicName + " • الآية 6").assertExists()
+        rule.onNodeWithText(corpus.info(2).arabicName + " • الآية 1").assertExists()
+        click("ابدأ الخطة المقترحة")
+        assertEquals(114, store.session()!!.chapter); assertEquals(6, store.session()!!.ayah)
+        assertEquals(1, store.session()!!.planChapter)
+        grade("نسيت")
+        assertEquals(114, store.session()!!.chapter)
+        assertEquals(setOf(114006), store.workload(today).reviewVerseIds)
+        grade("جيد")
+        assertEquals(2, store.session()!!.chapter); assertEquals(1, store.session()!!.ayah)
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        assertEquals(1, store.session()!!.planChapter)
+        rule.onNodeWithText("الرئيسية").performClick(); rule.waitForIdle()
+        rule.onNodeWithText("الآيات المستحقة: 1 • آيات جديدة مقترحة: 1").assertExists()
+        click("استكمل جلسة الحفظ السابقة")
+        grade("جيد")
+        assertEquals(1, store.session()!!.chapter); assertEquals(2, store.session()!!.ayah)
+        assertEquals(1, store.session()!!.planChapter)
+        grade("جيد")
+        rule.onNodeWithText("الخطة اليومية").assertExists()
+        assertNull(store.session())
+        assertEquals(setOf(114006, 2001), store.workload(today).reviewVerseIds)
+        assertEquals(setOf(1002), store.workload(today).newVerseIds)
+        assertEquals(today + 1, store.card(1001).dueEpochDay)
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        assertNull(store.session())
+    }
+
     @Test fun guidedDailyModesResumeAndEndAtTheBudgetInsteadOfAdvancingIntoOtherModes() {
         for ((offset, mode) in listOf(StudyMode.NEW_ONLY, StudyMode.REVIEW_ONLY).withIndex()) {
             if (offset > 0) reset()

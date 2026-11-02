@@ -235,6 +235,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
     var answerWasRevealed by rememberSaveable { mutableStateOf(savedSession?.exposed ?: false) }
     var difficulty by rememberSaveable { mutableStateOf(savedSession?.difficulty ?: DifficultyTag.NONE) }
     var followsDailyPlan by rememberSaveable { mutableStateOf(savedSession?.followsDailyPlan ?: false) }
+    var dailyPlanChapter by rememberSaveable { mutableIntStateOf(savedSession?.planChapter?.takeIf { it > 0 } ?: selectedSurah) }
     var message by remember { mutableStateOf("") }
     var confirmClear by remember { mutableStateOf(false) }
     var today by remember { mutableLongStateOf(LocalDate.now().toEpochDay()) }
@@ -245,7 +246,8 @@ private fun AppContent(resetRuntime: () -> Unit) {
         ?: MemoryCoach.recommend(currentCard, fingerprint)
     val dueCount = MemoryCoach.dueCount(cards.values, today)
     val dayWork = store.workload(today)
-    val dailyPlan = learningGoal.plan(verses, cards, today, dayWork)
+    val planChapter = if (followsDailyPlan) dailyPlanChapter else selectedSurah
+    val dailyPlan = learningGoal.planFor(corpus, cards, today, planChapter, dayWork)
     val studied = memories.values.count { it.attempts > 0 }
     val independent = MemoryCoach.independentRecallPercent(memories.values)
     val attempts = memories.values.sumOf { it.attempts }
@@ -270,25 +272,12 @@ private fun AppContent(resetRuntime: () -> Unit) {
         screen = Screen.MUSHAF
     }
 
-    fun openCorpusVerse(chosen: VerifiedVerse) {
-        followsDailyPlan = false
+    fun openPracticeVerse(chosen: VerifiedVerse, training: PracticeKind, followPlan: Boolean) {
+        followsDailyPlan = followPlan
         rangeStart = 0; rangeEnd = 0
         selectedSurah = chosen.chapter
         index = chosen.verse - 1
         readerPage = index / 8
-        stage = PracticeKind.MASK_LIGHT
-        hintCount = 0
-        revealed = false
-        answerWasRevealed = false
-        typedRecall = ""
-        difficulty = DifficultyTag.NONE
-        screen = Screen.PRACTICE
-    }
-
-    fun openVerse(newIndex: Int, training: PracticeKind = PracticeKind.READ, followPlan: Boolean = false) {
-        followsDailyPlan = followPlan
-        rangeStart = 0; rangeEnd = 0
-        index = newIndex.coerceIn(0, verses.lastIndex)
         stage = training
         hintCount = 0
         revealed = false
@@ -298,14 +287,21 @@ private fun AppContent(resetRuntime: () -> Unit) {
         screen = Screen.PRACTICE
     }
 
+    fun openCorpusVerse(chosen: VerifiedVerse) = openPracticeVerse(chosen, PracticeKind.MASK_LIGHT, false)
+
+    fun openVerse(newIndex: Int, training: PracticeKind = PracticeKind.READ, followPlan: Boolean = false) {
+        openPracticeVerse(verses[newIndex.coerceIn(0, verses.lastIndex)], training, followPlan)
+    }
+
     fun focusToday() {
         today = LocalDate.now().toEpochDay()
-        val livePlan = learningGoal.plan(verses, cards, today, store.workload(today))
+        val origin = if (followsDailyPlan) dailyPlanChapter else selectedSurah
+        val livePlan = learningGoal.planFor(corpus, cards, today, origin, store.workload(today))
         val firstId = livePlan.allVerseIds.firstOrNull()
         if (firstId == null) { message = "لا توجد آيات ضمن هدفك الحالي؛ عدّل الخطة أو اختر آية يدويًا"; return }
-        val first = verses.first { it.id == firstId }
-        val nextIndex = verses.indexOfFirst { it.id == first.id }.coerceAtLeast(0)
-        openVerse(nextIndex, MemoryCoach.recommend(
+        val first = corpus.verses.first { it.id == firstId }
+        dailyPlanChapter = origin
+        openPracticeVerse(first, MemoryCoach.recommend(
             cards[first.id] ?: ReviewCard(first.id),
             memories[first.id] ?: MemoryFingerprint(first.id)
         ).kind, followPlan = true)
@@ -349,17 +345,17 @@ private fun AppContent(resetRuntime: () -> Unit) {
             (if (assisted > 0) " (بمساعدة)" else " (بدون كشف)") +
             " • موعد المراجعة بعد " + newCard.intervalDays + " يوم"
         if (followsDailyPlan && effectiveGrade != RecallGrade.AGAIN) {
-            val nextId = learningGoal.plan(verses, cards, today, store.workload(today)).allVerseIds.firstOrNull()
+            val nextId = learningGoal.planFor(corpus, cards, today, dailyPlanChapter, store.workload(today)).allVerseIds.firstOrNull()
             if (nextId == null) {
                 store.clearSession(); followsDailyPlan = false
                 stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
                 typedRecall = ""; difficulty = DifficultyTag.NONE
-                message += " • انتهت الخطة المقترحة لهذه السورة اليوم؛ يبقى التدريب اليدوي متاحًا"
+                if (selectedSurah != dailyPlanChapter) { selectedSurah = dailyPlanChapter; index = 0; readerPage = 0 }
+                message += " • انتهت الخطة المقترحة لليوم؛ يبقى التدريب اليدوي متاحًا"
                 screen = Screen.TODAY
             } else {
-                val nextIndex = verses.indexOfFirst { it.id == nextId }
                 val advice = MemoryCoach.recommend(cards.getValue(nextId), memories.getValue(nextId))
-                openVerse(nextIndex, advice.kind, followPlan = true)
+                openPracticeVerse(corpus.verses.first { it.id == nextId }, advice.kind, followPlan = true)
             }
         } else {
             val next = if (effectiveGrade == RecallGrade.AGAIN) index else (index + 1) % verses.size
@@ -384,10 +380,10 @@ private fun AppContent(resetRuntime: () -> Unit) {
         activity?.lifecycle?.addObserver(observer)
         onDispose { activity?.lifecycle?.removeObserver(observer) }
     }
-    LaunchedEffect(screen, selectedSurah, index, stage, hintCount, answerWasRevealed, difficulty, followsDailyPlan) {
+    LaunchedEffect(screen, selectedSurah, index, stage, hintCount, answerWasRevealed, difficulty, followsDailyPlan, dailyPlanChapter) {
         if (screen == Screen.PRACTICE) store.saveSession(
             PracticeSession(selectedSurah, index + 1, stage, hintCount, answerWasRevealed, difficulty,
-                followsDailyPlan = followsDailyPlan)
+                followsDailyPlan = followsDailyPlan, planChapter = if (followsDailyPlan) dailyPlanChapter else 0)
         )
     }
     LaunchedEffect(quranFontSize, advanced) {
@@ -492,14 +488,14 @@ private fun AppContent(resetRuntime: () -> Unit) {
                                 stage = active.stage; hintCount = active.hints
                                 answerWasRevealed = active.exposed; difficulty = active.difficulty
                                 followsDailyPlan = active.followsDailyPlan
+                                dailyPlanChapter = active.planChapter.takeIf { it > 0 } ?: active.chapter
                                 rangeStart = active.rangeStart; rangeEnd = active.rangeEnd
                                 revealed = false
                                 screen = if (rangeStart > 0) Screen.RANGE_PRACTICE else Screen.PRACTICE
                             }
                         }, modifier = Modifier.fillMaxWidth()) { Text("استكمل جلسة الحفظ السابقة") }
                     }
-                    Section("خطة اليوم", "سورة " + corpus.info(selectedSurah).arabicName +
-                        " • " + verses.size + " آية")
+                    Section("خطة اليوم", "مراجعات المصحف كله • الحفظ الجديد: سورة " + corpus.info(planChapter).arabicName)
                     PrimaryButton("اختبار استرجاع من غير بداية السورة", Modifier.fillMaxWidth()) {
                         val next = (index + 1) % verses.size
                         openVerse(next, PracticeKind.RECALL)
@@ -938,9 +934,9 @@ private fun AppContent(resetRuntime: () -> Unit) {
                 }
                 Screen.TODAY -> {
                     Section("الخطة اليومية", "مراجعات المصحف كله ثم حفظ جديد في السورة المختارة")
-                    val plan = learningGoal.plan(corpus.verses, cards, today, dayWork)
+                    val plan = dailyPlan
                     Text("المستحقة اليوم: " + dueCount + " • المعروض حسب خطتك: " + plan.dueVerseIds.size, color = green)
-                    Text("الوضع: " + learningGoal.mode.arabic + " • هدف الحفظ الجديد في السورة المختارة: " + learningGoal.newVerses)
+                    Text("الوضع: " + learningGoal.mode.arabic + " • الحفظ الجديد: سورة " + corpus.info(planChapter).arabicName + " • الهدف: " + learningGoal.newVerses)
                     plan.dueVerseIds.forEach { id ->
                         val item = corpus.verses.first { it.id == id }
                         OutlinedButton(onClick = { openCorpusVerse(item) }, modifier = Modifier.fillMaxWidth()) {
@@ -961,7 +957,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
                             Text("أعد المحاولة • " + corpus.info(item.chapter).arabicName + " • " + item.verse)
                         }
                     }
-                    PrimaryButton("ابدأ الحفظ الجديد أو مراجعة السورة", Modifier.fillMaxWidth()) { focusToday() }
+                    PrimaryButton("ابدأ الخطة المقترحة", Modifier.fillMaxWidth()) { focusToday() }
                     Text("أسبوعي وشهري: مواعيد الآيات تُحسب من تقييمك الذاتي؛ لا تُضاعف الخوارزمية جلسات إلزامية دون حاجة.", color = muted)
                 }
                 Screen.PRIVACY -> {

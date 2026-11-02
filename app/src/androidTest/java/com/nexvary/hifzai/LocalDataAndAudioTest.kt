@@ -30,6 +30,33 @@ class LocalDataAndAudioTest {
         assertEquals(corpus.find(2, 255), corpus.searchIndex.search(corpus.find(2, 255)!!.text).single())
     }
 
+    @Test fun guidedPlanAnchorPersistsMigratesAndRejectsCorruption() {
+        val store = ProgressStore(context)
+        store.clear()
+        try {
+            val session = PracticeSession(114, 6, PracticeKind.RECALL, 1, true, DifficultyTag.WORDS,
+                followsDailyPlan = true, planChapter = 1)
+            store.saveSession(session)
+            assertEquals(session, ProgressStore(context).session())
+            val prefs = context.getSharedPreferences("hifz_progress_v1", 0)
+            val legacy = org.json.JSONObject(prefs.getString("session", null)!!)
+            legacy.remove("planChapter")
+            prefs.edit().putString("session", legacy.toString()).commit()
+            assertEquals(114, store.session()!!.planChapter)
+            assertTrue(store.session()!!.followsDailyPlan)
+            legacy.remove("followsDailyPlan")
+            prefs.edit().putString("session", legacy.toString()).commit()
+            assertEquals(0, store.session()!!.planChapter)
+            assertFalse(store.session()!!.followsDailyPlan)
+            legacy.put("followsDailyPlan", true).put("planChapter", 115)
+            prefs.edit().putString("session", legacy.toString()).commit()
+            assertNull(store.session())
+            legacy.put("planChapter", "corrupted")
+            prefs.edit().putString("session", legacy.toString()).commit()
+            assertNull(store.session())
+        } finally { store.clear() }
+    }
+
     @Test fun progressSessionHistoryAndCorruptedPreferences() {
         val store = ProgressStore(context)
         store.clear()

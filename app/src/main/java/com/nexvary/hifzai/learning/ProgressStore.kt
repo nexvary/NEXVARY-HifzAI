@@ -117,14 +117,19 @@ class ProgressStore(context: Context) {
             .put("exposed", session.exposed).put("difficulty", session.difficulty.name)
             .put("rangeStart", session.rangeStart).put("rangeEnd", session.rangeEnd)
             .put("followsDailyPlan", session.followsDailyPlan)
+            .put("planChapter", session.planChapter)
         prefs.edit().putString("session", json.toString()).apply()
     }
     fun session(): PracticeSession? = runCatching {
         val j = JSONObject(prefs.getString("session", null) ?: return null)
+        val followsPlan = j.optBoolean("followsDailyPlan", false)
+        val planChapter = if (j.has("planChapter")) j.getInt("planChapter")
+            else if (followsPlan) j.getInt("chapter") else 0
         PracticeSession(j.getInt("chapter"), j.getInt("ayah"),
             PracticeKind.valueOf(j.getString("stage")), j.getInt("hints"),
             j.getBoolean("exposed"), DifficultyTag.valueOf(j.getString("difficulty")),
-            j.optInt("rangeStart", 0), j.optInt("rangeEnd", 0), j.optBoolean("followsDailyPlan", false))
+            j.optInt("rangeStart", 0), j.optInt("rangeEnd", 0), followsPlan,
+            planChapter)
     }.getOrNull()
     fun clearSession() = prefs.edit().remove("session").apply()
 
