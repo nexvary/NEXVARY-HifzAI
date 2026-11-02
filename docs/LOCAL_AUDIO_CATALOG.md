@@ -56,6 +56,9 @@ a visible screen lifecycle, not a service/process lifecycle, when integrated.
 Three added Android methods exercise actual generated WAV playback, per-item
 repetition/speed across a surah boundary, pause/focus/noisy-output/background cleanup,
 explicit resume, invalid/expired selection and mutation of a later file after binding.
+The noisy-output check invokes the actual registered receiver through a test context
+wrapper. It is simulated receiver delivery, not an OS/hardware unplug event; apps
+cannot send Android's protected system broadcast. Physical-headset checks remain pending.
 
 An actual approved catalogue, user-facing import/library screen, cleared recordings,
 timings, background/headset service and gapless playback remain outstanding. The

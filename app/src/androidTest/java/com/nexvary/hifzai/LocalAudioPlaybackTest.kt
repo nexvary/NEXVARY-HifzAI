@@ -1,7 +1,10 @@
 package com.nexvary.hifzai
 
 import android.content.Context
+import android.content.ContextWrapper
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -32,6 +35,27 @@ import kotlin.math.sin
 @RunWith(AndroidJUnit4::class)
 class LocalAudioPlaybackTest {
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
+    /** Capture the actual registered receiver; simulate delivery, never forge a protected system broadcast. */
+    @Suppress("UnspecifiedRegisterReceiverFlag") // The production player uses this overload only before API 33.
+    private class NoisyReceiverContext(base: Context) : ContextWrapper(base) {
+        @Volatile private var receiver: BroadcastReceiver? = null
+        override fun getApplicationContext(): Context = this
+        override fun registerReceiver(candidate: BroadcastReceiver?, filter: IntentFilter): Intent? {
+            val result = super.registerReceiver(candidate, filter)
+            if (filter.hasAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) receiver = candidate
+            return result
+        }
+        override fun registerReceiver(candidate: BroadcastReceiver?, filter: IntentFilter, flags: Int): Intent? {
+            val result = super.registerReceiver(candidate, filter, flags)
+            if (filter.hasAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) receiver = candidate
+            return result
+        }
+        override fun unregisterReceiver(candidate: BroadcastReceiver) {
+            super.unregisterReceiver(candidate)
+            if (receiver === candidate) receiver = null
+        }
+        fun deliverNoisy() = checkNotNull(receiver).onReceive(this, Intent(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+    }
     private fun tone(name: String, durationMs: Int): File {
         val rate = 16000
         val samples = rate * durationMs / 1000
@@ -93,7 +117,8 @@ class LocalAudioPlaybackTest {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         val (catalog, assets, files) = queueFixture(2000)
         lateinit var queue: LocalRecitationQueue
-        scenario.onActivity { queue = LocalRecitationQueue(context, it.lifecycle) }
+        val receiverContext = NoisyReceiverContext(context)
+        scenario.onActivity { queue = LocalRecitationQueue(receiverContext, it.lifecycle) }
         val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val competitor = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
@@ -117,7 +142,7 @@ class LocalAudioPlaybackTest {
             scenario.onActivity { queue.play() }
             await("Explicit resume after focus loss", { queue.snapshot().phase == LocalRecitationQueue.Phase.PLAYING })
             val interruptions = queue.snapshot().playback!!.interruptions
-            context.sendBroadcast(Intent(AudioManager.ACTION_AUDIO_BECOMING_NOISY).setPackage(context.packageName))
+            scenario.onActivity { receiverContext.deliverNoisy() }
             await("Noisy-output interruption must pause the entire queue", { queue.snapshot().phase == LocalRecitationQueue.Phase.PAUSED })
             assertTrue(queue.snapshot().playback!!.interruptions > interruptions)
             scenario.onActivity { queue.play() }
