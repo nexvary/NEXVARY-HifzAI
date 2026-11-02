@@ -2,7 +2,7 @@ import copy
 import datetime as dt
 import json
 import unittest
-from tools.evaluate_recitation import alignment, evaluate, canonical_references
+from tools.evaluate_recitation import alignment, evaluate, canonical_references, character_alignment
 
 
 class RecitationEvaluationTests(unittest.TestCase):
@@ -91,3 +91,33 @@ class RecitationEvaluationTests(unittest.TestCase):
         self.assertTrue(refs['1:1'])
         self.assertTrue(refs['114:6'])
         self.assertNotEqual(refs['1:1'], refs['2:1'])
+
+    def test_character_metric_uses_human_transcript_and_normalization(self):
+        self.assertEqual({'reference_characters': 2, 'character_distance': 0},
+                         character_alignment('أَ ب', 'ا ب'))
+        self.assertEqual(1, character_alignment('اب', 'اج')['character_distance'])
+        self.assertEqual(3, character_alignment('اب', 'ابجده')['character_distance'])
+        data = self.fixture()
+        data['samples'][0].update(human_transcript='اب', hypothesis='اج')
+        report = self.run_fixture(data)
+        for row in report['groups'].values():
+            self.assertEqual(0.5, row['cer'])
+            self.assertEqual(2, row['reference_characters'])
+        data['samples'][0]['hypothesis'] = ''
+        row = self.run_fixture(data)['groups']['all']
+        self.assertEqual(1, row['cer'])
+        self.assertEqual(1, row['abstained'])
+        self.assertIsNone(row['false_alarm_rate'])
+        with self.assertRaises(ValueError):
+            character_alignment('x' * 4097, '')
+
+    def test_revoked_or_ambiguous_consent_and_rights_are_rejected(self):
+        for field in ('consent_revoked', 'rights_revoked'):
+            for revoked in (True, 0, None, 'false'):
+                data = self.fixture()
+                data['samples'][0][field] = revoked
+                with self.subTest(field=field, revoked=revoked), self.assertRaises(ValueError):
+                    self.run_fixture(data)
+            data = self.fixture()
+            data['samples'][0][field] = False
+            self.assertEqual(1, self.run_fixture(data)['groups']['all']['samples'])
