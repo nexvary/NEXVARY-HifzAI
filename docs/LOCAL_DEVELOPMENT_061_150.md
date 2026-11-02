@@ -14,6 +14,16 @@ service is preserved, not deployed or connected to Android.
 
 ## New behavior
 
+- [The local notebook agenda](LOCAL_NOTEBOOK_AGENDA.md) combines lessons and assignments
+  with day-based pending/upcoming/past/completed/all filters and student selection.
+  Five records per page keep the agenda bounded; edits, completion and confirmed
+  deletion reuse existing storage and preserve unrelated records. Selection/filter
+  survive Activity recreation; page position resets when results/data change.
+  Date refresh uses the phone day and the explicit refresh action. Malformed/orphaned
+  records are counted without deletion or invented dates. Personal learning progress
+  is never changed by notebook completion. No booking/notification/identity verification
+  or teacher-confirmed learning claim is added.
+
 - Further continuation: local goals now subtract distinct self-assessed new/review
   verses already recorded on the same phone calendar day, across sessions/surahs.
   Retrying the same verse does not charge another slot. Explicit manual practice can
@@ -104,7 +114,7 @@ UI tests wait for asynchronous canonical verification rather than sleeping.
 
 Local checks after the continuation: **56 Python tests**
 pass, with no failures/errors/skips. A standalone pinned Kotlin 2.0.21/JUnit 4.13.2
-run passes **85 JVM tests** (all repository JVM tests, using compile-only Android API
+run passes **92 JVM tests** (all repository JVM tests, using compile-only Android API
 signatures and host JSON; no Android storage/UI runtime assertion). This
 does not replace the full Gradle/Lint/Android build or instrumentation matrix.
 

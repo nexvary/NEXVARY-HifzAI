@@ -1039,7 +1039,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
                         screen = Screen.TODAY
                     })
                 }
-                Screen.TEACHERS -> TeacherNotebookScreen(corpus)
+                Screen.TEACHERS -> TeacherNotebookScreen(corpus, LocalDate.ofEpochDay(today))
                 Screen.EXERCISES -> VerseExercisesScreen(corpus, verses, index, ::openCorpusVerse)
                 Screen.SETTINGS -> {
                     OutlinedButton(onClick = { screen = Screen.LOCAL_TRANSCRIPTION }, modifier = Modifier.fillMaxWidth()) {

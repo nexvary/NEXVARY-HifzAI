@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -20,14 +21,14 @@ import com.nexvary.hifzai.learning.NotebookAssignment
 import java.time.LocalDate
 
 @Composable
-internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
+internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
     val context = LocalContext.current
     val notebook = remember(context) { TeacherNotebook(context) }
     var revision by remember { mutableIntStateOf(0) }
     val students = remember(revision) { notebook.students() }
     val lessons = remember(revision) { notebook.lessons() }
     val assignments = remember(revision) { notebook.assignments() }
-    var page by remember { mutableIntStateOf(0) }
+    var page by rememberSaveable { mutableIntStateOf(0) }
     var alias by remember { mutableStateOf("") }
     var consent by remember { mutableStateOf(false) }
     var studentId by remember { mutableStateOf<String?>(null) }
@@ -52,12 +53,26 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
         message = try { operation(); revision++; "تم حفظ التغيير محليًا" }
         catch (e: Exception) { e.message?.take(160) ?: "تعذر حفظ البيانات" }
     }
+    fun assignmentChapterName(task: NotebookAssignment) = if (task.firstAyah <= task.lastAyah &&
+        corpus.find(task.chapter, task.firstAyah) != null && corpus.find(task.chapter, task.lastAyah) != null)
+        corpus.info(task.chapter).arabicName else "مرجع آيات غير صالح"
+    fun beginLessonEdit(lesson: NotebookLesson) {
+        editing = lesson; editedTime = lesson.dateTime; editedNote = lesson.note; message = ""
+    }
+    fun beginAssignmentEdit(task: NotebookAssignment) {
+        assignmentStudent = task.studentId; editingAssignment = task.id
+        assignmentStart = "${task.chapter}:${task.firstAyah}"
+        assignmentEnd = "${task.chapter}:${task.lastAyah}"
+        assignmentDue = task.dueDate; message = ""
+    }
     Text("دفتر المعلم المحلي", style = MaterialTheme.typography.headlineSmall)
     Text("تنظيم الطلاب والجلسات على جهازك فقط، دون حساب أو خادم. الملاحظات لا تُرسل لأحد، والمواعيد ليست حجزًا لدى معلم خارجي. لا تحقق من المؤهلات أو إجازات آلية.")
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedButton(onClick = { page = 0 }, modifier = Modifier.weight(1f)) { Text("الطلاب") }
         OutlinedButton(onClick = { page = 1 }, modifier = Modifier.weight(1f)) { Text("الجلسات") }
     }
+    OutlinedButton(onClick = { page = 2; message = "" }, enabled = page != 2,
+        modifier = Modifier.fillMaxWidth()) { Text("جدول المواعيد والمهام") }
     if (message.isNotEmpty()) Text(message, color = MaterialTheme.colorScheme.primary)
     if (page == 0) {
         OutlinedTextField(value = alias, onValueChange = { alias = it.take(40) },
@@ -81,24 +96,19 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                         assignmentStart = ""; assignmentEnd = ""; assignmentDue = LocalDate.now().toString(); message = ""
                     }) { Text("تعيين نطاق مراجعة محلي") }
                     assignments.filter { it.studentId == student.id }.forEach { task ->
-                        Text("مراجعة " + corpus.info(task.chapter).arabicName + " • " + task.firstAyah + "–" + task.lastAyah +
+                        Text("مراجعة " + assignmentChapterName(task) + " • " + task.firstAyah + "–" + task.lastAyah +
                             " • " + task.dueDate)
                         OutlinedButton(onClick = { act { notebook.completeAssignment(task.id, !task.completed) } }) {
                             Text(if (task.completed) "مكتملة • أعد فتح المهمة" else "سجّل اكتمال المراجعة")
                         }
-                        OutlinedButton(onClick = {
-                            assignmentStudent = student.id; editingAssignment = task.id
-                            assignmentStart = "${task.chapter}:${task.firstAyah}"
-                            assignmentEnd = "${task.chapter}:${task.lastAyah}"
-                            assignmentDue = task.dueDate; message = ""
-                        }) { Text("تعديل نطاق المراجعة وموعده") }
+                        OutlinedButton(onClick = { beginAssignmentEdit(task) }) { Text("تعديل نطاق المراجعة وموعده") }
                         OutlinedButton(onClick = { deleteAssignment = task }) { Text("حذف مهمة المراجعة") }
                     }
                     OutlinedButton(onClick = { deleteStudent = student.id }) { Text("حذف الطالب وجلساته") }
                 }
             }
         }
-    } else {
+    } else if (page == 1) {
         Text("اختر الطالب")
         students.forEach { student ->
             OutlinedButton(onClick = { studentId = student.id }, modifier = Modifier.fillMaxWidth()) {
@@ -131,9 +141,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                     Text(students.firstOrNull { it.id == lesson.studentId }?.alias ?: "طالب محذوف")
                     Text(lesson.teacherLabel + " • " + NotebookRules.displayDateTime(lesson.dateTime))
                     Text(lesson.note)
-                    OutlinedButton(onClick = {
-                        editing = lesson; editedTime = lesson.dateTime; editedNote = lesson.note; message = ""
-                    }) { Text("تعديل الموعد والملاحظات") }
+                    OutlinedButton(onClick = { beginLessonEdit(lesson) }) { Text("تعديل الموعد والملاحظات") }
                     OutlinedButton(onClick = { act { notebook.updateLesson(lesson.id, lesson.note, !lesson.completed) } }) {
                         Text(if (lesson.completed) "مكتملة • أعد فتحها" else "سجّل اكتمال الجلسة")
                     }
@@ -143,10 +151,18 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
             }
         }
         notebook.complaints().forEach { Text("ملاحظة مشكلة محفوظة: " + it.note) }
+    } else {
+        NotebookAgendaScreen(students, lessons, assignments, corpus, today,
+            editLesson = ::beginLessonEdit,
+            completeLesson = { lesson -> act { notebook.updateLesson(lesson.id, lesson.note, !lesson.completed) } },
+            problem = { complaintLesson = it.id }, deleteLesson = { deleteLesson = it },
+            editAssignment = ::beginAssignmentEdit,
+            completeAssignment = { task -> act { notebook.completeAssignment(task.id, !task.completed) } },
+            deleteAssignment = { deleteAssignment = it })
     }
     deleteAssignment?.let { task ->
         NotebookDeleteDialog("حذف مهمة المراجعة؟",
-            "تُحذف مهمة " + corpus.info(task.chapter).arabicName + " • " + task.firstAyah + "–" + task.lastAyah +
+            "تُحذف مهمة " + assignmentChapterName(task) + " • " + task.firstAyah + "–" + task.lastAyah +
                 " بتاريخ " + task.dueDate + " من الدفتر فقط. تبقى بقية المهام وتقدم الحفظ كما هي.",
             onDelete = { act { notebook.removeAssignment(task.id) }; deleteAssignment = null },
             onDismiss = { deleteAssignment = null })
@@ -167,7 +183,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
     }
     editing?.let { lesson ->
         AlertDialog(onDismissRequest = { editing = null }, title = { Text("تعديل الجلسة المحلية") },
-            text = { Column {
+            text = { Column(Modifier.verticalScroll(rememberScrollState())) {
                 OutlinedButton(onClick = {
                     val initial = runCatching { LocalDateTime.parse(editedTime) }.getOrDefault(LocalDateTime.now())
                     DatePickerDialog(context, { _, year, month, day ->
@@ -195,7 +211,9 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                 OutlinedTextField(value = assignmentEnd, onValueChange = { assignmentEnd = it.take(15) },
                     label = { Text("النهاية في السورة نفسها • سورة:آية") })
                 OutlinedButton(onClick = {
-                    val initial = LocalDate.parse(assignmentDue)
+                    // Only the picker's initial position falls back. Stored data stays
+                    // unchanged until the user explicitly chooses a day and saves.
+                    val initial = runCatching { LocalDate.parse(assignmentDue) }.getOrDefault(LocalDate.now())
                     DatePickerDialog(context, { _, year, month, day ->
                         assignmentDue = LocalDate.of(year, month+1, day).toString()
                     }, initial.year, initial.monthValue-1, initial.dayOfMonth).show()
