@@ -1,8 +1,10 @@
 package com.nexvary.hifzai.learning
 
 import android.content.Context
+import android.content.SharedPreferences
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDate
 
 /** Private local learning data; audio is never stored in these preferences. */
 class ProgressStore(context: Context) {
@@ -30,9 +32,15 @@ class ProgressStore(context: Context) {
     )
 
     fun save(card: ReviewCard, memory: MemoryFingerprint) {
+        val editor = prefs.edit()
+        writeCard(editor, card, memory)
+        editor.apply()
+    }
+
+    private fun writeCard(editor: SharedPreferences.Editor, card: ReviewCard, memory: MemoryFingerprint) {
         require(card.verseId == memory.verseId)
         val id = card.verseId
-        prefs.edit()
+        editor
             .putInt("repetitions_" + id, card.repetitions)
             .putInt("interval_" + id, card.intervalDays)
             .putLong("due_" + id, card.dueEpochDay)
@@ -44,7 +52,6 @@ class ProgressStore(context: Context) {
             .putInt("transitions_" + id, memory.transitionsMissed)
             .putInt("wordMisses_" + id, memory.wordMisses)
             .putInt("similarityMisses_" + id, memory.similarityMisses)
-            .apply()
     }
 
     private fun intValue(key: String, default: Int): Int =
@@ -58,6 +65,41 @@ class ProgressStore(context: Context) {
     var advanced: Boolean
         get() = runCatching { prefs.getBoolean("advanced", false) }.getOrDefault(false)
         set(value) { prefs.edit().putBoolean("advanced", value).apply() }
+
+    var learningGoal: LearningGoal
+        get() = runCatching {
+            LearningGoal(intValue("goal_new", 2).coerceIn(0, 20), intValue("goal_reviews", 15).coerceIn(1, 100),
+                StudyMode.valueOf(prefs.getString("goal_mode", StudyMode.BALANCED.name)!!))
+        }.getOrDefault(LearningGoal())
+        set(value) { prefs.edit().putInt("goal_new", value.newVerses).putInt("goal_reviews", value.reviews)
+            .putString("goal_mode", value.mode.name).apply() }
+
+    var favoriteReciter: String?
+        get() = runCatching { prefs.getString("favorite_reciter", null) }.getOrNull()
+            ?.takeIf { slug -> ReciterCatalog.all.any { it.slug == slug } }
+        set(value) {
+            require(value == null || ReciterCatalog.all.any { it.slug == value })
+            prefs.edit().putString("favorite_reciter", value).apply()
+        }
+
+    val gentleReturnEnabled: Boolean
+        get() = runCatching { prefs.getBoolean("gentle_return_enabled", false) }.getOrDefault(false)
+    val gentleReturnAnchorDay: Long?
+        get() = if (!gentleReturnEnabled) null else runCatching {
+            prefs.getLong("gentle_return_anchor", -1).takeIf { it >= 0 }
+        }.getOrNull()
+
+    fun setGentleReturn(enabled: Boolean, today: Long = LocalDate.now().toEpochDay()) {
+        require(today >= 0)
+        val editor = prefs.edit().putBoolean("gentle_return_enabled", enabled)
+        if (enabled) editor.putLong("gentle_return_anchor", today)
+        else editor.remove("gentle_return_anchor")
+        editor.apply()
+    }
+    fun postponeGentleReturn(today: Long = LocalDate.now().toEpochDay()) {
+        require(today >= 0)
+        if (gentleReturnEnabled) prefs.edit().putLong("gentle_return_anchor", today).apply()
+    }
 
     fun bookmark(chapter: Int, ayah: Int) {
         require(chapter in 1..114 && ayah in 1..286)
@@ -74,16 +116,39 @@ class ProgressStore(context: Context) {
             .put("stage", session.stage.name).put("hints", session.hints)
             .put("exposed", session.exposed).put("difficulty", session.difficulty.name)
             .put("rangeStart", session.rangeStart).put("rangeEnd", session.rangeEnd)
+            .put("followsDailyPlan", session.followsDailyPlan)
+            .put("planChapter", session.planChapter)
         prefs.edit().putString("session", json.toString()).apply()
     }
     fun session(): PracticeSession? = runCatching {
         val j = JSONObject(prefs.getString("session", null) ?: return null)
+        val followsPlan = j.optBoolean("followsDailyPlan", false)
+        val planChapter = if (j.has("planChapter")) j.getInt("planChapter")
+            else if (followsPlan) j.getInt("chapter") else 0
         PracticeSession(j.getInt("chapter"), j.getInt("ayah"),
             PracticeKind.valueOf(j.getString("stage")), j.getInt("hints"),
             j.getBoolean("exposed"), DifficultyTag.valueOf(j.getString("difficulty")),
-            j.optInt("rangeStart", 0), j.optInt("rangeEnd", 0))
+            j.optInt("rangeStart", 0), j.optInt("rangeEnd", 0), followsPlan,
+            planChapter)
     }.getOrNull()
     fun clearSession() = prefs.edit().remove("session").apply()
+
+    /** Only the current stored day is retained. Legacy histories do not invent first-study dates. */
+    fun workload(today: Long): DailyWork = runCatching {
+        val raw = prefs.getString("daily_work", null) ?: return DailyWork(today)
+        require(raw.length <= 128_000)
+        val data = JSONObject(raw)
+        if (data.getLong("day") != today) return DailyWork(today)
+        fun ids(key: String): Set<Int> {
+            val array = data.getJSONArray(key)
+            require(array.length() <= 6236)
+            return (0 until array.length()).map { array.getInt(it) }.toSet()
+        }
+        DailyWork(today, ids("new"), ids("reviews"))
+    }.getOrElse { DailyWork(today) }
+
+    private fun workloadJson(work: DailyWork): String = JSONObject().put("day", work.epochDay)
+        .put("new", JSONArray(work.newVerseIds.sorted())).put("reviews", JSONArray(work.reviewVerseIds.sorted())).toString()
 
     fun history(id: Int): List<RecallObservation> = runCatching {
         val a = JSONArray(prefs.getString("history_$id", "[]"))
@@ -91,17 +156,41 @@ class ProgressStore(context: Context) {
             val j = a.getJSONObject(i)
             RecallObservation(j.getLong("day"), RecallGrade.valueOf(j.getString("grade")),
                 j.getInt("hints"), j.getBoolean("exposed"),
-                DifficultyTag.valueOf(j.getString("difficulty")))
+                DifficultyTag.valueOf(j.getString("difficulty")),
+                j.optString("kind").takeIf { it.isNotEmpty() }?.let { PracticeKind.valueOf(it) })
         }
     }.getOrDefault(emptyList())
-    fun observe(id: Int, observation: RecallObservation) {
+    fun observe(id: Int, observation: RecallObservation, firstAttempt: Boolean? = null) {
+        val editor = prefs.edit()
+        writeObservation(editor, id, observation, firstAttempt)
+        editor.apply()
+    }
+
+    /** One preferences transaction for progress, retained history, day counts and consented anchor. */
+    fun recordAssessment(card: ReviewCard, memory: MemoryFingerprint, observation: RecallObservation,
+        firstAttempt: Boolean) {
+        val editor = prefs.edit()
+        writeCard(editor, card, memory)
+        writeObservation(editor, card.verseId, observation, firstAttempt)
+        editor.apply()
+    }
+
+    private fun writeObservation(editor: SharedPreferences.Editor, id: Int,
+        observation: RecallObservation, firstAttempt: Boolean?) {
         val a = JSONArray()
         (history(id).takeLast(29) + observation).forEach { o ->
             a.put(JSONObject().put("day", o.epochDay).put("grade", o.grade.name)
                 .put("hints", o.hints).put("exposed", o.exposed)
-                .put("difficulty", o.difficulty.name))
+                .put("difficulty", o.difficulty.name).put("kind", o.kind?.name ?: ""))
         }
-        prefs.edit().putString("history_$id", a.toString()).apply()
+        editor.putString("history_$id", a.toString())
+        if (firstAttempt != null) {
+            val work = workload(observation.epochDay).record(id, firstAttempt)
+            editor.putString("daily_work", workloadJson(work))
+        }
+        if (gentleReturnEnabled && observation.epochDay >= 0) {
+            editor.putLong("gentle_return_anchor", maxOf(gentleReturnAnchorDay ?: 0, observation.epochDay))
+        }
     }
 
     fun clear() = prefs.edit().clear().commit()

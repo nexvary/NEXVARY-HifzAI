@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import org.junit.Before
+import android.os.ParcelFileDescriptor
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.TeacherNotebook
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -32,9 +33,12 @@ class HifzUiSmokeTest {
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()
 
     @Before fun cleanSyntheticTestState() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        ProgressStore(context).clear()
-        TeacherNotebook(context).clear()
+        rule.awaitHifzReady()
+        rule.onNodeWithText("الإعدادات").performClick()
+        rule.waitForIdle()
+        click("حذف تقدم الحفظ من الجهاز")
+        click("حذف البيانات")
+        rule.awaitHifzReady()
     }
 
     private fun click(text: String) {
@@ -47,6 +51,55 @@ class HifzUiSmokeTest {
         val img = rule.onRoot().captureToImage().asAndroidBitmap()
         file.outputStream().use { stream ->
             check(img.compress(Bitmap.CompressFormat.PNG, 100, stream))
+        }
+    }
+
+    @Test fun liveSystemFontChangeRecreatesWithoutLosingTheCurrentAttempt() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val context = instrumentation.targetContext
+        val initial = context.resources.configuration.fontScale
+        val changed = if (initial > 1.2f) 1f else 1.5f
+        fun setScale(value: Float) {
+            if (kotlin.math.abs(context.resources.configuration.fontScale - value) < 0.01f) {
+                rule.awaitHifzReady(); return
+            }
+            val previous = rule.activity
+            val descriptor = instrumentation.uiAutomation.executeShellCommand("settings put system font_scale $value")
+            ParcelFileDescriptor.AutoCloseInputStream(descriptor).use { it.readBytes() }
+            rule.waitUntil(15000) {
+                runCatching { rule.activity !== previous &&
+                    kotlin.math.abs(rule.activity.resources.configuration.fontScale - value) < 0.01f
+                }.getOrDefault(false)
+            }
+            rule.awaitHifzReady()
+        }
+        rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+        repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+        click("تلميح")
+        val expected = ProgressStore(context).session()!!
+        try {
+            setScale(changed)
+            org.junit.Assert.assertEquals(expected, ProgressStore(context).session())
+            setScale(initial)
+            org.junit.Assert.assertEquals(expected, ProgressStore(context).session())
+        } finally { setScale(initial) }
+    }
+
+    @Test fun repeatedVerifiedLoadsRecreationAndDeletionKeepAttemptStateConsistent() {
+        val store = ProgressStore(InstrumentationRegistry.getInstrumentation().targetContext)
+        repeat(4) {
+            rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+            repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+            click("تلميح")
+            val expected = store.session()!!
+            rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+            org.junit.Assert.assertEquals(expected, store.session())
+            rule.onNodeWithText("الإعدادات").performClick(); rule.waitForIdle()
+            click("حذف تقدم الحفظ من الجهاز"); click("حذف البيانات")
+            rule.awaitHifzReady()
+            org.junit.Assert.assertNull(store.session())
+            rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+            org.junit.Assert.assertNull(store.session())
         }
     }
 

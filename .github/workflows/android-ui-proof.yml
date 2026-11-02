@@ -29,6 +29,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Reserve disk space on the disposable emulator runner
+        # Android tests do not use the runner's preinstalled .NET SDK.
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          df -h /
       - name: Install pinned native ASR build tools
         shell: bash
         run: |
@@ -47,9 +52,13 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
+          disk-size: 2048M
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
           script: bash tools/run_device_proof.sh
+      - name: Summarize actual instrumentation results in logs
+        if: always()
+        run: python tools/summarize_test_results.py --instrumentation ui-proof/instrumentation.txt ui-proof/instrumentation-large-font.txt
       - name: Upload genuine emulator screenshots
         if: success()
         uses: actions/upload-artifact@v4
@@ -65,4 +74,6 @@ jobs:
           path: |
             app/build/outputs/androidTest-results/
             ui-proof/instrumentation.txt
+            ui-proof/instrumentation-large-font.txt
+            ui-proof/logcat-failure.txt
           if-no-files-found: ignore

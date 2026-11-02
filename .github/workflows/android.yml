@@ -50,24 +50,24 @@ jobs:
           gradle-version: '8.9'
       - name: Run unit tests and assemble APK
         run: gradle :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
+      - name: Print full lint diagnostics
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          reports = list(Path('app/build').rglob('lint-results-debug.txt'))
+          for report in reports:
+              print(report.read_text())
+          if not reports:
+              print('No lint text report produced; inspect the build step above.')
+          PY
+      - name: Summarize actual JVM results in logs
+        if: always()
+        run: python tools/summarize_test_results.py app/build/test-results/testDebugUnitTest
       - name: Verify pinned ASR model, licenses and native packaging
         run: python tools/verify_native_asr_apk.py app/build/outputs/apk/debug/app-debug.apk
-      - name: Preserve native packaging evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: HifzAI-native-asr-packaging
-          path: build/native-asr/packaging.json
-          if-no-files-found: error
       - name: Enforce local-only permissions in built APK
         run: python tools/verify_local_only.py --apk app/build/outputs/apk/debug/app-debug.apk --aapt2 "$ANDROID_HOME/build-tools/35.0.0/aapt2"
-      - name: Preserve local-only APK evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: HifzAI-local-only-permissions
-          path: build/local-only/permissions.json
-          if-no-files-found: error
       - name: Verify APK signature and alignment
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/app-debug.apk
@@ -110,3 +110,17 @@ jobs:
             app/build/test-results/
             app/build/reports/tests/
             app/build/reports/lint-results-debug.*
+      - name: Preserve native packaging evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-native-asr-packaging
+          path: build/native-asr/packaging.json
+          if-no-files-found: error
+      - name: Preserve local-only APK evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-local-only-permissions
+          path: build/local-only/permissions.json
+          if-no-files-found: error

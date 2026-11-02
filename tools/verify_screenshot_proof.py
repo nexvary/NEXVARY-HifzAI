@@ -7,7 +7,7 @@ import sys
 import zlib
 from pathlib import Path
 
-PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters partitions range private-audio asr asr-microphone'.split()
+PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters partitions range private-audio asr asr-microphone agenda agenda-filters'.split()
 
 def verify_png(path):
     data = path.read_bytes()

@@ -1,6 +1,7 @@
 """Run actual tests and retain a source-bound JSON result, including failures."""
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import time
@@ -51,6 +52,12 @@ def main():
     output = ROOT/'build/python/test-results.json'
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2, ensure_ascii=False)+'\n')
+    # Keep counts in logs and the job summary even if artifact upload quota is exhausted.
+    summary = {key: report[key] for key in ('source_commit', 'working_tree_dirty', 'tests_run', 'failures', 'errors', 'skipped', 'successful')}
+    print(json.dumps(summary, indent=2))
+    if os.environ.get('GITHUB_STEP_SUMMARY'):
+        with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:
+            stream.write('## Python technical checks\n\n```json\n'+json.dumps(summary, indent=2)+'\n```\n')
     return 0 if result.wasSuccessful() else 1
 
 

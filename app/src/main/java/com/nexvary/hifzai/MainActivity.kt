@@ -54,6 +54,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -98,6 +99,12 @@ import com.nexvary.hifzai.learning.SimilarityIndex
 import com.nexvary.hifzai.learning.VerifiedVerse
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
+import androidx.compose.runtime.key
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import com.nexvary.hifzai.learning.LearningGoal
+import com.nexvary.hifzai.learning.LearningTrends
+import com.nexvary.hifzai.learning.GentleReturnPolicy
 import java.time.LocalDate
 
 internal val quranTypeface = FontFamily(Font(R.font.amiri_quran))
@@ -135,10 +142,27 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun App() {
+    // Restore the generation together with its children. Resetting it to zero on
+    // recreation can leave a previous generation's saved session unconsumed;
+    // the next deletion would then restore that old session when its key repeats.
+    var generation by rememberSaveable { mutableIntStateOf(0) }
+    key(generation) { AppContent { generation++ } }
+}
+
+@Composable
+private fun AppContent(resetRuntime: () -> Unit) {
     val context = LocalContext.current
-    val corpusResult = remember(context) { runCatching { QuranCorpus.load(context) } }
-    val corpus = corpusResult.getOrNull()
-    if (corpus == null) {
+    var corpusResult by remember(context) { mutableStateOf<Result<QuranCorpus>?>(null) }
+    LaunchedEffect(context) {
+        corpusResult = withContext(Dispatchers.IO) { runCatching { QuranCorpus.load(context) } }
+    }
+    val corpus = corpusResult?.getOrNull()
+    if (corpusResult == null) {
+        Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
+            Text("جارٍ التحقق من النص القرآني المحلي…")
+            androidx.compose.material3.LinearProgressIndicator(Modifier.fillMaxWidth())
+        }
+    } else if (corpus == null) {
         Column(
             Modifier.fillMaxSize().background(navy).padding(24.dp),
             verticalArrangement = Arrangement.Center
@@ -147,8 +171,15 @@ private fun App() {
             Text("تم إيقاف عرض المصحف لحماية سلامة النص. أعد تثبيت نسخة سليمة من المصدر الرسمي.",
                 color = silver)
         }
-        return
+    } else {
+        VerifiedAppContent(corpus, resetRuntime)
     }
+}
+
+/** Keep the verified screen's remembered state in its own unconditional composition. */
+@Composable
+private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
+    val context = LocalContext.current
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
     val voicePractice = remember(context) { PrivateRecitationPractice(context) }
@@ -197,6 +228,10 @@ private fun App() {
     val scrollState = rememberScrollState()
     var quranFontSize by remember { mutableIntStateOf(store.fontSize) }
     var advanced by remember { mutableStateOf(store.advanced) }
+    var learningGoal by remember { mutableStateOf(store.learningGoal) }
+    var favoriteReciter by remember { mutableStateOf(store.favoriteReciter) }
+    var gentleReturnEnabled by remember { mutableStateOf(store.gentleReturnEnabled) }
+    var gentleReturnAnchor by remember { mutableStateOf(store.gentleReturnAnchorDay) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var jumpQuery by rememberSaveable { mutableStateOf("") }
     var stage by rememberSaveable { mutableStateOf(savedSession?.stage ?: PracticeKind.READ) }
@@ -204,15 +239,20 @@ private fun App() {
     var revealed by remember { mutableStateOf(false) }
     var answerWasRevealed by rememberSaveable { mutableStateOf(savedSession?.exposed ?: false) }
     var difficulty by rememberSaveable { mutableStateOf(savedSession?.difficulty ?: DifficultyTag.NONE) }
+    var followsDailyPlan by rememberSaveable { mutableStateOf(savedSession?.followsDailyPlan ?: false) }
+    var dailyPlanChapter by rememberSaveable { mutableIntStateOf(savedSession?.planChapter?.takeIf { it > 0 } ?: selectedSurah) }
     var message by remember { mutableStateOf("") }
     var confirmClear by remember { mutableStateOf(false) }
-    val today = LocalDate.now().toEpochDay()
+    var today by remember { mutableLongStateOf(LocalDate.now().toEpochDay()) }
     val verse = verses[index]
     val currentCard = cards[verse.id] ?: ReviewCard(verse.id)
     val fingerprint = memories[verse.id] ?: MemoryFingerprint(verse.id)
-    val recommendation = MemoryCoach.recommend(currentCard, fingerprint)
+    val recommendation = LearningTrends.recentRecommendation(store.history(verse.id), today)
+        ?: MemoryCoach.recommend(currentCard, fingerprint)
     val dueCount = MemoryCoach.dueCount(cards.values, today)
-    val dailyPlan = DailyMemorizationPlan.create(verses, cards, today)
+    val dayWork = store.workload(today)
+    val planChapter = if (followsDailyPlan) dailyPlanChapter else selectedSurah
+    val dailyPlan = learningGoal.planFor(corpus, cards, today, planChapter, dayWork)
     val studied = memories.values.count { it.attempts > 0 }
     val independent = MemoryCoach.independentRecallPercent(memories.values)
     val attempts = memories.values.sumOf { it.attempts }
@@ -225,8 +265,11 @@ private fun App() {
     }
 
     fun chooseSurah(chapter: Int) {
+        followsDailyPlan = false
         selectedSurah = chapter.coerceIn(1, 114)
         index = 0
+        stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
+        difficulty = DifficultyTag.NONE; rangeStart = 0; rangeEnd = 0
         readerPage = 0
         insightsPage = 0
         chapterQuery = ""
@@ -234,21 +277,12 @@ private fun App() {
         screen = Screen.MUSHAF
     }
 
-    fun openCorpusVerse(chosen: VerifiedVerse) {
+    fun openPracticeVerse(chosen: VerifiedVerse, training: PracticeKind, followPlan: Boolean) {
+        followsDailyPlan = followPlan
+        rangeStart = 0; rangeEnd = 0
         selectedSurah = chosen.chapter
         index = chosen.verse - 1
         readerPage = index / 8
-        stage = PracticeKind.MASK_LIGHT
-        hintCount = 0
-        revealed = false
-        answerWasRevealed = false
-        typedRecall = ""
-        difficulty = DifficultyTag.NONE
-        screen = Screen.PRACTICE
-    }
-
-    fun openVerse(newIndex: Int, training: PracticeKind = PracticeKind.READ) {
-        index = newIndex.coerceIn(0, verses.lastIndex)
         stage = training
         hintCount = 0
         revealed = false
@@ -258,15 +292,24 @@ private fun App() {
         screen = Screen.PRACTICE
     }
 
+    fun openCorpusVerse(chosen: VerifiedVerse) = openPracticeVerse(chosen, PracticeKind.MASK_LIGHT, false)
+
+    fun openVerse(newIndex: Int, training: PracticeKind = PracticeKind.READ, followPlan: Boolean = false) {
+        openPracticeVerse(verses[newIndex.coerceIn(0, verses.lastIndex)], training, followPlan)
+    }
+
     fun focusToday() {
-        val first = MemoryCoach.studyOrder(verses, cards, today)
-            .firstOrNull { it.id in dailyPlan.allVerseIds }
-            ?: MemoryCoach.studyOrder(verses, cards, today).first()
-        val nextIndex = verses.indexOfFirst { it.id == first.id }.coerceAtLeast(0)
-        openVerse(nextIndex, MemoryCoach.recommend(
+        today = LocalDate.now().toEpochDay()
+        val origin = if (followsDailyPlan) dailyPlanChapter else selectedSurah
+        val livePlan = learningGoal.planFor(corpus, cards, today, origin, store.workload(today))
+        val firstId = livePlan.allVerseIds.firstOrNull()
+        if (firstId == null) { message = "لا توجد آيات ضمن هدفك الحالي؛ عدّل الخطة أو اختر آية يدويًا"; return }
+        val first = corpus.verses.first { it.id == firstId }
+        dailyPlanChapter = origin
+        openPracticeVerse(first, MemoryCoach.recommend(
             cards[first.id] ?: ReviewCard(first.id),
             memories[first.id] ?: MemoryFingerprint(first.id)
-        ).kind)
+        ).kind, followPlan = true)
     }
 
     fun changeStage(next: PracticeKind) {
@@ -279,14 +322,18 @@ private fun App() {
     fun jumpTo(chapter: Int, ayah: Int) {
         val found = corpus.find(chapter, ayah)
         if (found == null) { message = "رقم السورة أو الآية غير موجود"; return }
+        followsDailyPlan = false
         selectedSurah = chapter
         index = ayah - 1
+        stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
+        difficulty = DifficultyTag.NONE; rangeStart = 0; rangeEnd = 0
         readerPage = index / 8
         screen = Screen.MUSHAF
         message = "تم الانتقال إلى " + corpus.info(chapter).arabicName + " • " + ayah
     }
 
     fun grade(grade: RecallGrade) {
+        today = LocalDate.now().toEpochDay()
         // Revealed answers must never count as independent recall.
         val assisted = hintCount + if (answerWasRevealed) 1 else 0
         val effectiveGrade = RecallLadder.boundedGrade(grade, hintCount, answerWasRevealed)
@@ -296,18 +343,39 @@ private fun App() {
         )
         cards[verse.id] = newCard
         memories[verse.id] = newMemory
-        store.save(newCard, newMemory)
-        store.observe(verse.id, RecallObservation(today, effectiveGrade, hintCount, answerWasRevealed, difficulty))
+        store.recordAssessment(newCard, newMemory, RecallObservation(today, effectiveGrade, hintCount, answerWasRevealed, difficulty, stage),
+            firstAttempt = fingerprint.attempts == 0 && currentCard.repetitions == 0 && currentCard.lapses == 0)
+        gentleReturnAnchor = store.gentleReturnAnchorDay
         message = "سُجل تقييم الآية " + verse.verse +
             (if (assisted > 0) " (بمساعدة)" else " (بدون كشف)") +
             " • موعد المراجعة بعد " + newCard.intervalDays + " يوم"
-        val next = if (effectiveGrade == RecallGrade.AGAIN) index else (index + 1) % verses.size
-        openVerse(next)
+        if (followsDailyPlan && effectiveGrade != RecallGrade.AGAIN) {
+            val nextId = learningGoal.planFor(corpus, cards, today, dailyPlanChapter, store.workload(today)).allVerseIds.firstOrNull()
+            if (nextId == null) {
+                store.clearSession(); followsDailyPlan = false
+                stage = PracticeKind.READ; hintCount = 0; revealed = false; answerWasRevealed = false
+                typedRecall = ""; difficulty = DifficultyTag.NONE
+                if (selectedSurah != dailyPlanChapter) { selectedSurah = dailyPlanChapter; index = 0; readerPage = 0 }
+                message += " • انتهت الخطة المقترحة لليوم؛ يبقى التدريب اليدوي متاحًا"
+                screen = Screen.TODAY
+            } else {
+                val advice = MemoryCoach.recommend(cards.getValue(nextId), memories.getValue(nextId))
+                openPracticeVerse(corpus.verses.first { it.id == nextId }, advice.kind, followPlan = true)
+            }
+        } else {
+            val next = if (effectiveGrade == RecallGrade.AGAIN) index else (index + 1) % verses.size
+            openVerse(next, followPlan = followsDailyPlan)
+        }
     }
 
     DisposableEffect(context, voicePractice) {
         val activity = context as? ComponentActivity
         val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                today = LocalDate.now().toEpochDay()
+                gentleReturnEnabled = store.gentleReturnEnabled
+                gentleReturnAnchor = store.gentleReturnAnchorDay
+            }
             if (event == Lifecycle.Event.ON_STOP) {
                 voicePractice.erase()
                 typedRecall = ""
@@ -317,9 +385,10 @@ private fun App() {
         activity?.lifecycle?.addObserver(observer)
         onDispose { activity?.lifecycle?.removeObserver(observer) }
     }
-    LaunchedEffect(screen, selectedSurah, index, stage, hintCount, answerWasRevealed, difficulty) {
+    LaunchedEffect(screen, selectedSurah, index, stage, hintCount, answerWasRevealed, difficulty, followsDailyPlan, dailyPlanChapter) {
         if (screen == Screen.PRACTICE) store.saveSession(
-            PracticeSession(selectedSurah, index + 1, stage, hintCount, answerWasRevealed, difficulty)
+            PracticeSession(selectedSurah, index + 1, stage, hintCount, answerWasRevealed, difficulty,
+                followsDailyPlan = followsDailyPlan, planChapter = if (followsDailyPlan) dailyPlanChapter else 0)
         )
     }
     LaunchedEffect(quranFontSize, advanced) {
@@ -331,6 +400,7 @@ private fun App() {
         voiceMessage = "التسجيل الصوتي اختياري ولا يغادر هاتفك"
     }
     LaunchedEffect(screen, selectedSurah, readerPage, insightsPage) {
+        today = LocalDate.now().toEpochDay()
         scrollState.scrollTo(0)
     }
 
@@ -351,7 +421,7 @@ private fun App() {
                 )
                 NavigationBarItem(
                     selected = screen == Screen.PRACTICE,
-                    onClick = { screen = Screen.PRACTICE },
+                    onClick = { followsDailyPlan = false; screen = Screen.PRACTICE },
                     icon = { Icon(Icons.Rounded.AutoStories, contentDescription = null) },
                     label = { Text("الحفظ") }
                 )
@@ -406,6 +476,15 @@ private fun App() {
             }
             when (screen) {
                 Screen.HOME -> {
+                    if (GentleReturnPolicy.shouldSuggest(gentleReturnEnabled, gentleReturnAnchor, today)) {
+                        Text("مرّ أسبوع دون تدريب مسجل. إن رغبت، عد بجلسة قصيرة على مهلك.", color = gold)
+                        OutlinedButton(onClick = {
+                            store.postponeGentleReturn(today); gentleReturnAnchor = today
+                        }) { Text("ذكّرني بعد أسبوع") }
+                        OutlinedButton(onClick = {
+                            store.setGentleReturn(false, today); gentleReturnEnabled = false; gentleReturnAnchor = null
+                        }) { Text("أوقف اقتراح العودة") }
+                    }
                     if (store.session() != null) {
                         OutlinedButton(onClick = {
                             val active = store.session()
@@ -413,14 +492,15 @@ private fun App() {
                                 selectedSurah = active.chapter; index = active.ayah - 1
                                 stage = active.stage; hintCount = active.hints
                                 answerWasRevealed = active.exposed; difficulty = active.difficulty
+                                followsDailyPlan = active.followsDailyPlan
+                                dailyPlanChapter = active.planChapter.takeIf { it > 0 } ?: active.chapter
                                 rangeStart = active.rangeStart; rangeEnd = active.rangeEnd
                                 revealed = false
                                 screen = if (rangeStart > 0) Screen.RANGE_PRACTICE else Screen.PRACTICE
                             }
                         }, modifier = Modifier.fillMaxWidth()) { Text("استكمل جلسة الحفظ السابقة") }
                     }
-                    Section("خطة اليوم", "سورة " + corpus.info(selectedSurah).arabicName +
-                        " • " + verses.size + " آية")
+                    Section("خطة اليوم", "مراجعات المصحف كله • الحفظ الجديد: سورة " + corpus.info(planChapter).arabicName)
                     PrimaryButton("اختبار استرجاع من غير بداية السورة", Modifier.fillMaxWidth()) {
                         val next = (index + 1) % verses.size
                         openVerse(next, PracticeKind.RECALL)
@@ -428,6 +508,8 @@ private fun App() {
                     Text("الآيات المستحقة: " + dailyPlan.dueVerseIds.size +
                         " • آيات جديدة مقترحة: " + dailyPlan.newVerseIds.size,
                         color = green, fontSize = 14.sp)
+                    Text("آيات قيّمتها اليوم: جديد " + dayWork.newVerseIds.size + "/" + learningGoal.newVerses +
+                        " • مراجعة " + dayWork.reviewVerseIds.size + "/" + learningGoal.reviews, color = muted)
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         MetricCard("مراجعات مستحقة", dueCount.toString(), Modifier.weight(1f))
                         MetricCard("آيات دُرست", studied.toString() + " / " + corpus.verses.size, Modifier.weight(1f))
@@ -751,6 +833,20 @@ private fun App() {
                         MetricCard("محاولات الاسترجاع", attempts.toString(), Modifier.weight(1f))
                         MetricCard("بدون تلميح", independent.toString() + "%", Modifier.weight(1f))
                     }
+                    var observations by remember(attempts) { mutableStateOf<List<RecallObservation>?>(null) }
+                    LaunchedEffect(attempts, store, corpus) {
+                        observations = withContext(Dispatchers.IO) { corpus.verses.flatMap { store.history(it.id) } }
+                    }
+                    val retained = observations
+                    if (retained == null) Text("جارٍ قراءة المحاولات المحلية…")
+                    else {
+                        WeeklyLearningCard(LearningTrends.week(retained, today), LearningTrends.week(retained, today - 7))
+                        LearningTrends.byMode(retained, today).forEach { (kind, summary) ->
+                            Text((if (kind == PracticeKind.BRIDGE) "ربط الآيات" else "استرجاع الآية") +
+                                " • " + summary.attempts + " محاولة • " +
+                                (summary.independentPercent?.let { "$it% دون مساعدة" } ?: "لا بيانات"))
+                        }
+                    }
                     verses.drop(insightsPage * 15).take(15).forEachIndexed { pageOffset, item ->
                         val i = insightsPage * 15 + pageOffset
                         val memory = memories[item.id] ?: MemoryFingerprint(item.id)
@@ -801,6 +897,10 @@ private fun App() {
                                     verticalArrangement = Arrangement.spacedBy(6.dp)
                                 ) {
                                     Text(person.nameArabic, color = gold, fontSize = 18.sp)
+                                    OutlinedButton(onClick = {
+                                        favoriteReciter = if (favoriteReciter == person.slug) null else person.slug
+                                        store.favoriteReciter = favoriteReciter
+                                    }) { Text(if (favoriteReciter == person.slug) "قارئي المفضل • إلغاء" else "اختيار قارئ مفضل") }
                                     Text("بيانات تعريفية فقط — التلاوات قيد فحص حقوق الاستخدام",
                                         color = muted, fontSize = 13.sp)
                                 }
@@ -839,16 +939,30 @@ private fun App() {
                 }
                 Screen.TODAY -> {
                     Section("الخطة اليومية", "مراجعات المصحف كله ثم حفظ جديد في السورة المختارة")
-                    val plan = DailyMemorizationPlan.create(corpus.verses, cards, today, maxNew = 0)
-                    Text("المستحقة اليوم: " + dueCount + " • تُعرض أول ١٥ مراجعة", color = green)
+                    val plan = dailyPlan
+                    Text("المستحقة اليوم: " + dueCount + " • المعروض حسب خطتك: " + plan.dueVerseIds.size, color = green)
+                    Text("الوضع: " + learningGoal.mode.arabic + " • الحفظ الجديد: سورة " + corpus.info(planChapter).arabicName + " • الهدف: " + learningGoal.newVerses)
                     plan.dueVerseIds.forEach { id ->
                         val item = corpus.verses.first { it.id == id }
                         OutlinedButton(onClick = { openCorpusVerse(item) }, modifier = Modifier.fillMaxWidth()) {
                             Text(corpus.info(item.chapter).arabicName + " • الآية " + item.verse)
                         }
                     }
-                    if (plan.dueVerseIds.isEmpty()) Text("لا توجد مراجعات مستحقة؛ ابدأ جلسة قصيرة من السورة المختارة", color = muted)
-                    PrimaryButton("ابدأ الحفظ الجديد أو مراجعة السورة", Modifier.fillMaxWidth()) { focusToday() }
+                    if (plan.dueVerseIds.isEmpty()) Text("لا توجد مراجعات مقترحة إضافية ضمن حد اليوم. يمكنك اختيار آية يدويًا.", color = muted)
+                    Text("آيات قيّمتها اليوم: جديد " + dayWork.newVerseIds.size + " • مراجعة " + dayWork.reviewVerseIds.size +
+                        ". إعادة تقييم الآية نفسها لا يخصم موضعًا إضافيًا من حد اليوم.", color = muted)
+                    val covered = dayWork.allVerseIds
+                    val retries = corpus.verses.filter { item ->
+                        val card = cards[item.id]
+                        item.id in covered && card != null && card.lapses > 0 && card.dueEpochDay <= today
+                    }.take(15)
+                    if (retries.isNotEmpty()) Text("إعادة محاولة اختيارية لمواضع اليوم المتعثرة • أول ١٥ موضعًا", color = gold)
+                    retries.forEach { item ->
+                        OutlinedButton(onClick = { openCorpusVerse(item) }, modifier = Modifier.fillMaxWidth()) {
+                            Text("أعد المحاولة • " + corpus.info(item.chapter).arabicName + " • " + item.verse)
+                        }
+                    }
+                    PrimaryButton("ابدأ الخطة المقترحة", Modifier.fillMaxWidth()) { focusToday() }
                     Text("أسبوعي وشهري: مواعيد الآيات تُحسب من تقييمك الذاتي؛ لا تُضاعف الخوارزمية جلسات إلزامية دون حاجة.", color = muted)
                 }
                 Screen.PRIVACY -> {
@@ -914,25 +1028,41 @@ private fun App() {
                         corpus.verses.filter { it.id in rangeStart..rangeEnd }
                     }
                     RangePracticeScreen(corpus, range, store, record = { item, result, hints, exposed, bridge ->
+                        today = LocalDate.now().toEpochDay()
                         val bounded = RecallLadder.boundedGrade(result, hints, exposed)
-                        val card = HifzScheduler.grade(cards[item.id] ?: ReviewCard(item.id), bounded, today)
-                        val memory = MemoryCoach.record(memories[item.id] ?: MemoryFingerprint(item.id),
+                        val beforeCard = cards[item.id] ?: ReviewCard(item.id)
+                        val beforeMemory = memories[item.id] ?: MemoryFingerprint(item.id)
+                        val card = HifzScheduler.grade(beforeCard, bounded, today)
+                        val memory = MemoryCoach.record(beforeMemory,
                             bounded, hints + if (exposed) 1 else 0, bridge)
                         cards[item.id] = card; memories[item.id] = memory
-                        store.save(card, memory)
-                        store.observe(item.id, RecallObservation(today, bounded, hints, exposed, DifficultyTag.NONE))
+                        store.recordAssessment(card, memory, RecallObservation(today, bounded, hints, exposed, DifficultyTag.NONE, if (bridge) PracticeKind.BRIDGE else PracticeKind.RECALL),
+                            firstAttempt = beforeMemory.attempts == 0 && beforeCard.repetitions == 0 && beforeCard.lapses == 0)
+                        gentleReturnAnchor = store.gentleReturnAnchorDay
                     }, finish = {
                         message = "انتهت جلسة النطاق؛ راجع خطة اليوم للمواعيد التالية"
                         screen = Screen.TODAY
                     })
                 }
-                Screen.TEACHERS -> TeacherNotebookScreen()
+                Screen.TEACHERS -> TeacherNotebookScreen(corpus, LocalDate.ofEpochDay(today))
                 Screen.EXERCISES -> VerseExercisesScreen(corpus, verses, index, ::openCorpusVerse)
                 Screen.SETTINGS -> {
                     OutlinedButton(onClick = { screen = Screen.LOCAL_TRANSCRIPTION }, modifier = Modifier.fillMaxWidth()) {
                         Text("تفريغ صوتي محلي تجريبي")
                     }
                     Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
+                    LearningGoalControls(learningGoal) { value ->
+                        learningGoal = value; store.learningGoal = value
+                    }
+                    Text("تذكير العودة داخل التطبيق", style = MaterialTheme.typography.titleLarge)
+                    Text("اختياري: بعد أسبوع دون تدريب مسجل نقترح جلسة قصيرة عند فتح الرئيسية. لا إشعارات أو إرسال بيانات. الإيقاف يمحو تاريخ هذا التذكير.")
+                    OutlinedButton(onClick = {
+                        gentleReturnEnabled = !gentleReturnEnabled
+                        store.setGentleReturn(gentleReturnEnabled, today)
+                        gentleReturnAnchor = store.gentleReturnAnchorDay
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Text(if (gentleReturnEnabled) "إيقاف تذكير العودة" else "تفعيل تذكير العودة الاختياري")
+                    }
                     OutlinedButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth()) {
                         Text(if (advanced) "الوضع الحالي: متقدم • التحويل إلى مبسط" else "الوضع الحالي: مبسط • التحويل إلى متقدم")
                     }
@@ -968,12 +1098,12 @@ private fun App() {
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             OutlinedButton(onClick = { confirmClear = false }) { Text("إلغاء") }
                             Button(onClick = {
-                                if (store.clear() && TeacherNotebook(context).clear()) {
-                                    voicePractice.erase()
-                                    typedRecall = ""
-                                    cards.keys.toList().forEach { cards[it] = ReviewCard(it) }
-                                    memories.keys.toList().forEach { memories[it] = MemoryFingerprint(it) }
-                                    message = "حُذفت بيانات التدريب من هذا الجهاز"
+                                voicePractice.erase()
+                                typedRecall = ""
+                                val progressCleared = store.clear()
+                                val notebookCleared = TeacherNotebook(context).clear()
+                                if (progressCleared && notebookCleared) {
+                                    resetRuntime()
                                 } else {
                                     message = "تعذر حذف بعض البيانات؛ حاول مرة أخرى"
                                 }
