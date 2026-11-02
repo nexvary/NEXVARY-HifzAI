@@ -126,6 +126,59 @@ class LocalDataAndAudioTest {
         } finally { store.clear() }
     }
 
+    @Test fun notebookIndividualEditsAndDeletionPreserveUnrelatedRecords() {
+        val notebook = TeacherNotebook(context)
+        notebook.clear()
+        try {
+            val corpus = QuranCorpus.load(context)
+            notebook.addStudent("ملف أ", true); notebook.addStudent("ملف ب", true)
+            val a = notebook.students()[0]; val b = notebook.students()[1]
+            notebook.assignRange(a.id, 1, 1, 3, "2026-11-10", corpus)
+            notebook.assignRange(a.id, 1, 4, 7, "2026-11-11", corpus)
+            notebook.assignRange(b.id, 114, 1, 6, "2026-11-12", corpus)
+            val task = notebook.assignments().first()
+            val untouched = notebook.assignments().drop(1).toSet()
+            notebook.completeAssignment(task.id, true)
+            val before = notebook.assignments().toSet()
+            for (operation in listOf<() -> Unit>(
+                { notebook.updateAssignment(task.id, 1, 1, 8, "2026-11-13", corpus) },
+                { notebook.updateAssignment(task.id, 1, 4, 1, "2026-11-13", corpus) },
+                { notebook.updateAssignment(task.id, 1, 1, 3, "2026-02-30", corpus) },
+                { notebook.updateAssignment("missing", 1, 1, 3, "2026-11-13", corpus) },
+                { notebook.removeAssignment("missing") })) {
+                assertTrue(runCatching(operation).isFailure)
+                assertEquals(before, notebook.assignments().toSet())
+            }
+            notebook.updateAssignment(task.id, 1, 1, 3, "2026-11-14", corpus)
+            assertTrue(notebook.assignments().first { it.id == task.id }.completed)
+            notebook.updateAssignment(task.id, 2, 1, 5, "2026-11-15", corpus)
+            val changed = TeacherNotebook(context).assignments().first { it.id == task.id }
+            assertEquals(a.id, changed.studentId); assertEquals(2, changed.chapter)
+            assertFalse(changed.completed)
+            notebook.removeAssignment(task.id)
+            assertEquals(untouched, TeacherNotebook(context).assignments().toSet())
+
+            notebook.addLesson(a.id, "اختبار أ", "2026-11-10T18:30", "ملاحظة أ")
+            notebook.addLesson(a.id, "اختبار أ٢", "2026-11-11T18:30", "ملاحظة أ٢")
+            notebook.addLesson(b.id, "اختبار ب", "2026-11-12T18:30", "ملاحظة ب")
+            val lesson = notebook.lessons().first()
+            val otherLessons = notebook.lessons().drop(1)
+            notebook.recordComplaint(lesson.id, "ستحذف")
+            notebook.recordComplaint(otherLessons.first().id, "تبقى")
+            val students = notebook.students()
+            assertTrue(runCatching { notebook.removeLesson("missing") }.isFailure)
+            assertTrue(runCatching { notebook.updateLesson("missing", "", true) }.isFailure)
+            assertEquals(3, notebook.lessons().size)
+            assertEquals(2, notebook.complaints().size)
+            notebook.removeLesson(lesson.id)
+            val loaded = TeacherNotebook(context)
+            assertEquals(otherLessons, loaded.lessons())
+            assertEquals(listOf(NotebookComplaint(otherLessons.first().id, "تبقى")), loaded.complaints())
+            assertEquals(students, loaded.students())
+            assertEquals(untouched, loaded.assignments().toSet())
+        } finally { notebook.clear() }
+    }
+
     @Test fun notebookAssignmentBoundsReschedulingAndCascadingDeletion() {
         val notebook = TeacherNotebook(context)
         notebook.clear()

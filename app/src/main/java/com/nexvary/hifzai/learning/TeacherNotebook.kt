@@ -68,7 +68,9 @@ class TeacherNotebook(context: Context) {
     }
     fun updateLesson(id: String, note: String, completed: Boolean) {
         require(note.length <= 500)
-        saveLessons(lessons().map { if (it.id == id) it.copy(note = note, completed = completed) else it })
+        val current = lessons()
+        require(current.any { it.id == id }) { "الجلسة غير موجودة" }
+        saveLessons(current.map { if (it.id == id) it.copy(note = note, completed = completed) else it })
     }
     fun rescheduleLesson(id: String, dateTime: String, note: String) {
         val lesson = lessons().first { it.id == id }
@@ -93,15 +95,35 @@ class TeacherNotebook(context: Context) {
         }
     }
     fun assignRange(studentId: String, chapter: Int, first: Int, last: Int, dueDate: String, corpus: QuranCorpus) {
-        require(students().any { it.id == studentId && it.guardianConsent }) { "ملف الطالب غير موجود" }
-        require(first <= last && corpus.find(chapter, first) != null && corpus.find(chapter, last) != null) {
-            "نطاق الآيات غير موجود في المصدر"
-        }
-        val due = LocalDate.parse(dueDate).toString()
+        val due = validateAssignment(studentId, chapter, first, last, dueDate, corpus)
         val current = assignments()
         require(current.size < 500) { "الحد المحلي 500 مهمة" }
         val item = NotebookAssignment(UUID.randomUUID().toString(), studentId, chapter, first, last, due, false)
         check(prefs.edit().putString("assignments", assignmentJson(current + item).toString()).commit())
+    }
+    private fun validateAssignment(studentId: String, chapter: Int, first: Int, last: Int,
+        dueDate: String, corpus: QuranCorpus): String {
+        require(students().any { it.id == studentId && it.guardianConsent }) { "ملف الطالب غير موجود" }
+        require(first <= last && corpus.find(chapter, first) != null && corpus.find(chapter, last) != null) {
+            "نطاق الآيات غير موجود في المصدر"
+        }
+        return LocalDate.parse(dueDate).toString()
+    }
+    fun updateAssignment(id: String, chapter: Int, first: Int, last: Int, dueDate: String, corpus: QuranCorpus) {
+        val current = assignments()
+        val task = requireNotNull(current.firstOrNull { it.id == id }) { "مهمة المراجعة غير موجودة" }
+        val due = validateAssignment(task.studentId, chapter, first, last, dueDate, corpus)
+        val sameRange = task.chapter == chapter && task.firstAyah == first && task.lastAyah == last
+        val updated = task.copy(chapter = chapter, firstAyah = first, lastAyah = last, dueDate = due,
+            completed = task.completed && sameRange)
+        check(prefs.edit().putString("assignments", assignmentJson(current.map {
+            if (it.id == id) updated else it
+        }).toString()).commit())
+    }
+    fun removeAssignment(id: String) {
+        val current = assignments()
+        require(current.any { it.id == id }) { "مهمة المراجعة غير موجودة" }
+        check(prefs.edit().putString("assignments", assignmentJson(current.filter { it.id != id }).toString()).commit())
     }
     fun completeAssignment(id: String, completed: Boolean) {
         val current = assignments()
@@ -110,13 +132,24 @@ class TeacherNotebook(context: Context) {
             if (it.id == id) it.copy(completed = completed) else it
         }).toString()).commit())
     }
-    private fun saveLessons(lessons: List<NotebookLesson>) {
-        val data = JSONArray()
+    private fun lessonJson(lessons: List<NotebookLesson>): JSONArray = JSONArray().also { data ->
         lessons.forEach {
             data.put(JSONObject().put("id", it.id).put("student", it.studentId).put("teacher", it.teacherLabel)
                 .put("time", it.dateTime).put("note", it.note).put("completed", it.completed))
         }
-        check(prefs.edit().putString("lessons", data.toString()).commit())
+    }
+    private fun saveLessons(lessons: List<NotebookLesson>) {
+        check(prefs.edit().putString("lessons", lessonJson(lessons).toString()).commit())
+    }
+    fun removeLesson(id: String) {
+        val current = lessons()
+        require(current.any { it.id == id }) { "الجلسة غير موجودة" }
+        val notes = JSONArray()
+        complaints().filter { it.lessonId != id }.forEach {
+            notes.put(JSONObject().put("lesson", it.lessonId).put("note", it.note))
+        }
+        check(prefs.edit().putString("lessons", lessonJson(current.filter { it.id != id }).toString())
+            .putString("complaints", notes.toString()).commit())
     }
     fun removeStudent(id: String) {
         val existingStudents = students()

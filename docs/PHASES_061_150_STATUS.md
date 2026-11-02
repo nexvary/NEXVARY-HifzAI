@@ -76,11 +76,11 @@
 | 130 | Create teacher correction notes | partial_new | TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt | دفتر محلي قابل للتعديل؛ ليس حجزًا خارجيًا أو تقدمًا موثقًا من معلم. |
 | 131 | Enable human quality review queue | partial_existing | academy/service.py; academy/console.js; TeacherNotebook.kt | خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android. |
 | 132 | Add student progress with permissions | partial_new | TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt | دفتر محلي قابل للتعديل؛ ليس حجزًا خارجيًا أو تقدمًا موثقًا من معلم. |
-| 133 | Provide teacher-assigned revision plan | partial_new | TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt | نطاق مراجعة محلي محقق بالمراجع؛ لا إرسال للطالب أو خطة موثقة من معلم مستقل. |
+| 133 | Provide teacher-assigned revision plan | partial_new | TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt; TeacherNotebookUiTest.kt | نطاق مراجعة محلي محقق بالمراجع، قابل لتعديل الآيات/الموعد والحذف المؤكد؛ تغيير الآيات يعيد فتح المهمة. لا إرسال للطالب أو خطة موثقة من معلم مستقل. |
 | 134 | Design parental consent for minors | partial_existing | academy/service.py; academy/console.js; TeacherNotebook.kt | خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android. |
 | 135 | Add safety and abuse-report workflow | partial_existing | academy/service.py; academy/console.js; TeacherNotebook.kt | خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android. |
 | 136 | Build controlled messaging policies | outside_local_scope | LOCAL_ONLY_SCOPE.md | الجلسات المتصلة/المراسلة/الشهادات/الإجازات خارج التطبيق المحلي وغير منفذة فيه. |
-| 137 | Manage teacher schedule changes | partial_new | TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt | تعديل موعد وملاحظات محلي؛ لا حجز أو إشعارات أطراف. |
+| 137 | Manage teacher schedule changes | partial_new | TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt; TeacherNotebookUiTest.kt | تعديل موعد وملاحظات وحذف جلسة منفردة مع ملاحظات المشكلة المرتبطة بها، بعد تأكيد؛ بقية الملفات محفوظة. لا حجز أو إشعارات أطراف. |
 | 138 | Issue completion attestations not ijazat | outside_local_scope | LOCAL_ONLY_SCOPE.md | الجلسات المتصلة/المراسلة/الشهادات/الإجازات خارج التطبيق المحلي وغير منفذة فيه. |
 | 139 | Define documented ijazah verification | outside_local_scope | LOCAL_ONLY_SCOPE.md | الجلسات المتصلة/المراسلة/الشهادات/الإجازات خارج التطبيق المحلي وغير منفذة فيه. |
 | 140 | Pilot with approved Quran teachers | external_evidence_required | LOCAL_ONLY_SCOPE.md | لا تجربة معلمين فعلية؛ الأكاديمية المتصلة مؤجلة. |

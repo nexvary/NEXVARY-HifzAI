@@ -50,8 +50,14 @@ service is preserved, not deployed or connected to Android.
   can suggest a gentler drill without changing the scheduling policy.
 - Favorite reciter selection is a preference; it does not unlock missing audio.
 - Local teacher notebook supports reference-validated single-surah assignments,
-  completion/reopening, lesson rescheduling and note editing. Per-student deletion
-  cascades to assignments. Nothing is sent to a teacher/student.
+  completion/reopening, lesson rescheduling and note editing. Assignments can be
+  edited or individually deleted after confirmation. Changing an assignment's
+  verses reopens it; moving only its date preserves completion. Invalid references,
+  dates and missing IDs leave stored assignments unchanged. Individual lesson
+  deletion removes only that lesson and its linked problem notes in one preferences
+  transaction; other lessons, students and assignments remain. Both deletion dialogs
+  offer cancellation. Per-student deletion still cascades to assignments.
+  Nothing is sent to a teacher/student or changes the learner's memorization progress.
 - Data deletion rebuilds Compose state, clearing in-memory session/settings/favorites
   as well as persisted data. Both data stores are attempted even if one fails.
   Quran asset loading/hash checks run on IO with explicit loading/error screens.
@@ -70,6 +76,9 @@ service is preserved, not deployed or connected to Android.
 existing Python checks. JVM tests cover plan budgets/date windows/recent advice,
 alignment/rights expiry, audio import quotas/digests and failure cleanup. Instrumentation
 adds persistence/migration, notebook assignment/cascade and actual UI reset tests.
+Notebook regressions also exercise invalid edits without mutation, range/date
+completion rules, individual deletion isolation, cancellation and Activity reload.
+The notebook UI paths run at normal and large font on the same device matrix.
 UI tests wait for asynchronous canonical verification rather than sleeping.
 
 Local checks after the continuation: **56 Python tests**

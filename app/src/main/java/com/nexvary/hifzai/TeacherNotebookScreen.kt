@@ -3,6 +3,8 @@ package com.nexvary.hifzai
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,6 +16,7 @@ import com.nexvary.hifzai.learning.NotebookRules
 import com.nexvary.hifzai.learning.QuranCorpus
 import com.nexvary.hifzai.learning.QuranSearchIndex
 import com.nexvary.hifzai.learning.NotebookLesson
+import com.nexvary.hifzai.learning.NotebookAssignment
 import java.time.LocalDate
 
 @Composable
@@ -39,6 +42,9 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
     var editedTime by remember { mutableStateOf("") }
     var editedNote by remember { mutableStateOf("") }
     var assignmentStudent by remember { mutableStateOf<String?>(null) }
+    var editingAssignment by remember { mutableStateOf<String?>(null) }
+    var deleteAssignment by remember { mutableStateOf<NotebookAssignment?>(null) }
+    var deleteLesson by remember { mutableStateOf<NotebookLesson?>(null) }
     var assignmentStart by remember { mutableStateOf("") }
     var assignmentEnd by remember { mutableStateOf("") }
     var assignmentDue by remember { mutableStateOf(LocalDate.now().toString()) }
@@ -70,13 +76,23 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                     Text("جلسات: " + lessons.count { it.studentId == student.id } +
                         " • مكتملة: " + lessons.count { it.studentId == student.id && it.completed })
                     OutlinedButton(onClick = { studentId = student.id; page = 1 }) { Text("جدولة جلسة لهذا الطالب") }
-                    OutlinedButton(onClick = { assignmentStudent = student.id; message = "" }) { Text("تعيين نطاق مراجعة محلي") }
+                    OutlinedButton(onClick = {
+                        assignmentStudent = student.id; editingAssignment = null
+                        assignmentStart = ""; assignmentEnd = ""; assignmentDue = LocalDate.now().toString(); message = ""
+                    }) { Text("تعيين نطاق مراجعة محلي") }
                     assignments.filter { it.studentId == student.id }.forEach { task ->
                         Text("مراجعة " + corpus.info(task.chapter).arabicName + " • " + task.firstAyah + "–" + task.lastAyah +
                             " • " + task.dueDate)
                         OutlinedButton(onClick = { act { notebook.completeAssignment(task.id, !task.completed) } }) {
                             Text(if (task.completed) "مكتملة • أعد فتح المهمة" else "سجّل اكتمال المراجعة")
                         }
+                        OutlinedButton(onClick = {
+                            assignmentStudent = student.id; editingAssignment = task.id
+                            assignmentStart = "${task.chapter}:${task.firstAyah}"
+                            assignmentEnd = "${task.chapter}:${task.lastAyah}"
+                            assignmentDue = task.dueDate; message = ""
+                        }) { Text("تعديل نطاق المراجعة وموعده") }
+                        OutlinedButton(onClick = { deleteAssignment = task }) { Text("حذف مهمة المراجعة") }
                     }
                     OutlinedButton(onClick = { deleteStudent = student.id }) { Text("حذف الطالب وجلساته") }
                 }
@@ -122,10 +138,25 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                         Text(if (lesson.completed) "مكتملة • أعد فتحها" else "سجّل اكتمال الجلسة")
                     }
                     OutlinedButton(onClick = { complaintLesson = lesson.id }) { Text("دوّن مشكلة محليًا") }
+                    OutlinedButton(onClick = { deleteLesson = lesson }) { Text("حذف هذه الجلسة") }
                 }
             }
         }
         notebook.complaints().forEach { Text("ملاحظة مشكلة محفوظة: " + it.note) }
+    }
+    deleteAssignment?.let { task ->
+        NotebookDeleteDialog("حذف مهمة المراجعة؟",
+            "تُحذف مهمة " + corpus.info(task.chapter).arabicName + " • " + task.firstAyah + "–" + task.lastAyah +
+                " بتاريخ " + task.dueDate + " من الدفتر فقط. تبقى بقية المهام وتقدم الحفظ كما هي.",
+            onDelete = { act { notebook.removeAssignment(task.id) }; deleteAssignment = null },
+            onDismiss = { deleteAssignment = null })
+    }
+    deleteLesson?.let { lesson ->
+        NotebookDeleteDialog("حذف الجلسة المحلية؟",
+            lesson.teacherLabel + " • " + NotebookRules.displayDateTime(lesson.dateTime) +
+                "\nتُحذف هذه الجلسة وملاحظات المشكلة المرتبطة بها نهائيًا. تبقى بقية الجلسات وملف الطالب.",
+            onDelete = { act { notebook.removeLesson(lesson.id) }; deleteLesson = null },
+            onDismiss = { deleteLesson = null })
     }
     deleteStudent?.let { id ->
         AlertDialog(onDismissRequest = { deleteStudent = null }, title = { Text("حذف الطالب؟") },
@@ -154,9 +185,11 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
             dismissButton = { TextButton(onClick = { editing = null }) { Text("إلغاء") } })
     }
     assignmentStudent?.let { id ->
-        AlertDialog(onDismissRequest = { assignmentStudent = null }, title = { Text("نطاق مراجعة محلي") },
-            text = { Column {
+        AlertDialog(onDismissRequest = { assignmentStudent = null; editingAssignment = null },
+            title = { Text(if (editingAssignment == null) "نطاق مراجعة محلي" else "تعديل مهمة المراجعة") },
+            text = { Column(Modifier.verticalScroll(rememberScrollState())) {
                 Text("تنظيم شخصي؛ لا تُرسل المهمة للطالب أو لمعلم خارجي.")
+                if (editingAssignment != null) Text("تغيير الآيات يعيد فتح المهمة؛ تغيير التاريخ وحده يحفظ حالة اكتمالها.")
                 OutlinedTextField(value = assignmentStart, onValueChange = { assignmentStart = it.take(15) },
                     label = { Text("البداية • سورة:آية") })
                 OutlinedTextField(value = assignmentEnd, onValueChange = { assignmentEnd = it.take(15) },
@@ -172,10 +205,12 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
                 val first = QuranSearchIndex.address(assignmentStart)
                 val last = QuranSearchIndex.address(assignmentEnd)
                 require(first != null && last != null && first.first == last.first) { "اختر نطاقًا صحيحًا في سورة واحدة" }
-                notebook.assignRange(id, first.first, first.second, last.second, assignmentDue, corpus)
-                assignmentStudent = null; assignmentStart = ""; assignmentEnd = ""
+                val taskId = editingAssignment
+                if (taskId == null) notebook.assignRange(id, first.first, first.second, last.second, assignmentDue, corpus)
+                else notebook.updateAssignment(taskId, first.first, first.second, last.second, assignmentDue, corpus)
+                assignmentStudent = null; editingAssignment = null; assignmentStart = ""; assignmentEnd = ""
             } }, enabled = assignmentStart.isNotBlank() && assignmentEnd.isNotBlank()) { Text("احفظ النطاق") } },
-            dismissButton = { TextButton(onClick = { assignmentStudent = null }) { Text("إلغاء") } })
+            dismissButton = { TextButton(onClick = { assignmentStudent = null; editingAssignment = null }) { Text("إلغاء") } })
     }
     complaintLesson?.let { id ->
         AlertDialog(onDismissRequest = { complaintLesson = null }, title = { Text("تدوين مشكلة محليًا") },
@@ -187,4 +222,12 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus) {
             }, enabled = complaint.isNotBlank()) { Text("احفظ على الجهاز") } },
             dismissButton = { TextButton(onClick = { complaintLesson = null }) { Text("إلغاء") } })
     }
+}
+
+@Composable
+private fun NotebookDeleteDialog(title: String, detail: String, onDelete: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(onDismissRequest = onDismiss, title = { Text(title) },
+        text = { Text(detail, Modifier.verticalScroll(rememberScrollState())) },
+        confirmButton = { TextButton(onClick = onDelete) { Text("احذف من الدفتر") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("إلغاء") } })
 }
