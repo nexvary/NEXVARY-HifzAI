@@ -116,7 +116,7 @@ private val gold = Color(0xFFD6B465)
 private val green = Color(0xFF43C8AA)
 private val muted = Color(0xFFB9C6CF)
 
-private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE, LOCAL_TRANSCRIPTION }
+private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE, LOCAL_TRANSCRIPTION, SAVED_PLACES }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -229,6 +229,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
     var quranFontSize by remember { mutableIntStateOf(store.fontSize) }
     var advanced by remember { mutableStateOf(store.advanced) }
     var learningGoal by remember { mutableStateOf(store.learningGoal) }
+    var savedPlaces by remember { mutableStateOf(store.savedPlaces(corpus)) }
     var favoriteReciter by remember { mutableStateOf(store.favoriteReciter) }
     var gentleReturnEnabled by remember { mutableStateOf(store.gentleReturnEnabled) }
     var gentleReturnAnchor by remember { mutableStateOf(store.gentleReturnAnchorDay) }
@@ -716,6 +717,9 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
                     OutlinedButton(onClick = { screen = Screen.SEARCH }, modifier = Modifier.fillMaxWidth()) {
                         Text("البحث في القرآن والانتقال المباشر")
                     }
+                    OutlinedButton(onClick = { screen = Screen.SAVED_PLACES }, modifier = Modifier.fillMaxWidth()) {
+                        Text("العلامات المرجعية")
+                    }
                     Row(Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically) {
@@ -744,6 +748,11 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
                                     store.bookmark(item.chapter, item.verse)
                                     message = "حُفظ موضع القراءة • " + item.verse
                                 }) { Text("احفظ موضع القراءة") }
+                                OutlinedButton(onClick = {
+                                    val saved = store.addSavedPlace(item.chapter, item.verse, corpus)
+                                    savedPlaces = store.savedPlaces(corpus)
+                                    message = if (saved) "أُضيفت العلامة المرجعية" else "بلغت حد العلامات؛ احذف علامة لإضافة موضع جديد"
+                                }) { Text("أضف علامة للآية ${item.verse}") }
                                 OutlinedButton(onClick = { openVerse(readerPage * 8 + pageIndex) }) {
                                     Text("تدريب الحفظ لهذه الآية")
                                 }
@@ -763,6 +772,13 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
                     Text(QuranCorpus.SOURCE_CREDIT,
                         color = muted, fontSize = 12.sp)
                 }
+                Screen.SAVED_PLACES -> SavedPlacesScreen(corpus, savedPlaces,
+                    open = { jumpTo(it.chapter, it.verse) },
+                    remove = {
+                        store.removeSavedPlace(it.chapter, it.verse, corpus)
+                        savedPlaces = store.savedPlaces(corpus)
+                        message = "حُذفت العلامة المرجعية فقط"
+                    })
                 Screen.CHAPTERS -> {
                     Section("السور القرآنية", "١١٤ سورة • اختر السورة لعرض آياتها")
                     OutlinedTextField(

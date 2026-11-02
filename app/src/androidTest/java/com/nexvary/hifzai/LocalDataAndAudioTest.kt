@@ -57,6 +57,57 @@ class LocalDataAndAudioTest {
         } finally { store.clear() }
     }
 
+    @Test fun multipleSavedPlacesKeepReadingStopDeduplicateBoundAndDeleteIndependently() {
+        val corpus = QuranCorpus.load(context)
+        val store = ProgressStore(context)
+        store.clear()
+        try {
+            store.bookmark(2, 255)
+            store.observe(1001, RecallObservation(10, RecallGrade.GOOD, 0, false, DifficultyTag.NONE))
+            assertTrue(store.addSavedPlace(114, 6, corpus))
+            assertTrue(store.addSavedPlace(2, 255, corpus))
+            assertTrue(store.addSavedPlace(114, 6, corpus))
+            assertEquals(listOf(114006, 2255), ProgressStore(context).savedPlaces(corpus).map { it.id })
+            store.removeSavedPlace(114, 6, corpus)
+            assertEquals(listOf(2255), ProgressStore(context).savedPlaces(corpus).map { it.id })
+            assertEquals(2 to 255, store.bookmark())
+            assertEquals(1, store.history(1001).size)
+            assertTrue(runCatching { store.addSavedPlace(1, 8, corpus) }.isFailure)
+            store.clear()
+            corpus.verses.take(50).forEach { assertTrue(store.addSavedPlace(it.chapter, it.verse, corpus)) }
+            assertFalse(store.addSavedPlace(114, 6, corpus))
+            assertEquals(50, ProgressStore(context).savedPlaces(corpus).size)
+            assertTrue(store.addSavedPlace(1, 1, corpus)) // duplicate succeeds at quota
+            store.removeSavedPlace(1, 1, corpus)
+            assertTrue(store.addSavedPlace(114, 6, corpus))
+            assertTrue(store.clear())
+            assertTrue(ProgressStore(context).savedPlaces(corpus).isEmpty())
+        } finally { store.clear() }
+    }
+
+    @Test fun invalidSavedPlacesCannotInventVersesOrCrashTheReader() {
+        val corpus = QuranCorpus.load(context)
+        val store = ProgressStore(context)
+        val prefs = context.getSharedPreferences("hifz_progress_v1", 0)
+        store.clear()
+        try {
+            store.bookmark(1, 2)
+            prefs.edit().putString("saved_places_v1", """[
+                {"chapter":1,"ayah":8},{"chapter":114,"ayah":6},
+                {"chapter":114,"ayah":6},{"chapter":115,"ayah":1},{"bad":true},
+                {"chapter":1.5,"ayah":1},{"chapter":"2","ayah":255},{"chapter":true,"ayah":1}
+            ]""").commit()
+            assertEquals(listOf(114006), store.savedPlaces(corpus).map { it.id })
+            prefs.edit().putString("saved_places_v1", "broken").commit()
+            assertTrue(store.savedPlaces(corpus).isEmpty())
+            prefs.edit().putString("saved_places_v1", "x".repeat(8193)).commit()
+            assertTrue(store.savedPlaces(corpus).isEmpty())
+            prefs.edit().putInt("saved_places_v1", 1).commit()
+            assertTrue(store.savedPlaces(corpus).isEmpty())
+            assertEquals(1 to 2, store.bookmark())
+        } finally { store.clear() }
+    }
+
     @Test fun progressSessionHistoryAndCorruptedPreferences() {
         val store = ProgressStore(context)
         store.clear()
