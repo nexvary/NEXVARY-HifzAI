@@ -7,14 +7,14 @@ import android.os.Handler
 import android.os.Looper
 
 /** Offline adapter for future approved assets. No external recordings bundled or fetched. */
-class LicensedRecitationPlayer(context: Context) {
+class LicensedRecitationPlayer(context: Context,
+    private val rightsHandler: Handler = Handler(Looper.getMainLooper())) {
     private val player = LocalAudioPlayer(context)
     private var currentRights: RecitationRights? = null
-    private val main = Handler(Looper.getMainLooper())
     private val expiryCheck = object : Runnable {
         override fun run() {
             if (currentRights?.permitsUse(offline = true) != true) { close(); return }
-            main.postDelayed(this, 1000)
+            rightsHandler.postDelayed(this, 1000)
         }
     }
     fun open(file: File, rights: RecitationRights, repeatCount: Int = 0) {
@@ -31,7 +31,7 @@ class LicensedRecitationPlayer(context: Context) {
         player.open(file)
         player.repeats(repeatCount)
         currentRights = rights
-        main.post(expiryCheck)
+        rightsHandler.post(expiryCheck)
     }
     /** Mapped catalogue playback; the original raw adapter remains for existing private tests. */
     fun open(asset: BoundRecitation, repeatCount: Int = 0) {
@@ -50,7 +50,7 @@ class LicensedRecitationPlayer(context: Context) {
     fun seek(positionMs: Int) = player.seek(positionMs)
     fun snapshot() = player.snapshot()
     fun close() {
-        main.removeCallbacks(expiryCheck)
+        rightsHandler.removeCallbacks(expiryCheck)
         currentRights = null
         player.close()
     }

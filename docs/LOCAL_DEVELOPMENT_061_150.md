@@ -29,8 +29,11 @@ service is preserved, not deployed or connected to Android.
   optional return anchor are saved in one preferences editor transaction.
 - [Canonical audio catalogue contracts](LOCAL_AUDIO_CATALOG.md) add real-ayah/reader
   validation, exact-byte binding and explicit contiguous sequence selection. The
-  mapped player revalidates bytes and rights before decoding. No approved external
-  recordings, automatic playback queue or reader import screen is claimed.
+  mapped player revalidates bytes and rights before decoding. A foreground queue
+  adapter now runs explicit consecutive selections with per-item repeats/speed,
+  worker-thread preparation, interruption pause and lifecycle cleanup. Real Android
+  generated-tone tests exercise sequence/stop/failure paths. No approved external
+  recordings, reader audio-library UI, gapless transitions or background service is claimed.
 
 - Continuation: deletion generations now survive Activity recreation, preventing an
   unused pre-deletion saved-state generation from restoring an old recall attempt.

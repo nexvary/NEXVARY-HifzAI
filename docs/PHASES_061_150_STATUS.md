@@ -12,10 +12,10 @@
 | 066 | Verify recording provenance and rights | external_evidence_required | THIRD_PARTY_CONTENT_REGISTER.md | يلزم إثبات مصدر وحقوق كل تسجيل من صاحب الحق. |
 | 067 | Build streaming audio adapter | outside_local_scope | LOCAL_ONLY_SCOPE.md | البث الشبكي خارج النطاق المحلي؛ لا تنفيذ. |
 | 068 | Add background audio service | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
-| 069 | Enable verse repeat and sequence | partial_existing | LocalAudioPlayer.kt; LicensedRecitationPlayer.kt | تكرار وسرعة واستئناف محلي؛ لا تسلسل تلاوات أو محتوى مرخص. |
-| 070 | Provide adjustable playback speed | partial_existing | LocalAudioPlayer.kt; LicensedRecitationPlayer.kt | تكرار وسرعة واستئناف محلي؛ لا تسلسل تلاوات أو محتوى مرخص. |
+| 069 | Enable verse repeat and sequence | partial_new | LocalRecitationQueue.kt; LocalAudioPlaybackTest.kt; LOCAL_AUDIO_CATALOG.md | تسلسل أمامي لمراجع متتالية مع تكرار وسرعة وفحص كل ملف، بنغمات اختبار صناعية. لا واجهة مكتبة صوت أو تلاوات مرخصة أو انتقال بلا فجوات أو خدمة خلفية. |
+| 070 | Provide adjustable playback speed | partial_existing | LocalAudioPlayer.kt; LicensedRecitationPlayer.kt | تكرار وسرعة واستئناف محلي، مع تسلسل أمامي داخلي؛ لا واجهة مكتبة صوت أو محتوى مرخص. |
 | 071 | Design gapless ayah transitions | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
-| 072 | Add pause and resume state | partial_existing | LocalAudioPlayer.kt; LicensedRecitationPlayer.kt | تكرار وسرعة واستئناف محلي؛ لا تسلسل تلاوات أو محتوى مرخص. |
+| 072 | Add pause and resume state | partial_existing | LocalAudioPlayer.kt; LicensedRecitationPlayer.kt | تكرار وسرعة واستئناف محلي، مع تسلسل أمامي داخلي؛ لا واجهة مكتبة صوت أو محتوى مرخص. |
 | 073 | Support headset media controls | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
 | 074 | Enable approved offline downloads | partial_new | OfflineAudioStore.kt; OfflineAudioStoreTest.kt | استيراد محلي محدود كأداة داخلية؛ لا واجهة استيراد أو تنزيل أو محتوى معتمد. |
 | 075 | Manage offline audio storage quotas | partial_new | OfflineAudioStore.kt; OfflineAudioStoreTest.kt | حد التخزين وفشل الاستيراد مختبران بوحدات؛ الأداة غير مربوطة بواجهة المستخدم. |

@@ -18,7 +18,7 @@ import java.io.File
 class LocalAudioPlayer(context: Context) {
     enum class Phase { EMPTY, READY, PLAYING, PAUSED, COMPLETED }
     data class Snapshot(val phase: Phase, val positionMs: Int, val durationMs: Int,
-        val speed: Float, val extraRepeats: Int, val completedPlays: Int)
+        val speed: Float, val extraRepeats: Int, val completedPlays: Int, val interruptions: Long = 0)
     private val app = context.applicationContext
     private val manager = app.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
@@ -29,17 +29,19 @@ class LocalAudioPlayer(context: Context) {
     private var extraRepeats = 0
     private var remaining = 0
     private var completedPlays = 0
+    // Monotonic across opens so a queue can observe interruption between two clips.
+    private var interruptions = 0L
     private var replayAfterSeek = false
     private var seekPending = false
     private var registered = false
     private val focus = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
         .setAudioAttributes(attributes).setWillPauseWhenDucked(true)
         .setOnAudioFocusChangeListener({ change ->
-            if (change != AudioManager.AUDIOFOCUS_GAIN) pause()
+            if (change != AudioManager.AUDIOFOCUS_GAIN) interrupt()
         }, Handler(Looper.getMainLooper())).build()
     private val noisy = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) pause()
+            if (intent?.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) interrupt()
         }
     }
 
@@ -115,6 +117,10 @@ class LocalAudioPlayer(context: Context) {
         } catch (_: Exception) { close(); false }
     }
 
+    @Synchronized private fun interrupt() {
+        interruptions++
+        pause()
+    }
     @Synchronized fun pause() {
         replayAfterSeek = false
         player?.let { active ->
@@ -153,7 +159,7 @@ class LocalAudioPlayer(context: Context) {
         val active = player
         return Snapshot(phase, active?.let { runCatching { it.currentPosition }.getOrDefault(0) } ?: 0,
             active?.let { runCatching { it.duration }.getOrDefault(0) } ?: 0,
-            desiredSpeed, extraRepeats, completedPlays)
+            desiredSpeed, extraRepeats, completedPlays, interruptions)
     }
     @Synchronized fun close() {
         replayAfterSeek = false
