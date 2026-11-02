@@ -20,6 +20,11 @@ def readiness(root, manifest):
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     if manifest.get("source_commit") != head:
         blockers.append("Evidence source_commit does not match HEAD")
+    # Matching HEAD alone does not bind the working files that are packaged.
+    dirty = subprocess.check_output(
+        ["git", "status", "--porcelain", "--untracked-files=all"], cwd=root, text=True).strip()
+    if dirty:
+        blockers.append("Working tree contains modified or untracked files; commit or remove them before packaging")
     for name in REQUIRED:
         gate = manifest.get("gates", {}).get(name, {})
         if gate.get("status") != "verified" or not gate.get("reviewer"):

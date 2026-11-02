@@ -47,7 +47,9 @@
 
 ## البناء والتحقق
 
-عند نجاح [Android CI](../../actions/workflows/android.yml)، اذهب إلى تشغيل البناء الناجح وحمّل الملف من قسم **Artifacts** باسم `NEXVARY-HifzAI-Android-0.5.0-dev-debug`. لا يُعد وجود Workflow وحده دليلًا على نجاح البناء.
+تحقق من [Android CI](../../actions/workflows/android.yml) المطابق لرأس فرعك. المستودع العام **لا يرفع APK غير معتمد**؛ نجاح المسار يتيح أدلة الاختبارات وLint والتغليف، ولا يعني وجود رابط تنزيل للتطبيق. النسخ الداخلية فقط وفق [سياسة النقل](docs/PRIVATE_INTERNAL_BUILD_TRANSPORT.md) وبوابات المشروع.
+
+آخر تدقيق: [PROJECT_AUDIT](docs/PROJECT_AUDIT.md) · [حالة التنفيذ](docs/IMPLEMENTATION_STATUS.md) · [الأعمال](docs/DEVELOPMENT_BACKLOG.md) · [المراحل 61–150](docs/PHASE_COMPLETION_REPORT.md) · [الاختبارات](docs/TEST_RESULTS.md) · [جاهزية الإصدار](docs/RELEASE_READINESS.md).
 
 **المفاتيح:** لا تضع API secrets في التطبيق أو GitHub؛ تستخدم Quran Foundation Content APIs خادمًا وسيطًا مع اعتماد الإنتاج. إصدار Pre-live لا يحتوي على المصحف الكامل. انظر [توثيق Quran Foundation](https://api-docs.quran.com/docs/quickstart/).
 

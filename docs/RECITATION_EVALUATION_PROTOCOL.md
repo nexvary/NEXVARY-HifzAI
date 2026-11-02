@@ -25,6 +25,7 @@ Each sample requires:
 | region | `EG`, `SA`, or `OTHER`; broad self-reported sampling group, not inferred accent |
 | consent, rights_cleared | Boolean true, documented outside the dataset |
 | consent_record, rights_record | References to separately held records, not personal documents |
+| consent_revoked, rights_revoked | Optional boolean false for backwards compatibility; true or any ambiguous value rejects the sample; declarations do not authenticate consent |
 | consent_expires_on | ISO date, still valid on evaluation date |
 | human_transcript | Independently transcribed words actually spoken |
 | hypothesis | Model output, including empty output on a failed recognition |
@@ -77,3 +78,16 @@ Use a separately consented study comparing the current policy with a defined bas
 pre-register retention outcomes at days 1, 7 and 14, randomize where appropriate,
 account for prior memorization and attrition, and publish denominators/limitations.
 No participant study, efficacy estimate or scholarly sign-off is supplied here.
+
+## Evaluator schema 2 — November 2026
+
+Reports additionally include `reference_characters`, `character_distance` and `cer`
+per group. CER is Levenshtein distance over normalized Unicode code points after
+removing whitespace, divided by the human transcript character count. It uses the
+same derived normalization as WER and cannot measure original Quran diacritics,
+graphemes or pronunciation. Missing denominators produce null; insertions can
+produce CER above 1. Empty model output is measured and still abstains from lexical
+judgment. Limits: 512 words and 4096 normalized nonspace characters per transcript,
+with linear-memory character alignment. Reports contain no new participant data.
+Revoked consent/rights reject the input; remove those samples before rerunning.
+These synthetic arithmetic tests supply no real ASR accuracy result.

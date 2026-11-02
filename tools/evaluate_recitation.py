@@ -53,6 +53,25 @@ def alignment(expected, heard):
             'substituted': substituted, 'distance': d[-1][-1]}
 
 
+def character_alignment(expected, heard):
+    """Normalized Unicode code-point CER, excluding whitespace, using linear memory.
+
+    This is not grapheme, diacritic, pronunciation or tajweed evaluation.
+    """
+    a = ''.join(normalize(expected).split())
+    b = ''.join(normalize(heard).split())
+    if len(a) > 4096 or len(b) > 4096:
+        raise ValueError('Character limit exceeded')
+    previous = list(range(len(b) + 1))
+    for i, first in enumerate(a, 1):
+        current = [i]
+        for j, second in enumerate(b, 1):
+            current.append(min(previous[j] + 1, current[-1] + 1,
+                               previous[j - 1] + (first != second)))
+        previous = current
+    return {'reference_characters': len(a), 'character_distance': previous[-1]}
+
+
 def canonical_references():
     raw = CORPUS.read_bytes()
     if hashlib.sha256(raw).hexdigest() != CORPUS_SHA256:
@@ -91,6 +110,8 @@ def evaluate(dataset, references, today, threshold=0.9):
                 not isinstance(sample.get('consent_record'), str) or not sample['consent_record'].strip() or
                 not isinstance(sample.get('rights_record'), str) or not sample['rights_record'].strip()):
             raise ValueError('Consent and rights records required')
+        if sample.get('consent_revoked', False) is not False or sample.get('rights_revoked', False) is not False:
+            raise ValueError('Revoked consent or rights; exclude sample before evaluation')
         if dt.date.fromisoformat(sample['consent_expires_on']) < today:
             raise ValueError('Expired consent; exclude/revoke sample before evaluation')
         if sample.get('split') not in ('calibration', 'evaluation'):
@@ -116,6 +137,7 @@ def evaluate(dataset, references, today, threshold=0.9):
         if type(confidence) not in (int, float) or not math.isfinite(confidence) or not 0 <= confidence <= 1:
             raise ValueError('Confidence must be finite within 0–1')
         asr = alignment(sample['human_transcript'], sample['hypothesis'])
+        asr.update(character_alignment(sample['human_transcript'], sample['hypothesis']))
         lexical = alignment(references[sample['verse']], sample['hypothesis'])
         for group in ('all', 'region:'+sample['region'], 'verse:'+sample['verse'], 'split:'+sample['split']):
             row = aggregate[group]
@@ -134,10 +156,11 @@ def evaluate(dataset, references, today, threshold=0.9):
         return n/d if d else None
     for row in aggregate.values():
         row['wer'] = ratio(row['distance'], row['reference_words'])
+        row['cer'] = ratio(row['character_distance'], row['reference_characters'])
         row['coverage'] = ratio(row['compared'], row['samples'])
         row['false_alarm_rate'] = ratio(row['false_alarm'], row['human_correct'])
         row['missed_error_rate'] = ratio(row['missed_error'], row['human_incorrect'])
-    return {'schema_version': 1, 'model_id': dataset['model_id'], 'riwayah': dataset['riwayah'],
+    return {'schema_version': 2, 'model_id': dataset['model_id'], 'riwayah': dataset['riwayah'],
             'threshold_for_analysis_only': threshold, 'groups': dict(aggregate),
             'automatic_grading_enabled': False,
             'limitations': 'Lexical research only; no tajweed/makharij validation, calibration approval or causal learning claim. Group sizes may be unrepresentative. No audio/transcripts/identifiers in output.'}

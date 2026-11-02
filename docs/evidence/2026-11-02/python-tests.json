@@ -1,0 +1,320 @@
+{
+  "source_commit": "e9f1f61d3f3a9b2a1989b99ee0ae34292787809a",
+  "working_tree_dirty": false,
+  "python": "3.12.14",
+  "duration_seconds": 12.314,
+  "tests_run": 69,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "successful": true,
+  "cases": [
+    {
+      "test": "test_academy.AcademyTests.test_account_directory_is_admin_only_and_excludes_credentials",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_availability_and_schedule_change_preserve_booked_lesson",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_booking_overlap_is_atomic_and_only_guardian_can_book",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_delete_cascades_and_audit_contains_no_private_notes",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_disabled_guardian_removes_teacher_access",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_guardian_consent_and_cross_account_isolation",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_http_transport_real_login_and_host_origin_body_guards",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_human_review_required_and_edits_revoke_approval",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_lesson_notes_completion_and_complaint_resolution",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_password_change_requires_current_password_and_revokes_all_sessions",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_passwords_and_tokens_are_not_stored_plaintext",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_qualification_change_cancels_booking_and_revokes_access",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_review_queue_is_admin_only_and_directory_has_no_qualification",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_session_expiry_logout_and_no_admin_signup",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_teacher_plans_validate_real_ayah_addresses_and_distinguish_self_report",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_unenroll_suspension_and_disable_revoke_access",
+      "status": "passed"
+    },
+    {
+      "test": "test_academy.AcademyTests.test_unknown_and_wrong_password_share_error_and_rate_limit_persists",
+      "status": "passed"
+    },
+    {
+      "test": "test_asr_asset_policy.AsrAssetPolicyTests.test_model_cannot_feed_scores_or_canonical_quran",
+      "status": "passed"
+    },
+    {
+      "test": "test_asr_asset_policy.AsrAssetPolicyTests.test_model_is_pinned_and_runtime_sources_do_not_download",
+      "status": "passed"
+    },
+    {
+      "test": "test_asr_asset_policy.OfflineLicensePolicyTest.test_canonical_footer_and_project_license_are_preserved_offline",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_boolean_verse_number_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_duplicate_verse_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_html_injection_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_non_arabic_verse_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_non_https_provenance_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_out_of_range_verse_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_partial_fixture_is_allowed_only_when_explicit",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_partial_fixture_is_rejected_in_release_mode",
+      "status": "passed"
+    },
+    {
+      "test": "test_corpus_validation_regression.CorpusValidationRegressionTests.test_whitespace_mutation_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_embedded_quran.EmbeddedQuranIntegrityTests.test_all_surahs_and_ayat_count_and_order",
+      "status": "passed"
+    },
+    {
+      "test": "test_embedded_quran.EmbeddedQuranIntegrityTests.test_license_and_source_version_preserved",
+      "status": "passed"
+    },
+    {
+      "test": "test_embedded_quran.EmbeddedQuranIntegrityTests.test_sha256_independent_digest",
+      "status": "passed"
+    },
+    {
+      "test": "test_embedded_quran.EmbeddedQuranIntegrityTests.test_source_is_not_generated_or_silently_normalized",
+      "status": "passed"
+    },
+    {
+      "test": "test_embedded_quran.EmbeddedQuranIntegrityTests.test_verbatim_git_blob_identity",
+      "status": "passed"
+    },
+    {
+      "test": "test_internal_apk_transport.InternalTransportTests.test_authenticated_round_trip_and_tamper_rejection",
+      "status": "passed"
+    },
+    {
+      "test": "test_internal_apk_transport.InternalTransportTests.test_missing_certificate_fails_before_output",
+      "status": "passed"
+    },
+    {
+      "test": "test_local_only.LocalOnlyTests.test_all_current_app_manifests_preserve_offline_scope",
+      "status": "passed"
+    },
+    {
+      "test": "test_local_only.LocalOnlyTests.test_dependency_merged_network_permissions_cannot_pass",
+      "status": "passed"
+    },
+    {
+      "test": "test_native_elf_policy.NativeElfPolicyTest.test_accepts_32_and_64_bit_load_segments",
+      "status": "passed"
+    },
+    {
+      "test": "test_native_elf_policy.NativeElfPolicyTest.test_rejects_corrupt_and_truncated_headers",
+      "status": "passed"
+    },
+    {
+      "test": "test_native_elf_policy.NativeElfPolicyTest.test_rejects_old_page_alignment_and_wrong_abi",
+      "status": "passed"
+    },
+    {
+      "test": "test_partition_metadata.PartitionMetadataTests.test_official_file_is_unchanged_and_attributed",
+      "status": "passed"
+    },
+    {
+      "test": "test_partition_metadata.PartitionMetadataTests.test_page_and_juz_start_indices_are_complete",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_abstention_not_counted_as_correct_or_missed",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_character_metric_uses_human_transcript_and_normalization",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_consent_rights_and_expiry_required",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_duplicate_samples_speaker_leakage_wrong_riwayah",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_edit_operations_and_repeated_words",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_human_transcript_is_asr_reference_not_intended_ayah",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_invalid_confidence_unknown_reference_and_oversize_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_metrics_and_private_output",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_real_source_references_have_original_boundaries",
+      "status": "passed"
+    },
+    {
+      "test": "test_recitation_evaluation.RecitationEvaluationTests.test_revoked_or_ambiguous_consent_and_rights_are_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_result_summary.ResultSummaryTests.test_actual_junit_cases_must_match_counters",
+      "status": "passed"
+    },
+    {
+      "test": "test_result_summary.ResultSummaryTests.test_instrumentation_requires_one_success_and_no_failure_markers",
+      "status": "passed"
+    },
+    {
+      "test": "test_result_summary.ResultSummaryTests.test_undeclared_failures_cannot_look_green",
+      "status": "passed"
+    },
+    {
+      "test": "test_review_bundle_gate.ReviewBundleGateTests.test_dirty_or_untracked_sources_block_otherwise_verified_candidate",
+      "status": "passed"
+    },
+    {
+      "test": "test_review_bundle_gate.ReviewBundleGateTests.test_empty_manifest_cannot_be_submitted",
+      "status": "passed"
+    },
+    {
+      "test": "test_review_bundle_gate.ReviewBundleGateTests.test_evidence_cannot_escape_repository",
+      "status": "passed"
+    },
+    {
+      "test": "test_review_bundle_gate.ReviewBundleGateTests.test_real_git_status_detects_modified_and_untracked_source",
+      "status": "passed"
+    },
+    {
+      "test": "test_review_bundle_gate.ReviewBundleGateTests.test_verified_label_without_evidence_is_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_screenshot_proof.ScreenshotProofTests.test_run_as_error_cannot_be_presented_as_screenshot",
+      "status": "passed"
+    },
+    {
+      "test": "test_validate_corpus.CorpusValidationTests.test_bad_ayah_index_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_validate_corpus.CorpusValidationTests.test_demo_rejected_as_complete_corpus",
+      "status": "passed"
+    },
+    {
+      "test": "test_validate_corpus.CorpusValidationTests.test_duplicate_ayah_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_validate_corpus.CorpusValidationTests.test_html_and_non_arabic_rejected",
+      "status": "passed"
+    },
+    {
+      "test": "test_validate_corpus.CorpusValidationTests.test_partial_fixture_is_structurally_valid",
+      "status": "passed"
+    },
+    {
+      "test": "test_validate_corpus.CorpusValidationTests.test_total_counts",
+      "status": "passed"
+    },
+    {
+      "test": "test_validate_corpus.CorpusValidationTests.test_untrusted_plain_http_attribution_rejected",
+      "status": "passed"
+    }
+  ],
+  "source_sha256": {
+    "academy/__init__.py": "1292476e1d61a3b4382660668633621797b653d5f924f69a2dd35010fefb4666",
+    "academy/server.py": "8c79a2b7f48d06021538c0e200851e12afee61ce863e79685c0c42651c8e3013",
+    "academy/service.py": "aa3048c51bd16243d940ed3ffb8fe2d80ce98675ff66afb628f9660046cd8c9f",
+    "tests/test_academy.py": "258b40b8ffd38bad5740733d9d61101f7e3ea6549d1f7cd3e2728f948ffa5b9f",
+    "tests/test_asr_asset_policy.py": "c86f190cbdb1122e0a4fed35db54fd799fa72018db9ce398d5797f2e6db2f1db",
+    "tests/test_corpus_validation_regression.py": "e08b79016b07bb5921c1a005fd08dfb244f823f8c81e67276af7ca0fb2a306f8",
+    "tests/test_embedded_quran.py": "167cdd5e441b5242c9c21182bdc6e2a213bb228a27b2c90d82d7836da6166bff",
+    "tests/test_internal_apk_transport.py": "2cbab52d1704962398d5a06109b0a46e2c16059d9fbb86cd1529c17e397bf195",
+    "tests/test_local_only.py": "b569f6466df9789b4fd4f8fef3cee8bae97efa098da3f34e35e13eb046fa57b8",
+    "tests/test_native_elf_policy.py": "363d07fe848a505a114753faf395c874d066902147becd9b4972bb43b92f2566",
+    "tests/test_partition_metadata.py": "f46f38b52716bfd5cba0bf393d0dca177d07337c6284c7d4bb3764c9879550c1",
+    "tests/test_recitation_evaluation.py": "a281fb9bd40ed6f715b6dd2ec76a942a724a34c5d2e8b987d31cb0a3a6de7c2a",
+    "tests/test_result_summary.py": "6b418b26db61b09b7faf40840773d247a8d23633a8633610629c06a3839d54a8",
+    "tests/test_review_bundle_gate.py": "e49a1afb3f748ff0338affdcb978a80a925e915cf6e3bed423fd31960cdfb547",
+    "tests/test_screenshot_proof.py": "4c0fde95587b48400c407e4dd53e4f6aa240508d8c0718cc0fedf7356cd9cb1d",
+    "tests/test_validate_corpus.py": "fcb78929e50d597ae7ec248da68fd170c02467e636703069f0ccef093ace0839",
+    "tools/encrypt_internal_apk.py": "67a9b31a4c286fcd3aa216f300d0838b85dc4a8a95118b4a08daba60cc16c092",
+    "tools/evaluate_recitation.py": "24cbc60c62cf83db80b137bbb87544b0be3e9e42857e1ec34357bfa400b3b62a",
+    "tools/prepare_review_bundle.py": "6906195663592a13890bb014d840e17e0fa14cad104e2225db81687d15a7b7ac",
+    "tools/prepare_whisper_model.py": "579264b4e1324318f5ab8756e8757da94bb640a0843f9608e9d5671fb7dcb2c8",
+    "tools/run_academy_console_proof.py": "e85d74df7cf38a87a68e6d800a1adf9471686cd66a12cf413c4e64d810d00d20",
+    "tools/run_python_tests.py": "9b3cf470b37f08e74acdc824303e75a505ac760d8fc80cb61e37f821e51b33c3",
+    "tools/summarize_test_results.py": "b6ad28f554cecdeb4ee16b1ad46976c210284ac9668029c9f6c4618a0a0b934e",
+    "tools/update_phase_evidence.py": "25fa5a07af629549eeb853e15cf78e806cc2d8dc3d2bf8be19c00ab2bf4f9815",
+    "tools/validate_corpus.py": "5a5257f2f01d05f748fdefebcd778ffcd231b0ce849f36f25567a8f716a206b9",
+    "tools/verify_local_only.py": "b9de3e957962417ce86fb25757cce642a054df5658f3f5c00c73ed272297fb72",
+    "tools/verify_native_asr_apk.py": "11310a97779695165853826e9fed2878b841d294862452acc095e81d56799f5c",
+    "tools/verify_screenshot_proof.py": "08106a612b6179e58a144cae1c7b7c7d3b6b600d1656fd90eef4667710a38104"
+  },
+  "scope": "Technical tests with synthetic academy records; not legal, child-safety or scholarly approval"
+}
