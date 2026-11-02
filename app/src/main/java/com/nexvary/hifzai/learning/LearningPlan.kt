@@ -8,10 +8,14 @@ enum class StudyMode(val arabic: String) {
 data class LearningGoal(val newVerses: Int = 2, val reviews: Int = 15,
     val mode: StudyMode = StudyMode.BALANCED) {
     init { require(newVerses in 0..20 && reviews in 1..100) }
-    fun plan(verses: List<VerifiedVerse>, cards: Map<Int, ReviewCard>, today: Long): DailyPlan =
-        DailyMemorizationPlan.create(verses, cards, today,
-            maxDue = if (mode == StudyMode.NEW_ONLY) 0 else reviews,
-            maxNew = if (mode == StudyMode.REVIEW_ONLY) 0 else newVerses)
+    fun plan(verses: List<VerifiedVerse>, cards: Map<Int, ReviewCard>, today: Long,
+        work: DailyWork = DailyWork(today)): DailyPlan {
+        require(work.epochDay == today)
+        val completed = work.allVerseIds
+        return DailyMemorizationPlan.create(verses.filter { it.id !in completed }, cards, today,
+            maxDue = if (mode == StudyMode.NEW_ONLY) 0 else (reviews - work.reviewVerseIds.size).coerceAtLeast(0),
+            maxNew = if (mode == StudyMode.REVIEW_ONLY) 0 else (newVerses - work.newVerseIds.size).coerceAtLeast(0))
+    }
 }
 
 data class WeeklyLearningSummary(val attempts: Int, val independent: Int, val assisted: Int,

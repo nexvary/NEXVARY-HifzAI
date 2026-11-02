@@ -10,6 +10,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.nexvary.hifzai.learning.LicensedRecitationPlayer
 import com.nexvary.hifzai.learning.LocalAudioPlayer
 import com.nexvary.hifzai.learning.RecitationRights
+import com.nexvary.hifzai.learning.RecordingAddress
+import com.nexvary.hifzai.learning.CatalogRecording
+import com.nexvary.hifzai.learning.RecitationCatalog
+import com.nexvary.hifzai.learning.QuranCorpus
+import java.time.LocalDate
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -120,5 +125,35 @@ class LocalAudioPlaybackTest {
                 assertFalse(raw.play())
             } finally { raw.close() }
         } finally { player.close(); file.delete(); invalidMedia.delete(); scenario.close() }
+    }
+
+    @Test fun canonicalMappedSyntheticAssetPlaysAndRechecksMutationAndExpiry() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        val file = tone("mapped-playback-test.wav", 650)
+        val original = file.readBytes()
+        val sha = MessageDigest.getInstance("SHA-256").digest(original).joinToString("") { "%02x".format(it.toInt() and 255) }
+        val rights = RecitationRights("mapped-synthetic-tone", "test-generator", "https://example.invalid/test-tone",
+            sha, "Generated test tone only", "synthetic-fixture-only", "hafs-an-asim", true, true)
+        val record = CatalogRecording(rights, RecordingAddress(1, 1), original.size.toLong(), "synthetic-reference-fixture-only")
+        val source = QuranCorpus.load(context)
+        val today = LocalDate.now().toEpochDay()
+        val catalog = RecitationCatalog.create(listOf(record), source, setOf("test-generator"))
+        val player = LicensedRecitationPlayer(context)
+        try {
+            val asset = catalog.bind(rights.recordingId, file, today)
+            player.open(asset, repeatCount = 1)
+            assertTrue(player.play())
+            await("Mapped local asset must complete both plays", { player.snapshot().phase == LocalAudioPlayer.Phase.COMPLETED })
+            assertEquals(2, player.snapshot().completedPlays)
+            file.writeBytes(original.copyOf().apply { this[lastIndex] = (this[lastIndex].toInt() xor 1).toByte() })
+            assertTrue(runCatching { player.open(asset) }.isFailure)
+            assertEquals(LocalAudioPlayer.Phase.EMPTY, player.snapshot().phase)
+            file.writeBytes(original)
+            val expired = record.copy(rights = rights.copy(expiresEpochDay = today - 1))
+            val past = RecitationCatalog.create(listOf(expired), source, setOf("test-generator"))
+                .bind(rights.recordingId, file, today - 2)
+            assertTrue(runCatching { player.open(past) }.isFailure)
+            assertFalse(player.play())
+        } finally { player.close(); file.delete(); scenario.close() }
     }
 }

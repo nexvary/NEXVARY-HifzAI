@@ -98,6 +98,34 @@ class LocalDataAndAudioTest {
         } finally { store.clear() }
     }
 
+    @Test fun dailyWorkSurvivesReloadDeduplicatesRetriesAndRollsOverWithoutInventingLegacyHistory() {
+        val store = ProgressStore(context)
+        store.clear()
+        try {
+            val event = RecallObservation(10, RecallGrade.AGAIN, 0, false, DifficultyTag.NONE)
+            store.observe(1001, event) // Historical callers without classification do not invent counts.
+            assertTrue(store.workload(10).allVerseIds.isEmpty())
+            val card = HifzScheduler.grade(ReviewCard(1001), RecallGrade.AGAIN, 10)
+            val memory = MemoryCoach.record(MemoryFingerprint(1001), RecallGrade.AGAIN, 0, false)
+            store.recordAssessment(card, memory, event, firstAttempt = true)
+            assertEquals(card, ProgressStore(context).card(1001))
+            assertEquals(memory, ProgressStore(context).memory(1001))
+            store.observe(1001, event.copy(grade = RecallGrade.GOOD), firstAttempt = false)
+            store.observe(1002, event, firstAttempt = false)
+            val loaded = ProgressStore(context).workload(10)
+            assertEquals(setOf(1001), loaded.newVerseIds)
+            assertEquals(setOf(1002), loaded.reviewVerseIds)
+            assertTrue(store.workload(11).allVerseIds.isEmpty())
+            store.observe(1003, event.copy(epochDay = 11), firstAttempt = false)
+            assertEquals(setOf(1003), store.workload(11).reviewVerseIds)
+            assertTrue(store.workload(10).allVerseIds.isEmpty())
+            context.getSharedPreferences("hifz_progress_v1", 0).edit().putString("daily_work", "broken").commit()
+            assertTrue(store.workload(11).allVerseIds.isEmpty())
+            assertTrue(store.clear())
+            assertTrue(store.workload(11).allVerseIds.isEmpty())
+        } finally { store.clear() }
+    }
+
     @Test fun notebookAssignmentBoundsReschedulingAndCascadingDeletion() {
         val notebook = TeacherNotebook(context)
         notebook.clear()

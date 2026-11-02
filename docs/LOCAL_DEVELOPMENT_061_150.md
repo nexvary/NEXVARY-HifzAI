@@ -14,6 +14,24 @@ service is preserved, not deployed or connected to Android.
 
 ## New behavior
 
+- Further continuation: local goals now subtract distinct self-assessed new/review
+  verses already recorded on the same phone calendar day, across sessions/surahs.
+  Retrying the same verse does not charge another slot. Explicit manual practice can
+  exceed the proposal; failed positions assessed today have a separate optional retry
+  list. Counters persist/reload, reset on the next recorded day and clear with user
+  data. Legacy history has no invented first-study classifications; daily counts
+  begin with newly classified assessments in this increment.
+- "Start today's session" follows the selected surah's current plan/mode and stops
+  at its remaining daily proposal, returning to Today. That guided mode is persisted
+  across recreation/resume. Direct verse/tab selection is manual practice and remains
+  available beyond the proposal. Failed attempts can be retried immediately without
+  charging a second distinct verse. Assessment progress, history, day counts and the
+  optional return anchor are saved in one preferences editor transaction.
+- [Canonical audio catalogue contracts](LOCAL_AUDIO_CATALOG.md) add real-ayah/reader
+  validation, exact-byte binding and explicit contiguous sequence selection. The
+  mapped player revalidates bytes and rights before decoding. No approved external
+  recordings, automatic playback queue or reader import screen is claimed.
+
 - Continuation: deletion generations now survive Activity recreation, preventing an
   unused pre-deletion saved-state generation from restoring an old recall attempt.
   The UI regression recreates the Activity both before and after deletion.
@@ -23,9 +41,9 @@ service is preserved, not deployed or connected to Android.
   training while disabled does not create one. Data deletion resets its consent.
 
 - Settings offer balanced/new-only/review-only planning, 0–20 new verses and 1–100
-  reviews per session. The planner respects future due dates and empty budgets;
-  learners can still select any verse manually. These are session limits, not a
-  cross-session daily consumption counter.
+  reviews per day. The planner respects future due dates and empty budgets;
+  learners can still select any verse manually. These are proposals based on distinct
+  graded verses, not hard limits on access, reading time or a claim of mastery.
 - Progress shows current and previous 7-day summaries and per-practice-mode counts.
   These use retained self-reported observations (last 30 per verse). Legacy records
   have unknown practice mode; they are not assigned an invented mode. Recent failures
@@ -56,7 +74,7 @@ UI tests wait for asynchronous canonical verification rather than sleeping.
 
 Local checks after the continuation: **56 Python tests**
 pass, with no failures/errors/skips. A standalone pinned Kotlin 2.0.21/JUnit 4.13.2
-run passes **67 JVM tests** (all repository JVM tests, using compile-only Android API
+run passes **80 JVM tests** (all repository JVM tests, using compile-only Android API
 signatures and host JSON; no Android storage/UI runtime assertion). This
 does not replace the full Gradle/Lint/Android build or instrumentation matrix.
 

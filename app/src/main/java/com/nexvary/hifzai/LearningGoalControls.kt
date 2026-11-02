@@ -12,16 +12,16 @@ import kotlin.math.roundToInt
 @Composable
 internal fun LearningGoalControls(goal: LearningGoal, changed: (LearningGoal) -> Unit) {
     Text("خطتك اليومية", style = MaterialTheme.typography.titleLarge)
-    Text("اختر حجم الجلسة؛ لا توجد سلسلة أيام إلزامية أو وعد بنتيجة تعليمية.")
+    Text("حدود مقترحة لليوم حسب تاريخ الهاتف والتقييمات المسجلة. يبقى اختيار أي آية يدويًا متاحًا، دون سلسلة أيام إلزامية أو وعد بنتيجة تعليمية.")
     StudyMode.entries.forEach { mode ->
         OutlinedButton(onClick = { changed(goal.copy(mode = mode)) }, modifier = Modifier.fillMaxWidth()) {
             Text(mode.arabic + if (goal.mode == mode) " • محدد" else "")
         }
     }
-    Text("هدف الحفظ الجديد: ${goal.newVerses} آية لكل جلسة")
+    Text("هدف الحفظ الجديد: ${goal.newVerses} آية في اليوم")
     Slider(value = goal.newVerses.toFloat(), onValueChange = { changed(goal.copy(newVerses = it.roundToInt())) },
         valueRange = 0f..20f, steps = 19, modifier = Modifier.semantics { contentDescription = "عدد آيات الحفظ الجديد" })
-    Text("حد المراجعات المعروضة: ${goal.reviews} آية لكل جلسة")
+    Text("حد المراجعات المقترحة: ${goal.reviews} آية في اليوم")
     Slider(value = goal.reviews.toFloat(), onValueChange = { changed(goal.copy(reviews = it.roundToInt())) },
         valueRange = 1f..100f, steps = 98, modifier = Modifier.semantics { contentDescription = "حد آيات المراجعة" })
     if (goal.mode == StudyMode.NEW_ONLY && goal.newVerses == 0)

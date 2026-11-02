@@ -8,7 +8,7 @@
 | 062 | Design reciter profile schema | partial_existing | ReciterCatalog.kt | دليل أسماء وبلدان؛ ملفات تعريف مدققة وصوتيات مرخصة غير متاحة. |
 | 063 | Record Egyptian reciters metadata | partial_existing | ReciterCatalog.kt | دليل أسماء وبلدان؛ ملفات تعريف مدققة وصوتيات مرخصة غير متاحة. |
 | 064 | Record Saudi reciters metadata | partial_existing | ReciterCatalog.kt | دليل أسماء وبلدان؛ ملفات تعريف مدققة وصوتيات مرخصة غير متاحة. |
-| 065 | Link each recording to chapter and ayah | not_implemented | — | لا فهرس تسجيلات فعلي يربط ملفات مرخصة بمراجع الآيات. |
+| 065 | Link each recording to chapter and ayah | partial_new | RecitationCatalog.kt; RecitationCatalogTest.kt; LocalAudioPlaybackTest.kt; LOCAL_AUDIO_CATALOG.md | ربط بمرجع أصلي موجود وطول وبصمة ومراجعة مرجع، مع اختبار تشغيل ملف اصطناعي؛ لا كتالوج تسجيلات خارجية معتمد أو واجهة استيراد. |
 | 066 | Verify recording provenance and rights | external_evidence_required | THIRD_PARTY_CONTENT_REGISTER.md | يلزم إثبات مصدر وحقوق كل تسجيل من صاحب الحق. |
 | 067 | Build streaming audio adapter | outside_local_scope | LOCAL_ONLY_SCOPE.md | البث الشبكي خارج النطاق المحلي؛ لا تنفيذ. |
 | 068 | Add background audio service | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
@@ -53,9 +53,9 @@
 | 107 | Add adaptive masking difficulty | partial_existing | AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt | بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة. |
 | 108 | Model similarity confusion indicators | partial_existing | AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt | بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة. |
 | 109 | Add differentiated recency scores | partial_new | LearningPlan.kt; LearningPlanTest.kt | ترجيح حداثة آخر المحاولات لتوصية تدريب فقط؛ لا تغيير غير مقاس لفواصل المراجعة. |
-| 110 | Create daily workload budget | partial_new | LearningGoalControls.kt; LearningPlan.kt; LearningDevelopmentUiTest.kt | ميزانية لكل جلسة ووضع مراجعة/جديد وتجاوز يدوي؛ ليس عداد استهلاك يومي عبر الجلسات. |
+| 110 | Create daily workload budget | partial_new | DailyWork.kt; ProgressStore.kt; LearningPlan.kt; DailyWorkTest.kt; LearningDevelopmentUiTest.kt | حد مقترح يومي عبر الجلسات والسور من الآيات المقيّمة، دون خصم مكرر لإعادة المحاولة أو منع التدريب اليدوي؛ العد الجديد لا يخترع تاريخًا للسجلات القديمة. |
 | 111 | Tune review intervals empirically | external_evidence_required | RECITATION_EVALUATION_PROTOCOL.md | يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة. |
-| 112 | Allow learner to override training plan | partial_new | LearningGoalControls.kt; LearningPlan.kt; LearningDevelopmentUiTest.kt | ميزانية لكل جلسة ووضع مراجعة/جديد وتجاوز يدوي؛ ليس عداد استهلاك يومي عبر الجلسات. |
+| 112 | Allow learner to override training plan | partial_new | LearningGoalControls.kt; LearningPlan.kt; LearningDevelopmentUiTest.kt | أوضاع حفظ/مراجعة وحد يومي مقترح مع إتاحة التدريب اليدوي وإعادة المواضع المتعثرة؛ لا منع عند تجاوز الهدف ولا ادعاء تحسن مقيس. |
 | 113 | Explain recommended drills transparently | partial_new | LearningPlan.kt; MainActivity.kt | سبب واضح واقتراح اختياري من المحاولات الأخيرة؛ تحقق UX معلق. |
 | 114 | Add confidence estimate to model choices | not_implemented | — | لا درجة ثقة احتمالية معايرة لتوصيات التعلم؛ لا اختلاق نسبة. |
 | 115 | Track long-term retention cohorts | external_evidence_required | RECITATION_EVALUATION_PROTOCOL.md | يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة. |

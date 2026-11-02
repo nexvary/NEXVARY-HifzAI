@@ -9,12 +9,14 @@ data class PracticeSession(
     val exposed: Boolean,
     val difficulty: DifficultyTag,
     val rangeStart: Int = 0,
-    val rangeEnd: Int = 0
+    val rangeEnd: Int = 0,
+    val followsDailyPlan: Boolean = false
 ) {
     init {
         require(chapter in 1..114 && ayah in 1..286)
         require(hints in 0..100)
         require((rangeStart == 0 && rangeEnd == 0) || (rangeStart > 0 && rangeEnd >= rangeStart))
+        require(!followsDailyPlan || rangeStart == 0) { "A range session cannot also follow the daily proposal" }
     }
     /** Assistance belongs to the entire attempt, not a selected screen/stage. */
     fun changeStage(next: PracticeKind) = copy(

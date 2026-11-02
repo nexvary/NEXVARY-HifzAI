@@ -101,4 +101,62 @@ class LearningDevelopmentUiTest {
         assertNull(store.gentleReturnAnchorDay)
         assertTrue(rule.onAllNodesWithText("مرّ أسبوع دون تدريب مسجل.", substring = true).fetchSemanticsNodes().isEmpty())
     }
+
+    @Test fun dailyBudgetCountsUniqueGradedVersesAcrossSessionsAndStillAllowsManualPractice() {
+        fun attempt(label: String) {
+            repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+            click(label)
+        }
+        val today = LocalDate.now().toEpochDay()
+        val store = ProgressStore(context)
+        click("الحفظ")
+        attempt("نسيت")
+        attempt("جيد") // Retry the same verse: still one new verse, no charged review.
+        assertEquals(1, store.workload(today).newVerseIds.size)
+        assertTrue(store.workload(today).reviewVerseIds.isEmpty())
+        attempt("جيد")
+        rule.onNodeWithText("الرئيسية").performClick()
+        rule.waitForIdle()
+        rule.onNodeWithText("آيات قيّمتها اليوم: جديد 2/2 • مراجعة 0/15").assertExists()
+        rule.onNodeWithText("الآيات المستحقة: 0 • آيات جديدة مقترحة: 0").assertExists()
+        click("الحفظ") // The daily proposal is exhausted; explicit manual practice remains available.
+        attempt("جيد")
+        assertEquals(3, store.workload(today).newVerseIds.size)
+        rule.activityRule.scenario.recreate()
+        rule.awaitHifzReady()
+        assertEquals(3, ProgressStore(context).workload(today).newVerseIds.size)
+    }
+
+    @Test fun guidedDailyModesResumeAndEndAtTheBudgetInsteadOfAdvancingIntoOtherModes() {
+        for ((offset, mode) in listOf(StudyMode.NEW_ONLY, StudyMode.REVIEW_ONLY).withIndex()) {
+            if (offset > 0) reset()
+            val today = LocalDate.now().toEpochDay()
+            val store = ProgressStore(context)
+            store.save(ReviewCard(1001, repetitions = 1, intervalDays = 1, dueEpochDay = today - 1),
+                MemoryFingerprint(1001, attempts = 1, recalled = 1))
+            store.learningGoal = LearningGoal(1, 1, mode)
+            rule.activityRule.scenario.recreate()
+            rule.awaitHifzReady()
+            click("ابدأ جلسة اليوم")
+            assertTrue(ProgressStore(context).session()!!.followsDailyPlan)
+            rule.activityRule.scenario.recreate()
+            rule.awaitHifzReady()
+            assertTrue(ProgressStore(context).session()!!.followsDailyPlan)
+            repeat(5) {
+                if (rule.onAllNodesWithText("جيد").fetchSemanticsNodes().isEmpty())
+                    click("المرحلة التالية في سُلّم الاسترجاع")
+            }
+            click("جيد")
+            rule.onNodeWithText("الخطة اليومية").assertExists()
+            assertNull(store.session())
+            val work = store.workload(today)
+            if (mode == StudyMode.NEW_ONLY) {
+                assertEquals(setOf(1002), work.newVerseIds)
+                assertTrue(work.reviewVerseIds.isEmpty())
+            } else {
+                assertEquals(setOf(1001), work.reviewVerseIds)
+                assertTrue(work.newVerseIds.isEmpty())
+            }
+        }
+    }
 }

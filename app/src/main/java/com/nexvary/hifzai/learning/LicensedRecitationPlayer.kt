@@ -33,6 +33,14 @@ class LicensedRecitationPlayer(context: Context) {
         currentRights = rights
         main.post(expiryCheck)
     }
+    /** Mapped catalogue playback; the original raw adapter remains for existing private tests. */
+    fun open(asset: BoundRecitation, repeatCount: Int = 0) {
+        close()
+        require(asset.recording.referenceReview.isNotBlank())
+        require(asset.file.length() == asset.recording.byteLength)
+        // Recheck rights and digest at open, even if bytes changed after bind().
+        open(asset.file, asset.recording.rights, repeatCount)
+    }
     fun play(): Boolean {
         if (currentRights?.permitsUse(offline = true) != true) { close(); return false }
         return player.play()
