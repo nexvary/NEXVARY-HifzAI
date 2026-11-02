@@ -14,6 +14,14 @@ service is preserved, not deployed or connected to Android.
 
 ## New behavior
 
+- Continuation: deletion generations now survive Activity recreation, preventing an
+  unused pre-deletion saved-state generation from restoring an old recall attempt.
+  The UI regression recreates the Activity both before and after deletion.
+- Phase 118: an explicitly enabled local return suggestion appears on Home after a
+  week without recorded practice, measured from enablement/last practice/postponement.
+  It has no alarms, notifications or networking. Disabling erases its anchor date;
+  training while disabled does not create one. Data deletion resets its consent.
+
 - Settings offer balanced/new-only/review-only planning, 0–20 new verses and 1–100
   reviews per session. The planner respects future due dates and empty budgets;
   learners can still select any verse manually. These are session limits, not a
@@ -46,9 +54,10 @@ alignment/rights expiry, audio import quotas/digests and failure cleanup. Instru
 adds persistence/migration, notebook assignment/cascade and actual UI reset tests.
 UI tests wait for asynchronous canonical verification rather than sleeping.
 
-Local checks after the added result-summary regression tests: **56 Python tests**
+Local checks after the continuation: **56 Python tests**
 pass, with no failures/errors/skips. A standalone pinned Kotlin 2.0.21/JUnit 4.13.2
-run passes **41 JVM tests** (the pure-domain subset including the new tests). This
+run passes **67 JVM tests** (all repository JVM tests, using compile-only Android API
+signatures and host JSON; no Android storage/UI runtime assertion). This
 does not replace the full Gradle/Lint/Android build or instrumentation matrix.
 
 The first PR CI confirms the original 53 Python tests and the optional web console

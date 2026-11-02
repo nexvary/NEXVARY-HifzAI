@@ -54,6 +54,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -103,6 +104,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.nexvary.hifzai.learning.LearningGoal
 import com.nexvary.hifzai.learning.LearningTrends
+import com.nexvary.hifzai.learning.GentleReturnPolicy
 import java.time.LocalDate
 
 internal val quranTypeface = FontFamily(Font(R.font.amiri_quran))
@@ -140,7 +142,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun App() {
-    var generation by remember { mutableIntStateOf(0) }
+    // Restore the generation together with its children. Resetting it to zero on
+    // recreation can leave a previous generation's saved session unconsumed;
+    // the next deletion would then restore that old session when its key repeats.
+    var generation by rememberSaveable { mutableIntStateOf(0) }
     key(generation) { AppContent { generation++ } }
 }
 
@@ -220,6 +225,8 @@ private fun AppContent(resetRuntime: () -> Unit) {
     var advanced by remember { mutableStateOf(store.advanced) }
     var learningGoal by remember { mutableStateOf(store.learningGoal) }
     var favoriteReciter by remember { mutableStateOf(store.favoriteReciter) }
+    var gentleReturnEnabled by remember { mutableStateOf(store.gentleReturnEnabled) }
+    var gentleReturnAnchor by remember { mutableStateOf(store.gentleReturnAnchorDay) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var jumpQuery by rememberSaveable { mutableStateOf("") }
     var stage by rememberSaveable { mutableStateOf(savedSession?.stage ?: PracticeKind.READ) }
@@ -229,7 +236,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
     var difficulty by rememberSaveable { mutableStateOf(savedSession?.difficulty ?: DifficultyTag.NONE) }
     var message by remember { mutableStateOf("") }
     var confirmClear by remember { mutableStateOf(false) }
-    val today = LocalDate.now().toEpochDay()
+    var today by remember { mutableLongStateOf(LocalDate.now().toEpochDay()) }
     val verse = verses[index]
     val currentCard = cards[verse.id] ?: ReviewCard(verse.id)
     val fingerprint = memories[verse.id] ?: MemoryFingerprint(verse.id)
@@ -317,6 +324,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
     }
 
     fun grade(grade: RecallGrade) {
+        today = LocalDate.now().toEpochDay()
         // Revealed answers must never count as independent recall.
         val assisted = hintCount + if (answerWasRevealed) 1 else 0
         val effectiveGrade = RecallLadder.boundedGrade(grade, hintCount, answerWasRevealed)
@@ -328,6 +336,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
         memories[verse.id] = newMemory
         store.save(newCard, newMemory)
         store.observe(verse.id, RecallObservation(today, effectiveGrade, hintCount, answerWasRevealed, difficulty, stage))
+        gentleReturnAnchor = store.gentleReturnAnchorDay
         message = "سُجل تقييم الآية " + verse.verse +
             (if (assisted > 0) " (بمساعدة)" else " (بدون كشف)") +
             " • موعد المراجعة بعد " + newCard.intervalDays + " يوم"
@@ -338,6 +347,11 @@ private fun AppContent(resetRuntime: () -> Unit) {
     DisposableEffect(context, voicePractice) {
         val activity = context as? ComponentActivity
         val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                today = LocalDate.now().toEpochDay()
+                gentleReturnEnabled = store.gentleReturnEnabled
+                gentleReturnAnchor = store.gentleReturnAnchorDay
+            }
             if (event == Lifecycle.Event.ON_STOP) {
                 voicePractice.erase()
                 typedRecall = ""
@@ -361,6 +375,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
         voiceMessage = "التسجيل الصوتي اختياري ولا يغادر هاتفك"
     }
     LaunchedEffect(screen, selectedSurah, readerPage, insightsPage) {
+        today = LocalDate.now().toEpochDay()
         scrollState.scrollTo(0)
     }
 
@@ -436,6 +451,15 @@ private fun AppContent(resetRuntime: () -> Unit) {
             }
             when (screen) {
                 Screen.HOME -> {
+                    if (GentleReturnPolicy.shouldSuggest(gentleReturnEnabled, gentleReturnAnchor, today)) {
+                        Text("مرّ أسبوع دون تدريب مسجل. إن رغبت، عد بجلسة قصيرة على مهلك.", color = gold)
+                        OutlinedButton(onClick = {
+                            store.postponeGentleReturn(today); gentleReturnAnchor = today
+                        }) { Text("ذكّرني بعد أسبوع") }
+                        OutlinedButton(onClick = {
+                            store.setGentleReturn(false, today); gentleReturnEnabled = false; gentleReturnAnchor = null
+                        }) { Text("أوقف اقتراح العودة") }
+                    }
                     if (store.session() != null) {
                         OutlinedButton(onClick = {
                             val active = store.session()
@@ -963,6 +987,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
                         corpus.verses.filter { it.id in rangeStart..rangeEnd }
                     }
                     RangePracticeScreen(corpus, range, store, record = { item, result, hints, exposed, bridge ->
+                        today = LocalDate.now().toEpochDay()
                         val bounded = RecallLadder.boundedGrade(result, hints, exposed)
                         val card = HifzScheduler.grade(cards[item.id] ?: ReviewCard(item.id), bounded, today)
                         val memory = MemoryCoach.record(memories[item.id] ?: MemoryFingerprint(item.id),
@@ -970,6 +995,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
                         cards[item.id] = card; memories[item.id] = memory
                         store.save(card, memory)
                         store.observe(item.id, RecallObservation(today, bounded, hints, exposed, DifficultyTag.NONE, if (bridge) PracticeKind.BRIDGE else PracticeKind.RECALL))
+                        gentleReturnAnchor = store.gentleReturnAnchorDay
                     }, finish = {
                         message = "انتهت جلسة النطاق؛ راجع خطة اليوم للمواعيد التالية"
                         screen = Screen.TODAY
@@ -984,6 +1010,15 @@ private fun AppContent(resetRuntime: () -> Unit) {
                     Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
                     LearningGoalControls(learningGoal) { value ->
                         learningGoal = value; store.learningGoal = value
+                    }
+                    Text("تذكير العودة داخل التطبيق", style = MaterialTheme.typography.titleLarge)
+                    Text("اختياري: بعد أسبوع دون تدريب مسجل نقترح جلسة قصيرة عند فتح الرئيسية. لا إشعارات أو إرسال بيانات. الإيقاف يمحو تاريخ هذا التذكير.")
+                    OutlinedButton(onClick = {
+                        gentleReturnEnabled = !gentleReturnEnabled
+                        store.setGentleReturn(gentleReturnEnabled, today)
+                        gentleReturnAnchor = store.gentleReturnAnchorDay
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Text(if (gentleReturnEnabled) "إيقاف تذكير العودة" else "تفعيل تذكير العودة الاختياري")
                     }
                     OutlinedButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth()) {
                         Text(if (advanced) "الوضع الحالي: متقدم • التحويل إلى مبسط" else "الوضع الحالي: مبسط • التحويل إلى متقدم")

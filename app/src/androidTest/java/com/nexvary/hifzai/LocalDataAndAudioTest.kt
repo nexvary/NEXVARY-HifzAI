@@ -71,6 +71,33 @@ class LocalDataAndAudioTest {
         } finally { store.clear() }
     }
 
+    @Test fun returnSuggestionRequiresConsentAndDisablingOrDeletionErasesItsDate() {
+        val store = ProgressStore(context)
+        store.clear()
+        try {
+            val event = RecallObservation(12, RecallGrade.GOOD, 0, false, DifficultyTag.NONE)
+            store.observe(1001, event)
+            assertFalse(store.gentleReturnEnabled)
+            assertNull(store.gentleReturnAnchorDay)
+            store.setGentleReturn(true, 10)
+            assertTrue(ProgressStore(context).gentleReturnEnabled)
+            store.observe(1001, event)
+            assertEquals(12L, store.gentleReturnAnchorDay)
+            assertTrue(GentleReturnPolicy.shouldSuggest(true, store.gentleReturnAnchorDay, 19))
+            store.postponeGentleReturn(19)
+            assertFalse(GentleReturnPolicy.shouldSuggest(true, store.gentleReturnAnchorDay, 19))
+            store.observe(1001, event) // An older event cannot undo postponement.
+            assertEquals(19L, store.gentleReturnAnchorDay)
+            store.setGentleReturn(false, 19)
+            assertNull(ProgressStore(context).gentleReturnAnchorDay)
+            assertFalse(context.getSharedPreferences("hifz_progress_v1", 0).contains("gentle_return_anchor"))
+            store.setGentleReturn(true, 19)
+            assertTrue(store.clear())
+            assertFalse(store.gentleReturnEnabled)
+            assertNull(store.gentleReturnAnchorDay)
+        } finally { store.clear() }
+    }
+
     @Test fun notebookAssignmentBoundsReschedulingAndCascadingDeletion() {
         val notebook = TeacherNotebook(context)
         notebook.clear()

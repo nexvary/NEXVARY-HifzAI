@@ -3,6 +3,7 @@ package com.nexvary.hifzai.learning
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDate
 
 /** Private local learning data; audio is never stored in these preferences. */
 class ProgressStore(context: Context) {
@@ -75,6 +76,25 @@ class ProgressStore(context: Context) {
             prefs.edit().putString("favorite_reciter", value).apply()
         }
 
+    val gentleReturnEnabled: Boolean
+        get() = runCatching { prefs.getBoolean("gentle_return_enabled", false) }.getOrDefault(false)
+    val gentleReturnAnchorDay: Long?
+        get() = if (!gentleReturnEnabled) null else runCatching {
+            prefs.getLong("gentle_return_anchor", -1).takeIf { it >= 0 }
+        }.getOrNull()
+
+    fun setGentleReturn(enabled: Boolean, today: Long = LocalDate.now().toEpochDay()) {
+        require(today >= 0)
+        val editor = prefs.edit().putBoolean("gentle_return_enabled", enabled)
+        if (enabled) editor.putLong("gentle_return_anchor", today)
+        else editor.remove("gentle_return_anchor")
+        editor.apply()
+    }
+    fun postponeGentleReturn(today: Long = LocalDate.now().toEpochDay()) {
+        require(today >= 0)
+        if (gentleReturnEnabled) prefs.edit().putLong("gentle_return_anchor", today).apply()
+    }
+
     fun bookmark(chapter: Int, ayah: Int) {
         require(chapter in 1..114 && ayah in 1..286)
         prefs.edit().putInt("bookmark_chapter", chapter).putInt("bookmark_ayah", ayah).apply()
@@ -119,6 +139,9 @@ class ProgressStore(context: Context) {
                 .put("difficulty", o.difficulty.name).put("kind", o.kind?.name ?: ""))
         }
         prefs.edit().putString("history_$id", a.toString()).apply()
+        if (gentleReturnEnabled && observation.epochDay >= 0) {
+            prefs.edit().putLong("gentle_return_anchor", maxOf(gentleReturnAnchorDay ?: 0, observation.epochDay)).apply()
+        }
     }
 
     fun clear() = prefs.edit().clear().commit()
