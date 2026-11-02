@@ -74,4 +74,6 @@ jobs:
           path: |
             app/build/outputs/androidTest-results/
             ui-proof/instrumentation.txt
+            ui-proof/instrumentation-large-font.txt
+            ui-proof/logcat-failure.txt
           if-no-files-found: ignore

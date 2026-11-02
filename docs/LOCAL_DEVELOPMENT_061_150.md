@@ -91,6 +91,15 @@ adds persistence/migration, notebook assignment/cascade and actual UI reset test
 Notebook regressions also exercise invalid edits without mutation, range/date
 completion rules, individual deletion isolation, cancellation and Activity reload.
 The notebook UI paths run at normal and large font on the same device matrix.
+The two instrumentation invocations use separate app processes before the host
+changes system font scale. A separate live-font regression changes system font
+with the app open, waits for a new Activity, and verifies the saved recall stage,
+assistance and plan metadata in both directions. This retains coverage for real
+configuration changes while isolating runner teardown between test invocations.
+Failure handling preserves both instrumentation logs and full device logcat without
+turning a failed run green. An API 26 scaled-run teardown previously crashed in
+Compose SlotWriter disposal; the exact cause is not established from that stack
+alone. The process isolation and live-change regression must be validated together.
 UI tests wait for asynchronous canonical verification rather than sleeping.
 
 Local checks after the continuation: **56 Python tests**
