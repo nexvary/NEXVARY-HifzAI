@@ -1,0 +1,97 @@
+{
+  "tested_head": "a925198f88a6ede8cc5665011d466fe7ed1516f3",
+  "ci_merge_commit": "bda4d6d27ee9df9b97bee0d41915bbb3547f3805",
+  "identical_tree": "5e9d0f64f26fd6f02179a7e18ff88051a9f25625",
+  "all_seven_jobs": "success",
+  "local_python": {
+    "tests": 69,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "working_tree_dirty": false
+  },
+  "jvm": {
+    "reports": 19,
+    "tests": 92,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 8
+  },
+  "emulator_profiles": [
+    "API26 phone",
+    "API26 small phone",
+    "API35 phone",
+    "API35 tablet"
+  ],
+  "normal_per_profile": 38,
+  "large_font_per_profile": 17,
+  "instrumented_executions": 220,
+  "verified_pngs": 200,
+  "runs": [
+    41516029779,
+    41516030229,
+    41516030274,
+    41516029951
+  ],
+  "artifacts": [
+    {
+      "artifact": 13176461420,
+      "zip_sha256": "7d4fd4bd02592af9c0b924bf6a3b54d61184731b33c7270e801120783782cf00",
+      "instrumentation": {
+        "instrumentation-large-font.txt": [
+          "17"
+        ],
+        "instrumentation.txt": [
+          "38"
+        ]
+      },
+      "screenshots": 50
+    },
+    {
+      "artifact": 13177185125,
+      "zip_sha256": "ad5d8658989248a66e030a158e25546a4080b0338c0947417927e47ec9766c20",
+      "instrumentation": {
+        "instrumentation-large-font.txt": [
+          "17"
+        ],
+        "instrumentation.txt": [
+          "38"
+        ]
+      },
+      "screenshots": 50
+    },
+    {
+      "artifact": 13175469061,
+      "zip_sha256": "799192b397539afb2eb781bb1860d15f22baf0955ce14e908cfd952319249702",
+      "instrumentation": {
+        "instrumentation-large-font.txt": [
+          "17"
+        ],
+        "instrumentation.txt": [
+          "38"
+        ]
+      },
+      "screenshots": 50
+    },
+    {
+      "artifact": 13174764184,
+      "zip_sha256": "60fdca0f9ae4b67df4fbdf7795db4cea3ebb8692110faec415520987efbcf26b",
+      "normal_tests": 38,
+      "large_font_tests": 17,
+      "screenshots": 50
+    }
+  ],
+  "unit_lint_archive": {
+    "artifact": 13174739021,
+    "sha256": "8e5ae713c4e52f9b9506ad102739758578629c560301c39c21c9f08ec57e978b"
+  },
+  "human_visual_inspection": "Bookmark screen only, small phone and tablet at normal and large font. Inherited large header/scrolling limitation noted. Not specialist Quran or accessibility approval.",
+  "physical_devices_tested": false,
+  "real_speech_evaluated": false,
+  "public_apk_published": false,
+  "release_approved": false
+}

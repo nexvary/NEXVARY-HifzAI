@@ -114,6 +114,43 @@ class HifzUiSmokeTest {
         rule.onNodeWithText("اختيار السورة • الفاتحة").assertExists()
         screenshot("hifz-reader.png")
     }
+    @Test fun multipleBookmarksSurviveRecreationNavigateAcrossChaptersAndDeleteOnlyThePlace() {
+        val store = ProgressStore(InstrumentationRegistry.getInstrumentation().targetContext)
+        store.bookmark(1, 2)
+        click("افتح المصحف الكامل • ١١٤ سورة")
+        click("أضف علامة للآية 1")
+        click("أضف علامة للآية 1")
+        click("البحث في القرآن والانتقال المباشر")
+        rule.onNodeWithText("سورة:آية مثل ٢:٢٥٥").performTextInput("٢:٢٥٥")
+        click("انتقل إلى الآية")
+        click("أضف علامة للآية 255")
+        click("العلامات المرجعية")
+        rule.onNodeWithText("العلامات المرجعية • 2 من 50").assertExists()
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        rule.onNodeWithText("العلامات المرجعية • 2 من 50").assertExists()
+        screenshot("hifz-saved-places.png")
+        click("حذف علامة الفاتحة • الآية 1")
+        rule.onNodeWithText("العلامات المرجعية • 1 من 50").assertExists()
+        org.junit.Assert.assertEquals(1 to 2, store.bookmark())
+        click("انتقل إلى البقرة • الآية 255")
+        rule.onNodeWithText("اختيار السورة • البقرة").assertExists()
+        org.junit.Assert.assertEquals(listOf(2255), store.savedPlaces(
+            com.nexvary.hifzai.learning.QuranCorpus.load(InstrumentationRegistry.getInstrumentation().targetContext)
+        ).map { it.id })
+        click("العلامات المرجعية")
+        click("حذف علامة البقرة • الآية 255")
+        rule.onNodeWithText("لا توجد علامات بعد؛ أضف علامة من بطاقة الآية في المصحف").assertExists()
+        val corpus = com.nexvary.hifzai.learning.QuranCorpus.load(
+            InstrumentationRegistry.getInstrumentation().targetContext)
+        corpus.verses.take(6).forEach { store.addSavedPlace(it.chapter, it.verse, corpus) }
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        click("العلامات التالية")
+        rule.onNodeWithText("صفحة 2 من 2").assertExists()
+        click("حذف علامة الفاتحة • الآية 6")
+        rule.onNodeWithText("العلامات المرجعية • 5 من 50").assertExists()
+        rule.onNodeWithText("انتقل إلى الفاتحة • الآية 1").assertExists()
+    }
+
     @Test
     fun navigateEveryPageAndCaptureRealScreens() {
         rule.waitForIdle()

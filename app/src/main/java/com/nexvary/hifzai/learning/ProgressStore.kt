@@ -111,6 +111,41 @@ class ProgressStore(context: Context) {
         return if (c in 1..114 && a in 1..286) c to a else null
     }
 
+    /** Stored addresses are resolved against the immutable corpus; no Quran text is persisted. */
+    fun savedPlaces(corpus: QuranCorpus): List<VerifiedVerse> = runCatching {
+        val raw = prefs.getString("saved_places_v1", "[]") ?: "[]"
+        require(raw.length <= 8192)
+        val list = JSONArray(raw)
+        require(list.length() <= 50)
+        (0 until list.length()).mapNotNull { index -> runCatching {
+            val place = list.getJSONObject(index)
+            val chapter = place.get("chapter")
+            val ayah = place.get("ayah")
+            if (chapter is Int && ayah is Int) corpus.find(chapter, ayah) else null
+        }.getOrNull() }.distinctBy { it.id }
+    }.getOrDefault(emptyList())
+
+    /** Duplicate saves succeed without consuming quota. The existing reading stop is untouched. */
+    fun addSavedPlace(chapter: Int, ayah: Int, corpus: QuranCorpus): Boolean {
+        val place = requireNotNull(corpus.find(chapter, ayah)) { "مرجع الآية غير موجود" }
+        val existing = savedPlaces(corpus)
+        if (existing.any { it.id == place.id }) return true
+        if (existing.size >= 50) return false
+        writeSavedPlaces(existing + place)
+        return true
+    }
+
+    fun removeSavedPlace(chapter: Int, ayah: Int, corpus: QuranCorpus) {
+        requireNotNull(corpus.find(chapter, ayah)) { "مرجع الآية غير موجود" }
+        writeSavedPlaces(savedPlaces(corpus).filterNot { it.chapter == chapter && it.verse == ayah })
+    }
+
+    private fun writeSavedPlaces(places: List<VerifiedVerse>) {
+        val array = JSONArray()
+        places.forEach { array.put(JSONObject().put("chapter", it.chapter).put("ayah", it.verse)) }
+        prefs.edit().putString("saved_places_v1", array.toString()).apply()
+    }
+
     fun saveSession(session: PracticeSession) {
         val json = JSONObject().put("chapter", session.chapter).put("ayah", session.ayah)
             .put("stage", session.stage.name).put("hints", session.hints)
