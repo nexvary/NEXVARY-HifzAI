@@ -108,8 +108,14 @@ assistance and plan metadata in both directions. This retains coverage for real
 configuration changes while isolating runner teardown between test invocations.
 Failure handling preserves both instrumentation logs and full device logcat without
 turning a failed run green. An API 26 scaled-run teardown previously crashed in
-Compose SlotWriter disposal; the exact cause is not established from that stack
-alone. The process isolation and live-change regression must be validated together.
+Compose SlotWriter disposal; the same internal stack later recurred during a normal
+API 26 invocation. Process isolation alone therefore did not resolve the issue.
+The source-verification wrapper now renders a separate `VerifiedAppContent` child
+only after successful verification, rather than placing the full remembered screen
+state after early loading/error returns. A four-cycle regression preserves an
+assisted recall attempt through recreation, deletes it, and recreates again, in
+both font-scale rounds. This is a lifecycle-focused mitigation under test, not a
+proven diagnosis or a universal Compose-runtime stability claim; failed evidence is retained.
 UI tests wait for asynchronous canonical verification rather than sleeping.
 
 Local checks after the continuation: **56 Python tests**

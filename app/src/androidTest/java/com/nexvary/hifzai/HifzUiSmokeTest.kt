@@ -85,6 +85,24 @@ class HifzUiSmokeTest {
         } finally { setScale(initial) }
     }
 
+    @Test fun repeatedVerifiedLoadsRecreationAndDeletionKeepAttemptStateConsistent() {
+        val store = ProgressStore(InstrumentationRegistry.getInstrumentation().targetContext)
+        repeat(4) {
+            rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+            repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+            click("تلميح")
+            val expected = store.session()!!
+            rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+            org.junit.Assert.assertEquals(expected, store.session())
+            rule.onNodeWithText("الإعدادات").performClick(); rule.waitForIdle()
+            click("حذف تقدم الحفظ من الجهاز"); click("حذف البيانات")
+            rule.awaitHifzReady()
+            org.junit.Assert.assertNull(store.session())
+            rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+            org.junit.Assert.assertNull(store.session())
+        }
+    }
+
     @Test
     fun launchAndOpenFullOfflineMushaf() {
         rule.waitForIdle()

@@ -156,15 +156,13 @@ private fun AppContent(resetRuntime: () -> Unit) {
     LaunchedEffect(context) {
         corpusResult = withContext(Dispatchers.IO) { runCatching { QuranCorpus.load(context) } }
     }
+    val corpus = corpusResult?.getOrNull()
     if (corpusResult == null) {
         Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
             Text("جارٍ التحقق من النص القرآني المحلي…")
             androidx.compose.material3.LinearProgressIndicator(Modifier.fillMaxWidth())
         }
-        return
-    }
-    val corpus = corpusResult?.getOrNull()
-    if (corpus == null) {
+    } else if (corpus == null) {
         Column(
             Modifier.fillMaxSize().background(navy).padding(24.dp),
             verticalArrangement = Arrangement.Center
@@ -173,8 +171,15 @@ private fun AppContent(resetRuntime: () -> Unit) {
             Text("تم إيقاف عرض المصحف لحماية سلامة النص. أعد تثبيت نسخة سليمة من المصدر الرسمي.",
                 color = silver)
         }
-        return
+    } else {
+        VerifiedAppContent(corpus, resetRuntime)
     }
+}
+
+/** Keep the verified screen's remembered state in its own unconditional composition. */
+@Composable
+private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
+    val context = LocalContext.current
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
     val voicePractice = remember(context) { PrivateRecitationPractice(context) }
