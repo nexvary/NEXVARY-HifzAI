@@ -34,6 +34,15 @@ class TeacherNotebookUiTest {
                 androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget)))
         androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget))
             .inRoot(root).check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
+        // Capture the actual platform window; Compose captureToImage only sees
+        // the Activity beneath this native picker. No generated UI or fixtures.
+        val image = checkNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
+        val page = if (widget == android.widget.DatePicker::class.java) "date" else "time"
+        try {
+            File(context.filesDir, "hifz-notebook-$page-picker.png").outputStream().use {
+                check(image.compress(Bitmap.CompressFormat.PNG, 100, it))
+            }
+        } finally { image.recycle() }
         androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(
             if (confirm) android.R.id.button1 else android.R.id.button2))
             .inRoot(root).perform(androidx.test.espresso.action.ViewActions.click())
@@ -111,13 +120,16 @@ class TeacherNotebookUiTest {
                 .performScrollTo().performClick()
             rule.waitForIdle()
         }
-        chooseEditorTime()
-        rule.onAllNodesWithText("تعديل الجلسة المحلية").assertCountEquals(0)
-        pickerButton(android.widget.DatePicker::class.java)
-        pickerButton(android.widget.TimePicker::class.java, confirm = false)
-        rule.onNodeWithText("تعديل الجلسة المحلية").assertExists()
-        rule.onNodeWithText("ملاحظات الجلسة").assertTextContains("مسودة محفوظة بعد الإلغاء")
-        assertEquals(original, notebook.lessons().single())
+        repeat(3) {
+            // Three real cancellation cycles must all succeed; never retry a failure.
+            chooseEditorTime()
+            rule.onAllNodesWithText("تعديل الجلسة المحلية").assertCountEquals(0)
+            pickerButton(android.widget.DatePicker::class.java)
+            pickerButton(android.widget.TimePicker::class.java, confirm = false)
+            rule.onNodeWithText("تعديل الجلسة المحلية").assertExists()
+            rule.onNodeWithText("ملاحظات الجلسة").assertTextContains("مسودة محفوظة بعد الإلغاء")
+            assertEquals(original, notebook.lessons().single())
+        }
         chooseEditorTime()
         pickerButton(android.widget.DatePicker::class.java)
         pickerButton(android.widget.TimePicker::class.java)

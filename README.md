@@ -103,3 +103,7 @@ A local notebook is not a live academy; an ASR comparator is not an evaluated re
 
 ### Partition learning
 An unmodified official Tanzil metadata asset now supplies 30 juz and 604 page verse boundaries. Range sessions use original references, cross surahs, retain assistance, resume locally and stop at the selected boundary. They do not reproduce the printed page layout. Coverage/order/boundary tests are present. The metadata root specifies cc-by without a license version; this remains a final rights-clarification item. Device proof is configured for API 26 and 35 at normal and 1.5x system font; consult matching Actions outcomes before claiming that matrix passed.
+
+### دفعة الاستكمال — PR19 وPR20
+
+تنقل يتكيف مع الخط وعرض النافذة، وخيار وقت يومي بمعاينة وتطبيق صريح، وأداة مقارنة ASR زوجية محلية. أضيفت بنية خدمة تلاوات مع إشعار وأزرار وسائط، منفصلة عن التسجيل الخاص المؤقت؛ لا تزال واجهة المكتبة والتسجيلات المأذونة ناقصة. راجع [تفاصيل الدفعة](docs/CONTINUATION_2026-11-03.md)، [الخدمة وحدودها](docs/BACKGROUND_RECITATION.md)، [الفجوات المقارنة](docs/COMPETITOR_GAPS_2026-11-03.md)، ونتائج CI المطابقة في PR19/PR20. لا اعتماد نهائي أو إصدار عام من هذه الإضافات.

@@ -1,0 +1,10 @@
+{
+  "source_commit": "78eff9096adbcc41d349f81915032f7e249b4d8e",
+  "run": 41624806134,
+  "job": 125879666051,
+  "status": "failed lint; not a passing Android build",
+  "failure": "NotificationPermission at general NotificationManager.notify call",
+  "fix": "Use startForeground with the existing notification ID to update the already foreground mediaPlayback service. Only repost on phase/address changes; position ticks update PlaybackState. No suppression, disabled rule or POST_NOTIFICATIONS permission.",
+  "replacement_validation": "pending matching CI",
+  "release_approval": false
+}

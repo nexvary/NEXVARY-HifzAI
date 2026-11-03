@@ -1137,9 +1137,9 @@
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
       "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
       "continuation_tracking": {
-        "classification": "not_implemented",
-        "implementation_references": "—",
-        "remaining": "خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة.",
+        "classification": "partial_new",
+        "implementation_references": "RecitationPlaybackService.kt; RecitationPlaybackServiceTest.kt",
+        "remaining": "Local service/media-session implementation; matching Android CI and real headset/call/screen-off review pending. No approved audio catalogue UI or recordings. Not final acceptance.",
         "source_table": "docs/PHASES_061_150_STATUS.md",
         "acceptance": "Not final acceptance; historical status above remains unchanged."
       }
@@ -1263,9 +1263,9 @@
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
       "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
       "continuation_tracking": {
-        "classification": "not_implemented",
-        "implementation_references": "—",
-        "remaining": "خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة.",
+        "classification": "partial_new",
+        "implementation_references": "RecitationPlaybackService.kt; RecitationPlaybackServiceTest.kt",
+        "remaining": "Local service/media-session implementation; matching Android CI and real headset/call/screen-off review pending. No approved audio catalogue UI or recordings. Not final acceptance.",
         "source_table": "docs/PHASES_061_150_STATUS.md",
         "acceptance": "Not final acceptance; historical status above remains unchanged."
       }
@@ -4118,9 +4118,9 @@
       150
     ],
     "rows": 90,
-    "partial_new": 27,
+    "partial_new": 29,
     "partial_existing": 34,
-    "not_implemented": 12,
+    "not_implemented": 10,
     "external_evidence_required": 11,
     "outside_local_scope": 6,
     "final_acceptances": 0,

@@ -8,7 +8,7 @@ import sys
 import zlib
 from pathlib import Path
 
-PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters partitions range private-audio asr asr-microphone agenda agenda-filters saved-places appearance-settings reader-light reader-dark navigation'.split()
+PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters partitions range private-audio asr asr-microphone agenda agenda-filters saved-places appearance-settings reader-light reader-dark navigation notebook-date-picker notebook-time-picker'.split()
 
 def verify_png(path):
     data = path.read_bytes()
@@ -45,7 +45,7 @@ def main():
     source = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
     apk = Path('app/build/outputs/apk/debug/app-debug.apk')
     report = {'source_commit':source,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),
-              'origin':'Compose captureToImage during Android instrumented tests; no generated mockups',
+              'origin':'Compose captureToImage for app screens; UiAutomation.takeScreenshot for notebook picker windows; actual Android instrumentation, no generated mockups',
               'android_api':subprocess.check_output(['adb','shell','getprop','ro.build.version.sdk'],text=True).strip(),
               'device_model':subprocess.check_output(['adb','shell','getprop','ro.product.model'],text=True).strip(),
               'display_size':subprocess.check_output(['adb','shell','wm','size'],text=True).strip(),

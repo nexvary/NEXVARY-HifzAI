@@ -12,10 +12,11 @@ import android.media.PlaybackParams
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
 import java.io.File
 
 /** Local files only. Does not record, upload, classify recitation or grant recording rights. */
-class LocalAudioPlayer(context: Context) {
+class LocalAudioPlayer(context: Context, private val keepAwake: Boolean = false) {
     enum class Phase { EMPTY, READY, PLAYING, PAUSED, COMPLETED }
     data class Snapshot(val phase: Phase, val positionMs: Int, val durationMs: Int,
         val speed: Float, val extraRepeats: Int, val completedPlays: Int, val interruptions: Long = 0)
@@ -51,6 +52,7 @@ class LocalAudioPlayer(context: Context) {
         val next = MediaPlayer()
         try {
             next.setAudioAttributes(attributes)
+            if (keepAwake) next.setWakeMode(app, PowerManager.PARTIAL_WAKE_LOCK)
             next.setDataSource(file.absolutePath)
             next.prepare()
             check(next.duration > 0) { "مدة الصوت غير صالحة" }
