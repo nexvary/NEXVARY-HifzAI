@@ -46,7 +46,8 @@ internal fun AdaptiveBottomNavigation(destinations: List<NavigationDestination>)
                                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp).size(24.dp))
                                 }
                                 Spacer(Modifier.height(4.dp))
-                                Text(destination.label, style = MaterialTheme.typography.labelMedium,
+                                Text(destination.label, modifier = Modifier.fillMaxWidth(),
+                                    style = MaterialTheme.typography.labelMedium,
                                     color = if (destination.selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center)
                             }
