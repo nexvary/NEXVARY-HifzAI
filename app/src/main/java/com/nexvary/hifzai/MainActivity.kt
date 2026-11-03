@@ -64,7 +64,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.Font
@@ -422,7 +423,9 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
         screen = if (screen == Screen.CHAPTERS || screen == Screen.SAVED_PLACES) Screen.MUSHAF else Screen.HOME
     }
 
-    val contentPadding = maxOf(18, (LocalConfiguration.current.screenWidthDp - 840) / 2).dp
+    val windowWidthPx = LocalWindowInfo.current.containerSize.width
+    val windowWidth = with(LocalDensity.current) { windowWidthPx.toDp() }
+    val contentPadding = maxOf(18.dp, (windowWidth - 840.dp) / 2)
     Scaffold(
         containerColor = navy,
         bottomBar = {
