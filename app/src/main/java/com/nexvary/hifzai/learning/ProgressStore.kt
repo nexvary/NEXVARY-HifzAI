@@ -59,6 +59,10 @@ class ProgressStore(context: Context) {
     private fun longValue(key: String, default: Long): Long =
         runCatching { prefs.getLong(key, default) }.getOrDefault(default)
 
+    var appearance: AppAppearance
+        get() = AppAppearance.fromStored(runCatching { prefs.getString("appearance", null) }.getOrNull())
+        set(value) { prefs.edit().putString("appearance", value.name).apply() }
+
     var fontSize: Int
         get() = intValue("font_size", 30).coerceIn(24, 44)
         set(value) { prefs.edit().putInt("font_size", value.coerceIn(24, 44)).apply() }

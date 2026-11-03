@@ -19,6 +19,27 @@ class LocalDataAndAudioTest {
     @get:Rule val ui = createEmptyComposeRule()
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
 
+    @Test fun appearancePersistsAndCorruptValuesFallBackWithoutChangingLearningHistory() {
+        val store = ProgressStore(context)
+        val prefs = context.getSharedPreferences("hifz_progress_v1", 0)
+        store.clear()
+        try {
+            assertEquals(AppAppearance.DARK, store.appearance)
+            store.observe(1001, RecallObservation(10, RecallGrade.GOOD, 0, false, DifficultyTag.NONE))
+            for (mode in AppAppearance.entries) {
+                store.appearance = mode
+                assertEquals(mode, ProgressStore(context).appearance)
+                assertEquals(1, store.history(1001).size)
+            }
+            prefs.edit().putString("appearance", "corrupted").commit()
+            assertEquals(AppAppearance.DARK, store.appearance)
+            prefs.edit().putInt("appearance", 1).commit()
+            assertEquals(AppAppearance.DARK, store.appearance)
+            assertTrue(store.clear())
+            assertEquals(AppAppearance.DARK, ProgressStore(context).appearance)
+        } finally { store.clear() }
+    }
+
     @Test fun runtimeResetMarkerRejectsOldSavedStateWithoutStoringPersonalData() {
         val resets = RuntimeResetStore(context)
         val before = resets.token

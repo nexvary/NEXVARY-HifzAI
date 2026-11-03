@@ -47,7 +47,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -62,14 +61,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import com.nexvary.hifzai.learning.AppAppearance
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.ui.unit.LayoutDirection
@@ -111,12 +116,12 @@ import java.time.LocalDate
 
 internal val quranTypeface = FontFamily(Font(R.font.amiri_quran))
 
-private val navy = Color(0xFF081521)
-private val panel = Color(0xFF122B39)
-private val silver = Color(0xFFEEF1F2)
-private val gold = Color(0xFFD6B465)
-private val green = Color(0xFF43C8AA)
-private val muted = Color(0xFFB9C6CF)
+private val navy: Color @Composable get() = MaterialTheme.colorScheme.background
+private val panel: Color @Composable get() = MaterialTheme.colorScheme.surface
+private val silver: Color @Composable get() = MaterialTheme.colorScheme.onSurface
+private val gold: Color @Composable get() = MaterialTheme.colorScheme.primary
+private val green: Color @Composable get() = MaterialTheme.colorScheme.secondary
+private val muted: Color @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
 
 private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE, LOCAL_TRANSCRIPTION, SAVED_PLACES }
 
@@ -138,19 +143,14 @@ class MainActivity : ComponentActivity() {
                 showVerificationStatus("تعذر التحقق من سلامة النص القرآني. أعد تثبيت نسخة سليمة من المصدر الرسمي.", false)
             } else {
                 setContent {
-                    MaterialTheme(
-                        colorScheme = darkColorScheme(
-                            primary = gold, onPrimary = navy,
-                            background = navy, onBackground = silver,
-                            surface = panel, onSurface = silver,
-                            secondary = green, onSecondary = navy,
-                            secondaryContainer = panel, onSecondaryContainer = gold
-                        )
-                    ) {
+                    val preferences = remember { ProgressStore(this@MainActivity) }
+                    var appearance by remember { mutableStateOf(preferences.appearance) }
+                    HifzTheme(appearance) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                            VerifiedAppContent(corpus) {
-                                resets.advance().also { advanced -> if (advanced) recreate() }
-                            }
+                            VerifiedAppContent(corpus, appearance, changeAppearance = {
+                                preferences.appearance = it
+                                appearance = it
+                            }, resetRuntime = { resets.advance().also { advanced -> if (advanced) recreate() } })
                         }
                     }
                 }
@@ -160,18 +160,21 @@ class MainActivity : ComponentActivity() {
 
     /** No composition exists until source verification succeeds; lifecycle cancellation owns IO. */
     private fun showVerificationStatus(message: String, progress: Boolean) {
+        val systemDark = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val palette = if (ProgressStore(this).appearance.usesDarkColors(systemDark)) HifzDarkColors else HifzLightColors
         val container = android.widget.LinearLayout(this).apply {
             orientation = android.widget.LinearLayout.VERTICAL
             gravity = android.view.Gravity.CENTER
             layoutDirection = android.view.View.LAYOUT_DIRECTION_RTL
             val inset = (24 * resources.displayMetrics.density).toInt()
             setPadding(inset, inset, inset, inset)
-            setBackgroundColor(0xFF081521.toInt())
+            setBackgroundColor(palette.background.toArgb())
             addView(android.widget.TextView(this@MainActivity).apply {
                 text = message
                 textSize = 18f
                 gravity = android.view.Gravity.CENTER
-                setTextColor(0xFFEEF1F2.toInt())
+                setTextColor(palette.onBackground.toArgb())
             })
             if (progress) addView(android.widget.ProgressBar(this@MainActivity))
         }
@@ -180,7 +183,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // Save the token used to CREATE this Activity, not a newer reset token.
         outState.putString(RESET_STATE_KEY, creationToken)
     }
 
@@ -194,7 +196,7 @@ class MainActivity : ComponentActivity() {
 
 /** Keep the verified screen's remembered state in its own unconditional composition. */
 @Composable
-private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Boolean) {
+private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
     val context = LocalContext.current
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
@@ -422,10 +424,12 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Boolean)
     }
 
     BackHandler(enabled = screen != Screen.HOME) {
-        screen = if (screen == Screen.CHAPTERS) Screen.MUSHAF else Screen.HOME
+        screen = if (screen == Screen.CHAPTERS || screen == Screen.SAVED_PLACES) Screen.MUSHAF else Screen.HOME
     }
 
-    val contentPadding = maxOf(18, (LocalConfiguration.current.screenWidthDp - 840) / 2).dp
+    val windowWidthPx = LocalWindowInfo.current.containerSize.width
+    val windowWidth = with(LocalDensity.current) { windowWidthPx.toDp() }
+    val contentPadding = maxOf(18.dp, (windowWidth - 840.dp) / 2)
     Scaffold(
         containerColor = navy,
         bottomBar = {
@@ -469,26 +473,28 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Boolean)
                 .padding(horizontal = contentPadding, vertical = 18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF5A2930))) {
+            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
                 Text(
                     "نسخة تطوير داخلية • غير جاهزة للمراجعة النهائية",
-                    color = Color(0xFFFFE0DE),
+                    color = MaterialTheme.colorScheme.onErrorContainer,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    fontSize = 12.sp, lineHeight = 17.sp,
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
                     textAlign = TextAlign.Center
                 )
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("حِفْظ | NEXVARY", color = gold, fontSize = 25.sp,
+                Text("حِفْظ | NEXVARY", color = gold, fontSize = 20.sp,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 if (screen != Screen.HOME) OutlinedButton(onClick = {
-                    screen = if (screen == Screen.CHAPTERS) Screen.MUSHAF else Screen.HOME
+                    screen = if (screen == Screen.CHAPTERS || screen == Screen.SAVED_PLACES) Screen.MUSHAF else Screen.HOME
                 }) { Text("رجوع") }
             }
-            Text("مصحف تدريبي يتكيّف مع طريقة استرجاعك", color = muted, fontSize = 14.sp)
+            if (screen == Screen.HOME) Text("مصحف تدريبي يتكيّف مع طريقة استرجاعك", color = muted, fontSize = 14.sp)
             if (message.isNotEmpty() && screen != Screen.LOCAL_TRANSCRIPTION) {
-                Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF103B37))) {
-                    Text(message, modifier = Modifier.padding(12.dp), color = green)
+                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                    Text(message, modifier = Modifier.padding(12.dp), color = MaterialTheme.colorScheme.onSecondaryContainer)
                 }
             }
             when (screen) {
@@ -1083,6 +1089,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Boolean)
                         Text("تفريغ صوتي محلي تجريبي")
                     }
                     Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
+                    AppearanceControls(appearance, changeAppearance)
                     LearningGoalControls(learningGoal) { value ->
                         learningGoal = value; store.learningGoal = value
                     }
@@ -1174,7 +1181,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Boolean)
 @Composable
 private fun Section(title: String, sub: String) {
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-        Text(title, color = gold, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
+        Text(title, color = gold, fontSize = 22.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.semantics { heading() })
         Text(sub, color = muted, fontSize = 14.sp)
     }
 }
@@ -1194,7 +1201,7 @@ private fun MetricCard(title: String, value: String, modifier: Modifier) {
 private fun PrimaryButton(title: String, modifier: Modifier = Modifier, action: () -> Unit) {
     Button(
         onClick = action, modifier = modifier,
-        colors = ButtonDefaults.buttonColors(containerColor = gold, contentColor = navy)
+        colors = ButtonDefaults.buttonColors(containerColor = gold, contentColor = MaterialTheme.colorScheme.onPrimary)
     ) { Text(title, fontSize = 15.sp) }
 }
 
@@ -1217,7 +1224,7 @@ private fun ScoreButton(title: String, modifier: Modifier, action: () -> Unit) {
     Button(
         onClick = action, modifier = modifier,
         contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 2.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = gold, contentColor = navy)
+        colors = ButtonDefaults.buttonColors(containerColor = gold, contentColor = MaterialTheme.colorScheme.onPrimary)
     ) { Text(title, fontSize = 12.sp, maxLines = 1) }
 }
 
