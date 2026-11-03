@@ -141,7 +141,7 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     if (resetResult == LocalDataReset.Result.PENDING) {
                         Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
-                            Text("تعذر إكمال حذف البيانات؛ لن تُستعاد الجلسة قبل اكتمال الحذف.")
+                            Text("تعذر التحقق من حالة البيانات؛ لن تُستعاد الجلسة قبل معالجة الخطأ.")
                             Button(onClick = { recreate() }) { Text("أعد محاولة الحذف") }
                         }
                     } else App(appearance, changeAppearance = {
