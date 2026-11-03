@@ -113,6 +113,83 @@ class LocalAudioPlaybackTest {
         } finally { scenario.onActivity { queue.close() }; files.forEach { it.delete() }; scenario.close() }
     }
 
+    @Test fun wholeRangeRepetitionRevalidatesWrappedFilesAndStopsAfterTheChosenPasses() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        val (catalog, assets, files) = queueFixture(300)
+        lateinit var queue: LocalRecitationQueue
+        scenario.onActivity { queue = LocalRecitationQueue(context, it.lifecycle) }
+        try {
+            scenario.onActivity { queue.load(catalog, assets, extraRepeats = 1,
+                playbackSpeed = 1.5f, extraRangeRepeats = 1); queue.play() }
+            await("Two complete range passes must end", { queue.snapshot().phase == LocalRecitationQueue.Phase.COMPLETED })
+            val final = queue.snapshot()
+            assertEquals(6, final.completedItems)
+            assertEquals(2, final.rangePass); assertEquals(2, final.rangePasses)
+            assertEquals(2, final.playback!!.completedPlays)
+            assertEquals(RecordingAddress(2, 1), final.address)
+            scenario.onActivity { queue.play() }
+            Thread.sleep(150)
+            assertEquals(6, queue.snapshot().completedItems)
+        } finally { scenario.onActivity { queue.close() }; files.forEach { it.delete() }; scenario.close() }
+    }
+
+    @Test fun wrappedRangeRechecksFirstFileBeforePlayingItAgain() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        val (catalog, assets, files) = queueFixture(600)
+        lateinit var queue: LocalRecitationQueue
+        scenario.onActivity { queue = LocalRecitationQueue(context, it.lifecycle) }
+        try {
+            scenario.onActivity { queue.load(catalog, assets, extraRangeRepeats = 1); queue.play() }
+            await("Second ayah proves the first file has been released", { queue.snapshot().index == 1 })
+            val original = files[0].readBytes()
+            files[0].writeBytes(original.copyOf().apply { this[lastIndex] = (this[lastIndex].toInt() xor 1).toByte() })
+            await("Wrapped first file must fail validation", { queue.snapshot().phase == LocalRecitationQueue.Phase.FAILED })
+            assertEquals(3, queue.snapshot().completedItems)
+            assertEquals(0, queue.snapshot().index)
+            assertEquals(2, queue.snapshot().rangePass)
+            assertEquals(LocalRecitationQueue.Failure.FILE_OR_PLAYBACK, queue.snapshot().failure)
+            assertEquals(LocalAudioPlayer.Phase.EMPTY, queue.snapshot().playback!!.phase)
+        } finally { scenario.onActivity { queue.close() }; files.forEach { it.delete() }; scenario.close() }
+    }
+
+    @Test fun changingQueueSpeedPreservesPauseAndRejectsInvalidInputWithoutStartingAudio() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        val (catalog, assets, files) = queueFixture(1000)
+        lateinit var queue: LocalRecitationQueue
+        scenario.onActivity { queue = LocalRecitationQueue(context, it.lifecycle) }
+        try {
+            scenario.onActivity { queue.load(catalog, assets) }
+            await("Prepare without starting", { queue.snapshot().phase == LocalRecitationQueue.Phase.READY })
+            scenario.onActivity { queue.setPlaybackSpeed(0.75f) }
+            await("Speed applied while ready", { queue.snapshot().playback?.speed == 0.75f })
+            assertEquals(LocalRecitationQueue.Phase.READY, queue.snapshot().phase)
+            assertEquals(0, queue.snapshot().playback!!.positionMs)
+            scenario.onActivity { queue.play() }
+            await("Must play", { (queue.snapshot().playback?.positionMs ?: 0) > 80 })
+            scenario.onActivity { queue.setPlaybackSpeed(1.1f) }
+            await("Live speed change must keep playing", { queue.snapshot().playback?.speed == 1.1f })
+            assertEquals(LocalRecitationQueue.Phase.PLAYING, queue.snapshot().phase)
+            scenario.onActivity { queue.pause() }
+            await("Must pause", { queue.snapshot().phase == LocalRecitationQueue.Phase.PAUSED })
+            val position = queue.snapshot().playback!!.positionMs
+            scenario.onActivity { queue.setPlaybackSpeed(1.25f) }
+            await("Speed applied while paused", { queue.snapshot().playback?.speed == 1.25f })
+            assertEquals(LocalRecitationQueue.Phase.PAUSED, queue.snapshot().phase)
+            Thread.sleep(150)
+            assertTrue(kotlin.math.abs(position - queue.snapshot().playback!!.positionMs) < 60)
+            scenario.onActivity {
+                for (value in listOf(Float.NaN, Float.POSITIVE_INFINITY, 0.49f, 1.51f))
+                    assertTrue(runCatching { queue.setPlaybackSpeed(value) }.isFailure)
+            }
+            assertEquals(1.25f, queue.snapshot().playback!!.speed, 0f)
+            scenario.onActivity { queue.clear() }
+            await("Clear", { queue.snapshot().phase == LocalRecitationQueue.Phase.EMPTY })
+            assertEquals(0, queue.snapshot().rangePasses)
+            scenario.onActivity { assertTrue(runCatching { queue.load(catalog, assets, extraRangeRepeats = 21) }.isFailure) }
+            await("Invalid range must fail closed", { queue.snapshot().failure == LocalRecitationQueue.Failure.INVALID_SELECTION })
+        } finally { scenario.onActivity { queue.close() }; files.forEach { it.delete() }; scenario.close() }
+    }
+
     @Test fun sequencePauseFocusLossAndBackgroundNeverResumeWithoutAnExplicitRequest() {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         val (catalog, assets, files) = queueFixture(2000)

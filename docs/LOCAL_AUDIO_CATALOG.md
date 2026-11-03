@@ -64,3 +64,34 @@ An actual approved catalogue, user-facing import/library screen, cleared recordi
 timings, background/headset service and gapless playback remain outstanding. The
 Android app keeps its existing offline-only manifest and temporary private-voice
 retention policy.
+
+
+## Finite whole-range repetition and live speed
+
+`load(..., extraRangeRepeats = n)` now traverses the selected canonical range
+`n + 1` times (0–20 extra passes), independently of the existing per-ayah repeats.
+A three-ayah selection with one extra range repeat is A,B,C,A,B,C. With one extra
+per-ayah repeat as well, it is A,A,B,B,C,C,A,A,B,B,C,C. The default remains one
+range pass. A bounded cursor tracks up to 2,000 distinct items and 21 passes
+without allocating repeated copies of the bound file list. `completedItems`
+counts fully finished per-ayah cycles across passes; `rangePass` and `rangePasses`
+make the selected finite work explicit. Completed selections never restart on Play.
+
+Every wrap goes through the same worker `prepare` path and rechecks file bytes,
+reference and current rights before opening the first ayah again. A replaced,
+expired or otherwise invalid file stops the queue. Clear/lifecycle stop resets
+both traversal and counters. This does not add gapless playback or a background
+service.
+
+`setPlaybackSpeed(0.5f..1.5f)` edits a loaded queue on its worker without seeking,
+autoplay or unpausing. The speed carries across subsequent ayat and range passes.
+NaN, infinity and out-of-range values fail before issuing a command. Paused and
+ready players apply the requested speed on explicit Play, using the existing
+low-level no-autoplay behavior.
+
+Five JVM tests cover exact range order, finite single-ayah and maximum-size work,
+input bounds and terminal behavior. Three Android methods use generated WAV tones
+to exercise combined repeats, mutation before wrap and ready/playing/paused speed
+changes. Matching CI is required; fixtures are not approved Quran recordings.
+The reader audio library UI, licensed content, background/notification/headset
+controls and physical-device interruption tests remain outstanding.
