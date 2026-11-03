@@ -47,3 +47,12 @@
 
 
 حماية إضافية: فساد نوع علامة pending أو تعذر قراءة السجل لا يمثل طلب حذف موثقًا. يُحظر تركيب الواجهة الشخصية واستعادة Bundle، لكن لا يُمسح التقدم أو الدفتر تلقائيًا بسبب هذا الفساد. أضيف اختبار JVM واختبار Android يزرعان سجلًا فاسدًا ويتحققان من بقاء الجلسة والدفتر، واختبار مستقل لفشل حذف الدفتر بعد نجاح حذف التقدم. هذه الحماية لا تصلح فساد التخزين تلقائيًا؛ إعادة المحاولة تبقى ممكنة، والفشل المستمر يحتاج معالجة التخزين دون ادعاء نجاح الحذف.
+
+
+## فشل مرشح الاستعادة والمرشح التالي
+
+المصدر955f191 انهار مجددًا في AppearanceUiTest.themesPreserveAttemptAcrossLiveChangesRecreationAndConfirmedReset، عند Activity destruction: SlotWriter.moveSlotGapTo → removeSlots/removeGroup → CompositionImpl.dispose. الدليل: run41577671971/job125724984714 (API26 عادي، length320/index-101)، وrun41577671963/job125725122093 (تابلتAPI35 عادي، length640/index-101). سجلات الانهيار محفوظة في Actions؛ لا نجاح شامل من نجاح Android build أو JVM. تعطل الهاتف الصغير job125725122585 قبل التطبيق في فكNDK (ZipFile)، وهو عائق تجهيز مستقل؛ لا إعادة تلقائية لاختبار Compose الفاشل.
+
+السجل المسبق يعالج سلامة البيانات لكنه لا يصلح الخطأ الداخلي في Compose وحده. المرشح التالي يرفع مجموعة الأدوات معًا: Kotlin/Compose compiler2.2.21، Compose BOM2026.03.01 (خط1.10.6)، AGP8.10.1 وGradle8.11.1 وcompileSdk36. targetSdk35 وminSdk26 وJava17 وNDK/CMake والنص والحقوق والصلاحيات وبواباتRelease باقية. جميع مساراتCI تستعمل Gradle نفسه وتثبت منصةcompileSDK صراحة. لا ادعاء أن سجل إصدار بعينه يشخص هذا التطبيق؛ يجب إعادة المصفوفة كاملة دون تخطي أو ابتلاع الانهيار.
+
+مراجع أولية لهذا الاختيار: https://developer.android.com/jetpack/androidx/releases/compose-runtime ، https://developer.android.com/develop/ui/compose/bom/bom-mapping ، https://developer.android.com/build/releases/agp-8-10-0-release-notes ، https://kotlinlang.org/docs/gradle-configure-project.html . يشمل خطruntime الجديد إصلاحات ترتيب نسيانremember وتطبيق التركيبات المعاد استخدامها؛ هذا قرينة لا إثبات للسبب هنا. إذا بقي الانهيار يلزم تقليص مثال مستقل من شجرة VerifiedAppContent مع إبقاء أدلة الفشل.
