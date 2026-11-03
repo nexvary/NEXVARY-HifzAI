@@ -92,6 +92,7 @@ import com.nexvary.hifzai.learning.HifzScheduler
 import com.nexvary.hifzai.learning.MemoryCoach
 import com.nexvary.hifzai.learning.MemoryFingerprint
 import com.nexvary.hifzai.learning.PracticeKind
+import com.nexvary.hifzai.learning.RuntimeResetStore
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.ReciterCatalog
 import com.nexvary.hifzai.learning.RecallGrade
@@ -99,7 +100,6 @@ import com.nexvary.hifzai.learning.SimilarityIndex
 import com.nexvary.hifzai.learning.VerifiedVerse
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
-import androidx.compose.runtime.key
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.nexvary.hifzai.learning.LearningGoal
@@ -119,8 +119,13 @@ private val muted = Color(0xFFB9C6CF)
 private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE, LOCAL_TRANSCRIPTION, SAVED_PLACES }
 
 class MainActivity : ComponentActivity() {
+    private lateinit var resets: RuntimeResetStore
+    private var creationToken = "initial"
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        resets = RuntimeResetStore(this)
+        creationToken = resets.token
+        val restored = savedInstanceState?.takeIf { resets.acceptsSaved(it.getString(RESET_STATE_KEY)) }
+        super.onCreate(restored)
         java.io.File(cacheDir, "hifz_private_session.m4a").delete()
         setContent {
             MaterialTheme(
@@ -133,24 +138,35 @@ class MainActivity : ComponentActivity() {
                 )
             ) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    App()
+                    App {
+                        resets.advance().also { advanced -> if (advanced) recreate() }
+                    }
                 }
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save the token used to CREATE this Activity, not a newer reset token.
+        outState.putString(RESET_STATE_KEY, creationToken)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        if (resets.acceptsSaved(savedInstanceState.getString(RESET_STATE_KEY)))
+            super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    private companion object { const val RESET_STATE_KEY = "hifz_reset_generation" }
 }
 
 @Composable
-private fun App() {
-    // Restore the generation together with its children. Resetting it to zero on
-    // recreation can leave a previous generation's saved session unconsumed;
-    // the next deletion would then restore that old session when its key repeats.
-    var generation by rememberSaveable { mutableIntStateOf(0) }
-    key(generation) { AppContent { generation++ } }
+private fun App(resetRuntime: () -> Boolean) {
+    AppContent(resetRuntime)
 }
 
 @Composable
-private fun AppContent(resetRuntime: () -> Unit) {
+private fun AppContent(resetRuntime: () -> Boolean) {
     val context = LocalContext.current
     var corpusResult by remember(context) { mutableStateOf<Result<QuranCorpus>?>(null) }
     LaunchedEffect(context) {
@@ -178,7 +194,7 @@ private fun AppContent(resetRuntime: () -> Unit) {
 
 /** Keep the verified screen's remembered state in its own unconditional composition. */
 @Composable
-private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
+private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Boolean) {
     val context = LocalContext.current
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
@@ -1119,7 +1135,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
                                 val progressCleared = store.clear()
                                 val notebookCleared = TeacherNotebook(context).clear()
                                 if (progressCleared && notebookCleared) {
-                                    resetRuntime()
+                                    if (!resetRuntime()) message = "تعذر إعادة تهيئة الواجهة؛ أعد محاولة حذف البيانات"
                                 } else {
                                     message = "تعذر حذف بعض البيانات؛ حاول مرة أخرى"
                                 }

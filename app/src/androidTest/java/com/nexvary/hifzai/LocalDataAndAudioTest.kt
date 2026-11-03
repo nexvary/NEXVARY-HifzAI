@@ -19,6 +19,19 @@ class LocalDataAndAudioTest {
     @get:Rule val ui = createEmptyComposeRule()
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
 
+    @Test fun runtimeResetMarkerRejectsOldSavedStateWithoutStoringPersonalData() {
+        val resets = RuntimeResetStore(context)
+        val before = resets.token
+        assertTrue(resets.acceptsSaved(before))
+        assertTrue(resets.advance())
+        assertNotEquals(before, resets.token)
+        assertFalse(resets.acceptsSaved(before))
+        assertFalse(resets.acceptsSaved(null))
+        assertEquals(resets.token, RuntimeResetStore(context).token)
+        assertTrue(ProgressStore(context).clear())
+        assertEquals(resets.token, RuntimeResetStore(context).token)
+    }
+
     @Test fun corpusOrderAddressBasmalaAndSearchOnDevice() {
         val corpus = QuranCorpus.load(context)
         assertEquals(6236, corpus.verses.size)
