@@ -16,7 +16,7 @@ class LocalRecitationQueue(context: Context, private val lifecycle: Lifecycle,
     data class Snapshot(val phase: Phase, val index: Int?, val size: Int, val completedItems: Int,
         val recordingId: String?, val address: RecordingAddress?,
         val playback: LocalAudioPlayer.Snapshot?, val failure: Failure? = null,
-        val rangePass: Int = 0, val rangePasses: Int = 0)
+        val rangePass: Int = 0, val rangePasses: Int = 0, val requestId: Long? = null)
 
     private val thread = HandlerThread("local-recitation-queue")
     private val worker: Handler
@@ -60,7 +60,7 @@ class LocalRecitationQueue(context: Context, private val lifecycle: Lifecycle,
 
     /** Bind files on an IO worker first. Selection validation is synchronous; decode/hash is not. */
     fun load(catalog: RecitationCatalog, assets: List<BoundRecitation>, extraRepeats: Int = 0,
-        playbackSpeed: Float = 1f, extraRangeRepeats: Int = 0) {
+        playbackSpeed: Float = 1f, extraRangeRepeats: Int = 0): Long {
         requireMainThread(); check(!disposed)
         val request = ++generation
         val selected = try {
@@ -88,6 +88,7 @@ class LocalRecitationQueue(context: Context, private val lifecycle: Lifecycle,
             traversal = RecitationRangeCursor(items.size, extraRangeRepeats)
             prepare(0)
         }
+        return request
     }
 
     /** Asynchronous commands; immutable snapshots report actual worker/player state. */
@@ -179,7 +180,7 @@ class LocalRecitationQueue(context: Context, private val lifecycle: Lifecycle,
         val item = items.getOrNull(index)
         state = Snapshot(phase, index.takeIf { item != null }, items.size, traversal?.completedItems ?: 0,
             item?.recording?.rights?.recordingId, item?.recording?.address, player.snapshot(), failure,
-            traversal?.pass ?: 0, traversal?.passes ?: 0)
+            traversal?.pass ?: 0, traversal?.passes ?: 0, activeGeneration)
     }
     private fun fail() {
         wanted = false; worker.removeCallbacks(tick); player.close()

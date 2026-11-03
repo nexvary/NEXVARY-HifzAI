@@ -22,10 +22,29 @@ class BoundRecitation internal constructor(val recording: CatalogRecording, val 
 class RecitationCatalog private constructor(records: List<CatalogRecording>, corpus: QuranCorpus) {
     val recordings: List<CatalogRecording> = Collections.unmodifiableList(records.toList())
     private val byId = recordings.associateBy { it.rights.recordingId }
-    private val offsets = corpus.verses.mapIndexed { i, verse -> verse.id to i }.toMap()
+    private val verseIds = corpus.verses.map { it.id }
+    private val offsets = verseIds.withIndex().associate { (index, id) -> id to index }
+    private val byVerse = recordings.groupBy { it.address.verseId }
 
     fun available(address: RecordingAddress, reciterId: String, today: Long): List<CatalogRecording> =
-        recordings.filter { it.address == address && it.rights.reciterId == reciterId && it.eligible(today) }
+        eligibleRecordings(address.verseId, reciterId, today)
+
+    /** Resolve an inclusive range only when every verse has exactly one eligible recording. */
+    fun selectRange(first: RecordingAddress, last: RecordingAddress, reciterId: String,
+        today: Long): List<CatalogRecording> {
+        val start = requireNotNull(offsets[first.verseId]) { "بداية النطاق خارج المصحف" }
+        val end = requireNotNull(offsets[last.verseId]) { "نهاية النطاق خارج المصحف" }
+        require(end - start in 0 until 2000) { "ترتيب النطاق أو طوله غير صالح" }
+        val selected = verseIds.subList(start, end + 1).map { id ->
+            requireNotNull(eligibleRecordings(id, reciterId, today).singleOrNull()) {
+                "يلزم تسجيل مأذون واحد لكل آية في النطاق"
+            }.rights.recordingId
+        }
+        return sequence(selected, today)
+    }
+
+    private fun eligibleRecordings(verseId: Int, reciterId: String, today: Long): List<CatalogRecording> =
+        byVerse[verseId].orEmpty().filter { it.rights.reciterId == reciterId && it.eligible(today) }
 
     /** An explicit, contiguous selection; never chooses a recording from an ambiguous catalogue. */
     fun sequence(recordingIds: List<String>, today: Long): List<CatalogRecording> {

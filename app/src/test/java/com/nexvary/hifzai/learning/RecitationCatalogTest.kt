@@ -53,6 +53,36 @@ class RecitationCatalogTest {
         assertTrue(runCatching { catalog.sequence(listOf("a", "c"), 10) }.isFailure)
         assertTrue(runCatching { catalog.sequence(listOf("missing"), 10) }.isFailure)
     }
+    @Test fun selectsInclusiveRangeInCanonicalOrderForOneReciter() {
+        val a = entry("a", 1, 7)
+        val b = entry("b", 2, 1)
+        val other = entry("other", 2, 1, reciter = "other-synthetic-generator")
+        val catalog = catalogue(listOf(other, b, a))
+        assertEquals(listOf(a, b), catalog.selectRange(a.address, b.address, a.rights.reciterId, 10))
+        assertEquals(listOf(b), catalog.selectRange(b.address, b.address, a.rights.reciterId, 10))
+    }
+
+    @Test fun rangeRejectsMissingAmbiguousExpiredAndInvalidEndpoints() {
+        val a = entry("a", ayah = 1)
+        val b = entry("b", ayah = 2)
+        val c = entry("c", ayah = 3)
+        val expired = b.copy(rights = b.rights.copy(expiresEpochDay = 9))
+        val reciter = a.rights.reciterId
+        for (items in listOf(listOf(a, c), listOf(a, expired, c),
+            listOf(a, b, entry("duplicate", ayah = 2), c))) {
+            val catalog = catalogue(items)
+            assertThrows(IllegalArgumentException::class.java) {
+                catalog.selectRange(a.address, c.address, reciter, 10)
+            }
+        }
+        val catalog = catalogue(listOf(a, b, c))
+        for (last in listOf(a.address, RecordingAddress(1, 8), RecordingAddress(114, 6))) {
+            assertThrows(IllegalArgumentException::class.java) {
+                catalog.selectRange(b.address, last, reciter, 10)
+            }
+        }
+    }
+
     @Test fun bindingRequiresExactBytesAndKeepsTheReference() {
         val directory = Files.createTempDirectory("catalog-test").toFile()
         try {
