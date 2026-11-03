@@ -51,3 +51,7 @@ PR #12 عند `adeb81d6bfc6f6424360a823717e688bf207c724` اجتاز جميع و�
 مسارات أحدث كود: [Android CI](https://github.com/nexvary/NEXVARY-HifzAI/actions/runs/41516029779)، [الهاتفان](https://github.com/nexvary/NEXVARY-HifzAI/actions/runs/41516030229)، [الهاتف الصغير والتابلت](https://github.com/nexvary/NEXVARY-HifzAI/actions/runs/41516030274)، [الأكاديمية الاختيارية](https://github.com/nexvary/NEXVARY-HifzAI/actions/runs/41516029951).
 
 بناء CI يختبر merge commit `bda4d6d27ee9df9b97bee0d41915bbb3547f3805`؛ شجرته `5e9d0f64f26fd6f02179a7e18ff88051a9f25625` مطابقة تمامًا لفرع a925198، وتظهر في manifest صور الأجهزة. تفاصيل الأرشيفات في evidence/2026-11-02/session-ci.json. لا أجهزة فعلية أو تقييم كلام/تعلم حقيقي أو قبول علمي؛ READINESS.json ما زال pending.
+
+## نتيجة إعادة التشغيل اللاحقة — 3 نوفمبر 2026
+
+تشغيل PR #13 التوثيقي897df45 أظهر انهيار SlotWriter متقطعًا على هاتفAPI35 بخط1.5 رغم نجاح الكود السابق وبقية الملفات. التفاصيل ورابط الفشل وخطة المعالجة في COMPOSE_LIFECYCLE_2026-11-03.md. لا تُلغى الأدلة القديمة ولا يُستنتج منها استقرار شامل؛ تشغيل التحديث الجديد معلق.
