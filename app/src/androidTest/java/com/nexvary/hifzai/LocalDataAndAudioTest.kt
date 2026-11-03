@@ -53,6 +53,31 @@ class LocalDataAndAudioTest {
         assertEquals(resets.token, RuntimeResetStore(context).token)
     }
 
+    @Test fun pendingDeletionSurvivesReloadAndBlocksSavedStateUntilBothStoresAreEmpty() {
+        val resets = RuntimeResetStore(context)
+        val progress = ProgressStore(context)
+        val notebook = TeacherNotebook(context)
+        progress.saveSession(PracticeSession(1, 1, PracticeKind.RECALL, 1, true, DifficultyTag.WORDS))
+        notebook.addStudent("بيانات اختبار الحذف", true)
+        val oldToken = resets.token
+        try {
+            assertTrue(resets.begin())
+            val restored = RuntimeResetStore(context)
+            assertTrue(restored.pending)
+            assertFalse(restored.acceptsSaved(oldToken))
+            assertFalse(restored.acceptsSaved(restored.token))
+            // Simulate death after clearing only the first file.
+            assertTrue(progress.clear())
+            assertEquals(LocalDataReset.Result.READY, LocalDataReset(restored,
+                { ProgressStore(context).clear() }, { TeacherNotebook(context).clear() }).recover())
+            assertNull(ProgressStore(context).session())
+            assertTrue(TeacherNotebook(context).students().isEmpty())
+            assertFalse(RuntimeResetStore(context).pending)
+            assertFalse(restored.acceptsSaved(oldToken))
+            assertTrue(restored.acceptsSaved(restored.token))
+        } finally { progress.clear(); notebook.clear(); resets.complete() }
+    }
+
     @Test fun corpusOrderAddressBasmalaAndSearchOnDevice() {
         val corpus = QuranCorpus.load(context)
         assertEquals(6236, corpus.verses.size)

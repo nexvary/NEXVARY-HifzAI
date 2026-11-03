@@ -95,6 +95,7 @@ import com.nexvary.hifzai.learning.HifzScheduler
 import com.nexvary.hifzai.learning.MemoryCoach
 import com.nexvary.hifzai.learning.MemoryFingerprint
 import com.nexvary.hifzai.learning.PracticeKind
+import com.nexvary.hifzai.learning.LocalDataReset
 import com.nexvary.hifzai.learning.RuntimeResetStore
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.ReciterCatalog
@@ -124,8 +125,11 @@ private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS,
 class MainActivity : ComponentActivity() {
     private lateinit var resets: RuntimeResetStore
     private var creationToken = "initial"
+    private lateinit var dataReset: LocalDataReset
     override fun onCreate(savedInstanceState: Bundle?) {
         resets = RuntimeResetStore(this)
+        dataReset = LocalDataReset(resets, { ProgressStore(this).clear() }, { TeacherNotebook(this).clear() })
+        val resetResult = dataReset.recover()
         creationToken = resets.token
         val restored = savedInstanceState?.takeIf { resets.acceptsSaved(it.getString(RESET_STATE_KEY)) }
         super.onCreate(restored)
@@ -135,10 +139,19 @@ class MainActivity : ComponentActivity() {
             var appearance by remember { mutableStateOf(preferences.appearance) }
             HifzTheme(appearance) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    App(appearance, changeAppearance = {
+                    if (resetResult == LocalDataReset.Result.PENDING) {
+                        Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
+                            Text("تعذر إكمال حذف البيانات؛ لن تُستعاد الجلسة قبل اكتمال الحذف.")
+                            Button(onClick = { recreate() }) { Text("أعد محاولة الحذف") }
+                        }
+                    } else App(appearance, changeAppearance = {
                         preferences.appearance = it
                         appearance = it
-                    }, resetRuntime = { resets.advance().also { advanced -> if (advanced) recreate() } })
+                    }, resetRuntime = {
+                        val result = dataReset.request()
+                        if (result != LocalDataReset.Result.NOT_STARTED) recreate()
+                        result != LocalDataReset.Result.NOT_STARTED
+                    })
                 }
             }
         }
@@ -1132,13 +1145,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                             Button(onClick = {
                                 voicePractice.erase()
                                 typedRecall = ""
-                                val progressCleared = store.clear()
-                                val notebookCleared = TeacherNotebook(context).clear()
-                                if (progressCleared && notebookCleared) {
-                                    if (!resetRuntime()) message = "تعذر إعادة تهيئة الواجهة؛ أعد محاولة حذف البيانات"
-                                } else {
-                                    message = "تعذر حذف بعض البيانات؛ حاول مرة أخرى"
-                                }
+                                if (!resetRuntime()) message = "تعذر بدء حذف البيانات؛ حاول مرة أخرى"
                                 confirmClear = false
                             }) { Text("حذف البيانات") }
                         }
