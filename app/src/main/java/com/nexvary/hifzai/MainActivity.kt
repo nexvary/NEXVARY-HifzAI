@@ -64,6 +64,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.LocalContext
@@ -80,6 +81,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.LifecycleEventObserver
 import com.nexvary.hifzai.learning.TeacherNotebook
 import com.nexvary.hifzai.learning.PracticeSession
@@ -105,6 +107,7 @@ import com.nexvary.hifzai.learning.VerifiedVerse
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.nexvary.hifzai.learning.LearningGoal
 import com.nexvary.hifzai.learning.LearningTrends
@@ -131,18 +134,51 @@ class MainActivity : ComponentActivity() {
         val restored = savedInstanceState?.takeIf { resets.acceptsSaved(it.getString(RESET_STATE_KEY)) }
         super.onCreate(restored)
         java.io.File(cacheDir, "hifz_private_session.m4a").delete()
-        setContent {
-            val preferences = remember { ProgressStore(this@MainActivity) }
-            var appearance by remember { mutableStateOf(preferences.appearance) }
-            HifzTheme(appearance) {
-                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    App(appearance, changeAppearance = {
-                        preferences.appearance = it
-                        appearance = it
-                    }, resetRuntime = { resets.advance().also { advanced -> if (advanced) recreate() } })
+        showVerificationStatus("جارٍ التحقق من النص القرآني المحلي…", true)
+        lifecycleScope.launch {
+            val corpus = withContext(Dispatchers.IO) {
+                runCatching { QuranCorpus.load(applicationContext) }.getOrNull()
+            }
+            if (corpus == null) {
+                showVerificationStatus("تعذر التحقق من سلامة النص القرآني. أعد تثبيت نسخة سليمة من المصدر الرسمي.", false)
+            } else {
+                setContent {
+                    val preferences = remember { ProgressStore(this@MainActivity) }
+                    var appearance by remember { mutableStateOf(preferences.appearance) }
+                    HifzTheme(appearance) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                            VerifiedAppContent(corpus, appearance, changeAppearance = {
+                                preferences.appearance = it
+                                appearance = it
+                            }, resetRuntime = { resets.advance().also { advanced -> if (advanced) recreate() } })
+                        }
+                    }
                 }
             }
         }
+    }
+
+    /** No composition exists until source verification succeeds; lifecycle cancellation owns IO. */
+    private fun showVerificationStatus(message: String, progress: Boolean) {
+        val systemDark = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val palette = if (ProgressStore(this).appearance.usesDarkColors(systemDark)) HifzDarkColors else HifzLightColors
+        val container = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            gravity = android.view.Gravity.CENTER
+            layoutDirection = android.view.View.LAYOUT_DIRECTION_RTL
+            val inset = (24 * resources.displayMetrics.density).toInt()
+            setPadding(inset, inset, inset, inset)
+            setBackgroundColor(palette.background.toArgb())
+            addView(android.widget.TextView(this@MainActivity).apply {
+                text = message
+                textSize = 18f
+                gravity = android.view.Gravity.CENTER
+                setTextColor(palette.onBackground.toArgb())
+            })
+            if (progress) addView(android.widget.ProgressBar(this@MainActivity))
+        }
+        setContentView(container)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -156,38 +192,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private companion object { const val RESET_STATE_KEY = "hifz_reset_generation" }
-}
-
-@Composable
-private fun App(appearance: AppAppearance, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
-    AppContent(appearance, changeAppearance, resetRuntime)
-}
-
-@Composable
-private fun AppContent(appearance: AppAppearance, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
-    val context = LocalContext.current
-    var corpusResult by remember(context) { mutableStateOf<Result<QuranCorpus>?>(null) }
-    LaunchedEffect(context) {
-        corpusResult = withContext(Dispatchers.IO) { runCatching { QuranCorpus.load(context) } }
-    }
-    val corpus = corpusResult?.getOrNull()
-    if (corpusResult == null) {
-        Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
-            Text("جارٍ التحقق من النص القرآني المحلي…")
-            androidx.compose.material3.LinearProgressIndicator(Modifier.fillMaxWidth())
-        }
-    } else if (corpus == null) {
-        Column(
-            Modifier.fillMaxSize().background(navy).padding(24.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("تعذر التحقق من سلامة النص القرآني", color = gold, fontSize = 22.sp)
-            Text("تم إيقاف عرض المصحف لحماية سلامة النص. أعد تثبيت نسخة سليمة من المصدر الرسمي.",
-                color = silver)
-        }
-    } else {
-        VerifiedAppContent(corpus, appearance, changeAppearance, resetRuntime)
-    }
 }
 
 /** Keep the verified screen's remembered state in its own unconditional composition. */
