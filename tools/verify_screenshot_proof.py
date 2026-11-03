@@ -1,4 +1,5 @@
 """Reject error messages disguised as PNG files; retain exact source/image digests."""
+import argparse
 import hashlib
 import json
 import struct
@@ -7,7 +8,7 @@ import sys
 import zlib
 from pathlib import Path
 
-PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters partitions range private-audio asr asr-microphone agenda agenda-filters saved-places appearance-settings reader-light reader-dark'.split()
+PAGES = 'home reader today exercises chapters search practice recall similar insights settings privacy sources teachers help about reciters partitions range private-audio asr asr-microphone agenda agenda-filters saved-places appearance-settings reader-light reader-dark navigation'.split()
 
 def verify_png(path):
     data = path.read_bytes()
@@ -35,8 +36,12 @@ def verify_png(path):
 
 
 def main():
-    directory = Path(sys.argv[1])
-    files = [verify_png(directory / f'hifz-{page}.png') for page in PAGES]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('directory', type=Path)
+    parser.add_argument('--pages', nargs='+', choices=PAGES, default=PAGES)
+    args = parser.parse_args()
+    directory = args.directory
+    files = [verify_png(directory / f'hifz-{page}.png') for page in args.pages]
     source = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
     apk = Path('app/build/outputs/apk/debug/app-debug.apk')
     report = {'source_commit':source,'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),
