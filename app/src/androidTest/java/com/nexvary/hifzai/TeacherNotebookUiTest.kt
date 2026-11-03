@@ -111,13 +111,16 @@ class TeacherNotebookUiTest {
                 .performScrollTo().performClick()
             rule.waitForIdle()
         }
-        chooseEditorTime()
-        rule.onAllNodesWithText("تعديل الجلسة المحلية").assertCountEquals(0)
-        pickerButton(android.widget.DatePicker::class.java)
-        pickerButton(android.widget.TimePicker::class.java, confirm = false)
-        rule.onNodeWithText("تعديل الجلسة المحلية").assertExists()
-        rule.onNodeWithText("ملاحظات الجلسة").assertTextContains("مسودة محفوظة بعد الإلغاء")
-        assertEquals(original, notebook.lessons().single())
+        repeat(3) {
+            // Three real cancellation cycles must all succeed; never retry a failure.
+            chooseEditorTime()
+            rule.onAllNodesWithText("تعديل الجلسة المحلية").assertCountEquals(0)
+            pickerButton(android.widget.DatePicker::class.java)
+            pickerButton(android.widget.TimePicker::class.java, confirm = false)
+            rule.onNodeWithText("تعديل الجلسة المحلية").assertExists()
+            rule.onNodeWithText("ملاحظات الجلسة").assertTextContains("مسودة محفوظة بعد الإلغاء")
+            assertEquals(original, notebook.lessons().single())
+        }
         chooseEditorTime()
         pickerButton(android.widget.DatePicker::class.java)
         pickerButton(android.widget.TimePicker::class.java)

@@ -1,0 +1,15 @@
+{
+  "failed_source": "d12461791b0416bfcfaa7aeb194ae15d6894bf31",
+  "run": 41628586644,
+  "job": 125892083676,
+  "profile": "API35 phone",
+  "failure": "RootViewWithoutFocusException in two notebook picker methods; native DatePicker present without window focus",
+  "candidate": "Present native pickers only after owner Activity receives actual window focus; hide IME and remove listeners on disposal. Preserve real Espresso interactions and all assertions. Three cancellation cycles must all pass.",
+  "replacement_validation": "pending source-bound CI; not a successful full matrix",
+  "release_or_scholarly_approval": false,
+  "normal_tests": 56,
+  "normal_failures": 2,
+  "navigation_2x_tests": 1,
+  "navigation_2x_failures": 0,
+  "large_font": "not executed after normal-suite failure"
+}
