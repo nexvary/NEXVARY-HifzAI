@@ -19,5 +19,12 @@
   "failure": "everyNavigationLabelFitsAndAllDestinationsRemainReachable: Wrapped or clipped navigation: الرئيسية, at 2x system font",
   "fix": "Replace fixed-height NavigationBarItem labels with intrinsic-height selectable tabs; retain the original no-wrap/no-overflow assertion and add detailed layout diagnostics. Preserve the independent 2x log and before/failure screenshot.",
   "replacement_validation": "pending new source-bound CI; no application test retries",
-  "acceptance": "No human visual, physical-device, scholarly or release acceptance"
+  "acceptance": "No human visual, physical-device, scholarly or release acceptance",
+  "follow_up_failure": {
+    "source_commit": "952e4c0a1d85c45e7b5a0b7d5d72004f65ed58ab",
+    "run": 41623456186,
+    "job": 125875271862,
+    "layout": "الرئيسية: lines=1, overflowWidth=true, overflowHeight=false, size=109 x 48",
+    "action": "Give the label the full tab width, rather than an intrinsic wrap-content width that can round below the paragraph width. Keep the strict no-wrap/no-overflow assertion unchanged."
+  }
 }
