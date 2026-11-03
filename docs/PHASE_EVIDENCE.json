@@ -784,7 +784,12 @@
         "app/src/androidTest/java/com/nexvary/hifzai/AppearanceUiTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "الوضع الفاتح/الداكن/النظام وحفظ الاختيار منفذ؛ CI المطابق وصور مختارة فُحصت؛ قبول الإتاحة/الأجهزة الفعلية معلق."
+      "problems": "الوضع الفاتح/الداكن/النظام وحفظ الاختيار منفذ؛ CI المطابق وصور مختارة فُحصت؛ قبول الإتاحة/الأجهزة الفعلية معلق.",
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "050",
@@ -854,7 +859,12 @@
         "app/src/androidTest/java/com/nexvary/hifzai/AppearanceUiTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "وصف رقم الآية ودلالات العناوين موجودان؛ ليست مراجعة TalkBack شاملة."
+      "problems": "وصف رقم الآية ودلالات العناوين موجودان؛ ليست مراجعة TalkBack شاملة.",
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "055",
@@ -883,7 +893,12 @@
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "مصفوفة أربع أجهزة عند الخطين1/1.5؛ المصدر الحالي اجتاز المصفوفة وفُحصت صور مختارة؛ لا قبول كل التشكيل أو الأجهزة الفعلية."
+      "problems": "مصفوفة أربع أجهزة عند الخطين1/1.5؛ المصدر الحالي اجتاز المصفوفة وفُحصت صور مختارة؛ لا قبول كل التشكيل أو الأجهزة الفعلية.",
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "057",
@@ -904,7 +919,12 @@
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "حفظ المحاولة الصحيحة مع رفض الجيل المحذوف واستكمال الحذف المعلق قبل الاستعادة؛ مرشح الجذر الثابت اجتاز CI المطابق، دون تشخيص upstream أو ضمان شامل."
+      "problems": "حفظ المحاولة الصحيحة مع رفض الجيل المحذوف واستكمال الحذف المعلق قبل الاستعادة؛ مرشح الجذر الثابت اجتاز CI المطابق، دون تشخيص upstream أو ضمان شامل.",
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "058",
@@ -964,7 +984,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "RecitationRights.kt",
+        "remaining": "سجل الحقوق يدعم الانتهاء والسحب؛ يحتاج وثائق تسجيلات فعلية.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "062",
@@ -982,7 +1009,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "ReciterCatalog.kt",
+        "remaining": "دليل أسماء وبلدان؛ ملفات تعريف مدققة وصوتيات مرخصة غير متاحة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "063",
@@ -1000,7 +1034,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "ReciterCatalog.kt",
+        "remaining": "دليل أسماء وبلدان؛ ملفات تعريف مدققة وصوتيات مرخصة غير متاحة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "064",
@@ -1018,7 +1059,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/ReciterCatalogTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين"
+      "problems": "دليل أسماء وحقول حقوق فقط؛ لا مصادر تسجيلات معتمدة أو معلمين موثقين",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "ReciterCatalog.kt",
+        "remaining": "دليل أسماء وبلدان؛ ملفات تعريف مدققة وصوتيات مرخصة غير متاحة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "065",
@@ -1028,7 +1076,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "RecitationCatalog.kt; RecitationCatalogTest.kt; LocalAudioPlaybackTest.kt; LOCAL_AUDIO_CATALOG.md",
+        "remaining": "ربط بمرجع أصلي موجود وطول وبصمة ومراجعة مرجع، مع اختبار تشغيل ملف اصطناعي؛ لا كتالوج تسجيلات خارجية معتمد أو واجهة استيراد.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "066",
@@ -1046,7 +1101,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "حقول المنع موجودة؛ لا وثائق أذون تسجيلات فعلية"
+      "problems": "حقول المنع موجودة؛ لا وثائق أذون تسجيلات فعلية",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "THIRD_PARTY_CONTENT_REGISTER.md",
+        "remaining": "يلزم إثبات مصدر وحقوق كل تسجيل من صاحب الحق.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "067",
@@ -1056,7 +1118,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "outside_local_scope",
+        "implementation_references": "LOCAL_ONLY_SCOPE.md",
+        "remaining": "البث الشبكي خارج النطاق المحلي؛ لا تنفيذ.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "068",
@@ -1066,7 +1135,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "069",
@@ -1087,7 +1163,19 @@
         "app/src/androidTest/java/com/nexvary/hifzai/LocalAudioPlaybackTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "تكرار الآية والنطاق كله محدود ومستقل وإعادة فحص كل ملف عند العودة؛ نغمات اصطناعية، لا مكتبة قارئ أو أصول مرخصة أو خدمة خلفية."
+      "problems": "تكرار الآية والنطاق كله محدود ومستقل وإعادة فحص كل ملف عند العودة؛ نغمات اصطناعية، لا مكتبة قارئ أو أصول مرخصة أو خدمة خلفية.",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LocalRecitationQueue.kt; RecitationRangeCursor.kt; RecitationRangeCursorTest.kt; LocalAudioPlaybackTest.kt",
+        "remaining": "تكرار الآية وتسلسل متصل وتكرار نطاق كامل محدود مستقل، دون نسخ القائمة؛ إعادة فحص الحقوق والبصمة عند الرجوع لأول آية. نجحت اختباراتWAV الاصطناعية وCI للمصدر1f97d35؛ واجهة مكتبة التلاوات باقية.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      },
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "070",
@@ -1105,7 +1193,19 @@
         "app/src/androidTest/java/com/nexvary/hifzai/LocalAudioPlaybackTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "تعديل السرعة0.5–1.5 دون بدء أو استئناف تلقائي؛ اختبارات النغمات المطابقة للمصدر نجحت، وواجهة المكتبة باقية."
+      "problems": "تعديل السرعة0.5–1.5 دون بدء أو استئناف تلقائي؛ اختبارات النغمات المطابقة للمصدر نجحت، وواجهة المكتبة باقية.",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LocalAudioPlayer.kt; LocalRecitationQueue.kt; LocalAudioPlaybackTest.kt",
+        "remaining": "سرعة0.5–1.5 عند التحميل والتعديل أثناء التشغيل/الإيقاف دون بدء تلقائي، مستمرة عبر الآيات والدورات؛ نجحت اختباراتAndroid للمصدر1f97d35، ولا واجهة مكتبة صوتية بعد.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      },
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "071",
@@ -1115,7 +1215,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "072",
@@ -1137,7 +1244,14 @@
         "app/src/androidTest/java/com/nexvary/hifzai/PrivateAudioUiTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "مشغل محلي فعلي: استئناف وتكرار وسرعة وانتقال وفقدان تركيز الصوت؛ اختبارات بنغمات وميكروفون، لا تلاوات خارجية مرخصة ولا تشغيل خلفية أو مزامنة آيات"
+      "problems": "مشغل محلي فعلي: استئناف وتكرار وسرعة وانتقال وفقدان تركيز الصوت؛ اختبارات بنغمات وميكروفون، لا تلاوات خارجية مرخصة ولا تشغيل خلفية أو مزامنة آيات",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "LocalAudioPlayer.kt; LicensedRecitationPlayer.kt",
+        "remaining": "تكرار وسرعة واستئناف محلي، مع تسلسل أمامي داخلي؛ لا واجهة مكتبة صوت أو محتوى مرخص.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "073",
@@ -1147,7 +1261,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "074",
@@ -1157,7 +1278,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "OfflineAudioStore.kt; OfflineAudioStoreTest.kt",
+        "remaining": "استيراد محلي محدود كأداة داخلية؛ لا واجهة استيراد أو تنزيل أو محتوى معتمد.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "075",
@@ -1167,7 +1295,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "OfflineAudioStore.kt; OfflineAudioStoreTest.kt",
+        "remaining": "حد التخزين وفشل الاستيراد مختبران بوحدات؛ الأداة غير مربوطة بواجهة المستخدم.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "076",
@@ -1177,7 +1312,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "RecitationRights.kt; LicensedRecitationPlayer.kt",
+        "remaining": "حظر انتهاء/سحب وتحقق دوري؛ لا نظام تجديد حقوق أو سجل صوتيات مستخدم.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "077",
@@ -1187,7 +1329,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "MainActivity.kt; ProgressStore.kt; LearningDevelopmentUiTest.kt",
+        "remaining": "اختيار مفضل وحفظه؛ يحتاج نتيجة اختبار أندرويد المطابقة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "078",
@@ -1197,7 +1346,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "RecitationRights.kt",
+        "remaining": "الروايات الأخرى مرفوضة؛ لا دعم متعدد للروايات.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "079",
@@ -1207,7 +1363,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "LocalAudioPlaybackTest.kt",
+        "remaining": "اختبارات المشغل بنغمات صناعية؛ لا عينة تلاوة مرخصة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "080",
@@ -1217,7 +1380,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "outside_local_scope",
+        "implementation_references": "LOCAL_ONLY_SCOPE.md",
+        "remaining": "لا شبكة في التطبيق؛ قارئ دون اتصال، ولا بث/تنزيل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "081",
@@ -1227,7 +1397,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md; evaluate_recitation.py",
+        "remaining": "بروتوكول وحقول تقييم؛ لا corpus كلام فعلي.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "082",
@@ -1237,7 +1414,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "يلزم مشاركون وموافقات وعينات حقيقية ومراجعون متخصصون؛ لا بيانات مصطنعة تدعي تقييمًا.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "083",
@@ -1247,7 +1431,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "يلزم مشاركون وموافقات وعينات حقيقية ومراجعون متخصصون؛ لا بيانات مصطنعة تدعي تقييمًا.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "084",
@@ -1257,7 +1448,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "يلزم مشاركون وموافقات وعينات حقيقية ومراجعون متخصصون؛ لا بيانات مصطنعة تدعي تقييمًا.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "085",
@@ -1267,7 +1465,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "evaluate_recitation.py; test_recitation_evaluation.py",
+        "remaining": "حساب WER والإنذارات والفوات حسب الآية/البلد/التقسيم؛ لا أرقام أداء لنموذج فعلي.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "086",
@@ -1295,7 +1500,14 @@
         "tests/test_asr_asset_policy.py"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "تفريغ Whisper Tiny فعلي محلي تجريبي، مثبت المصدر والبصمة والترخيص؛ دقة الكلام والتلاوة غير مقيسة، صفر عينات كلام في اختبار النغمة، لا تصحيح أو تجويد أو اعتماد"
+      "problems": "تفريغ Whisper Tiny فعلي محلي تجريبي، مثبت المصدر والبصمة والترخيص؛ دقة الكلام والتلاوة غير مقيسة، صفر عينات كلام في اختبار النغمة، لا تصحيح أو تجويد أو اعتماد",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "LocalTranscription.kt; NativeAsrSmokeTest.kt",
+        "remaining": "Whisper محلي تجريبي سابق؛ دقة القرآن غير مقيسة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "087",
@@ -1305,7 +1517,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "evaluate_recitation.py; test_recitation_evaluation.py",
+        "remaining": "حساب WER والإنذارات والفوات حسب الآية/البلد/التقسيم؛ لا أرقام أداء لنموذج فعلي.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "088",
@@ -1315,7 +1534,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "evaluate_recitation.py; test_recitation_evaluation.py",
+        "remaining": "حساب WER والإنذارات والفوات حسب الآية/البلد/التقسيم؛ لا أرقام أداء لنموذج فعلي.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "089",
@@ -1325,7 +1551,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LexicalAlignment.kt; LexicalAlignmentTest.kt",
+        "remaining": "فصل الحذف والإضافة والاستبدال بمواضع؛ ليس حكمًا قرآنيًا أو تجويديًا.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "090",
@@ -1341,7 +1574,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "RecitationAssessment.kt; evaluate_recitation.py",
+        "remaining": "عتبة تحليلية وامتناع؛ لا معايرة مستقلة أو إتاحة تصحيح آلي.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "091",
@@ -1357,7 +1597,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "RecitationAssessment.kt; LocalTranscriptionScreen.kt",
+        "remaining": "التفريغ غير معتمد ولا يغذي التقدم أو يصحح التجويد؛ يلزم تقييم مستقل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "092",
@@ -1373,7 +1620,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "RecitationAssessment.kt; LocalTranscriptionScreen.kt",
+        "remaining": "التفريغ غير معتمد ولا يغذي التقدم أو يصحح التجويد؛ يلزم تقييم مستقل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "093",
@@ -1391,7 +1645,14 @@
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "تسجيل اختياري مؤقت للاستماع الذاتي؛ لا تصحيح آلي"
+      "problems": "تسجيل اختياري مؤقت للاستماع الذاتي؛ لا تصحيح آلي",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "PrivateRecitationPractice.kt; LocalTranscription.kt",
+        "remaining": "استماع ذاتي خاص مؤقت وRAM للتفريغ؛ يحتاج تحقق الأجهزة المطابق.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "094",
@@ -1401,7 +1662,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا إحالة خبيرة متصلة أو تصحيح اختياري مفعل أو حفظ تسجيلات مشفرة طويل الأجل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "095",
@@ -1411,7 +1679,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا إحالة خبيرة متصلة أو تصحيح اختياري مفعل أو حفظ تسجيلات مشفرة طويل الأجل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "096",
@@ -1429,7 +1704,14 @@
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "تسجيل اختياري مؤقت للاستماع الذاتي؛ لا تصحيح آلي"
+      "problems": "تسجيل اختياري مؤقت للاستماع الذاتي؛ لا تصحيح آلي",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "PrivateRecitationPractice.kt; LocalTranscription.kt",
+        "remaining": "استماع ذاتي خاص مؤقت وRAM للتفريغ؛ يحتاج تحقق الأجهزة المطابق.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "097",
@@ -1439,7 +1721,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا إحالة خبيرة متصلة أو تصحيح اختياري مفعل أو حفظ تسجيلات مشفرة طويل الأجل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "098",
@@ -1449,7 +1738,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "يلزم مشاركون وموافقات وعينات حقيقية ومراجعون متخصصون؛ لا بيانات مصطنعة تدعي تقييمًا.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "099",
@@ -1459,7 +1755,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "NativeAsrSmokeTest.kt",
+        "remaining": "زمن اختبار نغمة على محاكي؛ قياس ذاكرة/طاقة/حرارة على ARM حقيقي معلق.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "100",
@@ -1475,7 +1778,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم"
+      "problems": "واجهة قارئ صوت ومقارنة محدودة مع حالة عدم اليقين؛ لا نموذج تعرف صوتي مستقل التقييم",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "RecitationAssessment.kt; LocalTranscriptionScreen.kt",
+        "remaining": "التفريغ غير معتمد ولا يغذي التقدم أو يصحح التجويد؛ يلزم تقييم مستقل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "101",
@@ -1499,7 +1809,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "102",
@@ -1523,7 +1840,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "103",
@@ -1547,7 +1871,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "104",
@@ -1571,7 +1902,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "105",
@@ -1595,7 +1933,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "106",
@@ -1619,7 +1964,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "107",
@@ -1643,7 +1995,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "108",
@@ -1667,7 +2026,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "AdaptivePractice.kt; ProgressStore.kt; RecallLadder.kt",
+        "remaining": "بصمة وتقييم ذاتي وجدولة موجودة؛ فاعلية التعلم غير مثبتة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "109",
@@ -1677,7 +2043,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LearningPlan.kt; LearningPlanTest.kt",
+        "remaining": "ترجيح حداثة آخر المحاولات لتوصية تدريب فقط؛ لا تغيير غير مقاس لفواصل المراجعة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "110",
@@ -1701,7 +2074,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "DailyWork.kt; ProgressStore.kt; LearningPlan.kt; DailyWorkTest.kt; GlobalDailyPlanTest.kt; LearningDevelopmentUiTest.kt",
+        "remaining": "مراجعات المصحف كله وحفظ جديد من سورة محفوظة مع الجلسة؛ القائمة وزر البدء يستخدمان الخطة نفسها. حد مقترح يومي عبر الجلسات والسور من الآيات المقيّمة، دون خصم مكرر لإعادة المحاولة أو منع التدريب اليدوي؛ العد الجديد لا يخترع تاريخًا للسجلات القديمة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "111",
@@ -1711,7 +2091,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "112",
@@ -1735,7 +2122,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LearningGoalControls.kt; LearningPlan.kt; LearningDevelopmentUiTest.kt",
+        "remaining": "أوضاع حفظ/مراجعة وحد يومي مقترح مع إتاحة التدريب اليدوي وإعادة المواضع المتعثرة؛ لا منع عند تجاوز الهدف ولا ادعاء تحسن مقيس.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "113",
@@ -1759,7 +2153,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/SafetyRegressionTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة"
+      "problems": "بصمة محلية وتوصيات وميزانية؛ فعالية التكيف والمراجعة تحتاج تجربة مستقلة",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LearningPlan.kt; MainActivity.kt",
+        "remaining": "سبب واضح واقتراح اختياري من المحاولات الأخيرة؛ تحقق UX معلق.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "114",
@@ -1769,7 +2170,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا درجة ثقة احتمالية معايرة لتوصيات التعلم؛ لا اختلاق نسبة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "115",
@@ -1779,7 +2187,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "116",
@@ -1789,7 +2204,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LearningPlan.kt; LearningGoalControls.kt; LearningPlanTest.kt",
+        "remaining": "ملخصات أسبوعية وحسب التدريب من آخر30 محاولة لكل آية؛ ليست تحسنًا سببيًا أو سجلًا كاملًا.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "117",
@@ -1799,7 +2221,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "LearningPlan.kt; LearningGoalControls.kt; LearningPlanTest.kt",
+        "remaining": "ملخصات أسبوعية وحسب التدريب من آخر30 محاولة لكل آية؛ ليست تحسنًا سببيًا أو سجلًا كاملًا.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "118",
@@ -1809,7 +2238,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "GentleReturnPolicy.kt; ProgressStore.kt; MainActivity.kt; GentleReturnPolicyTest.kt; LocalDataAndAudioTest.kt",
+        "remaining": "اقتراح عودة محلي بعد أسبوع بموافقة اختيارية، وإيقاف يمحو تاريخ التذكير؛ لا إشعارات أو إرسال بيانات أو قياس فاعلية. اختبار أندرويد المطابق مطلوب.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "119",
@@ -1819,7 +2255,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "MainActivity.kt",
+        "remaining": "لا سلسلة أيام ملزمة؛ الأرقام تقييم ذاتي، دون ادعاء أثر تعليمي مثبت.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "120",
@@ -1829,7 +2272,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "121",
@@ -1857,7 +2307,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "122",
@@ -1885,7 +2342,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "123",
@@ -1913,7 +2377,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "124",
@@ -1923,7 +2394,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "125",
@@ -1933,7 +2411,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "126",
@@ -1961,7 +2446,19 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt; NotebookAgenda.kt; NotebookAgendaScreen.kt; NotebookAgendaTest.kt; TeacherNotebookUiTest.kt",
+        "remaining": "جدول يومي محلي للجلسات والمهام، بتصفية اليوم/القادمة/السابقة/المكتملة والطالب وصفحات محدودة؛ ليس حجزًا خارجيًا أو تقدمًا موثقًا من معلم.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      },
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "127",
@@ -1989,7 +2486,19 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt; NotebookAgenda.kt; NotebookAgendaScreen.kt; NotebookAgendaTest.kt; TeacherNotebookUiTest.kt",
+        "remaining": "جدول يومي محلي للجلسات والمهام، بتصفية اليوم/القادمة/السابقة/المكتملة والطالب وصفحات محدودة؛ ليس حجزًا خارجيًا أو تقدمًا موثقًا من معلم.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      },
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "128",
@@ -2017,7 +2526,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "129",
@@ -2027,7 +2543,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "outside_local_scope",
+        "implementation_references": "LOCAL_ONLY_SCOPE.md",
+        "remaining": "الجلسات المتصلة/المراسلة/الشهادات/الإجازات خارج التطبيق المحلي وغير منفذة فيه.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "130",
@@ -2055,7 +2578,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt",
+        "remaining": "دفتر محلي قابل للتعديل؛ ليس حجزًا خارجيًا أو تقدمًا موثقًا من معلم.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "131",
@@ -2083,7 +2613,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "132",
@@ -2111,7 +2648,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt",
+        "remaining": "دفتر محلي قابل للتعديل؛ ليس حجزًا خارجيًا أو تقدمًا موثقًا من معلم.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "133",
@@ -2139,7 +2683,19 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt; TeacherNotebookUiTest.kt",
+        "remaining": "نطاق مراجعة محلي محقق بالمراجع، قابل لتعديل الآيات/الموعد والحذف المؤكد؛ تغيير الآيات يعيد فتح المهمة. لا إرسال للطالب أو خطة موثقة من معلم مستقل.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      },
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "134",
@@ -2167,7 +2723,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "135",
@@ -2195,7 +2758,14 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "academy/service.py; academy/console.js; TeacherNotebook.kt",
+        "remaining": "خدمة داخلية اختيارية منفصلة ودفتر محلي؛ لا تحقق أشخاص حقيقيين أو نشر أو ربط Android.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "136",
@@ -2205,7 +2775,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "outside_local_scope",
+        "implementation_references": "LOCAL_ONLY_SCOPE.md",
+        "remaining": "الجلسات المتصلة/المراسلة/الشهادات/الإجازات خارج التطبيق المحلي وغير منفذة فيه.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "137",
@@ -2233,7 +2810,19 @@
         ".github/workflows/academy-console.yml"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق"
+      "problems": "خادم داخلي وقاعدة وصلاحيات ومراجعة بشرية وحجز وخطط وبلاغات ولوحة ويب؛ غير مربوط بـAndroid أو منشور، ولا تحقق فعلي من الهوية أو الوصاية أو المؤهلات؛ القبول النهائي معلق",
+      "continuation_tracking": {
+        "classification": "partial_new",
+        "implementation_references": "TeacherNotebook.kt; TeacherNotebookScreen.kt; LocalDataAndAudioTest.kt; NotebookAgenda.kt; NotebookAgendaScreen.kt; NotebookAgendaTest.kt; TeacherNotebookUiTest.kt",
+        "remaining": "تعديل موعد وملاحظات وحذف جلسة منفردة مع ملاحظات المشكلة المرتبطة بها، بعد تأكيد؛ بقية الملفات محفوظة؛ إجراءات من الجدول مع تصفية وصفحات. لا حجز أو إشعارات أطراف.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      },
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "138",
@@ -2243,7 +2832,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "outside_local_scope",
+        "implementation_references": "LOCAL_ONLY_SCOPE.md",
+        "remaining": "الجلسات المتصلة/المراسلة/الشهادات/الإجازات خارج التطبيق المحلي وغير منفذة فيه.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "139",
@@ -2253,7 +2849,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "outside_local_scope",
+        "implementation_references": "LOCAL_ONLY_SCOPE.md",
+        "remaining": "الجلسات المتصلة/المراسلة/الشهادات/الإجازات خارج التطبيق المحلي وغير منفذة فيه.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "140",
@@ -2263,7 +2866,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "LOCAL_ONLY_SCOPE.md",
+        "remaining": "لا تجربة معلمين فعلية؛ الأكاديمية المتصلة مؤجلة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "141",
@@ -2273,7 +2883,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "SCHOLARLY_REVIEW_DOSSIER.md; WORK_PLAN_SINGLE_REVIEW.md",
+        "remaining": "وثائق سياسة مراجعة؛ لا لجنة مشكلة أو اعتماد أو اتصال.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "142",
@@ -2292,7 +2909,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/QuranCorpusJvmTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل"
+      "problems": "مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "QuranCorpus.kt; test_embedded_quran.py",
+        "remaining": "بصمات المصدر الأصلية ثابتة؛ تدقيق العرض البشري معلق.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "143",
@@ -2312,7 +2936,14 @@
         "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt"
       ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة"
+      "problems": "وثائق وحدود معلنة؛ لا تقييم علمي مستقل أو موافقات قانونية موثقة",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "OPEN_SOURCE_RESEARCH.md; RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "مصادر وحدود وبروتوكول؛ لا دراسة فاعلية منفذة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "144",
@@ -2322,7 +2953,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "ReciterCatalog.kt",
+        "remaining": "تعريف أولي بالاسم والبلد؛ لا سيرة موثقة أو تسجيلات معتمدة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "145",
@@ -2332,7 +2970,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "partial_existing",
+        "implementation_references": "ReciterCatalog.kt",
+        "remaining": "تعريف أولي بالاسم والبلد؛ لا سيرة موثقة أو تسجيلات معتمدة.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "146",
@@ -2342,7 +2987,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا محرر سير/مسار موافقات تحريرية/أصول تفسير مرخصة/واجهة تفسير.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "147",
@@ -2352,7 +3004,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا محرر سير/مسار موافقات تحريرية/أصول تفسير مرخصة/واجهة تفسير.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "148",
@@ -2362,7 +3021,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا محرر سير/مسار موافقات تحريرية/أصول تفسير مرخصة/واجهة تفسير.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "149",
@@ -2372,7 +3038,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "not_implemented",
+        "implementation_references": "—",
+        "remaining": "لا محرر سير/مسار موافقات تحريرية/أصول تفسير مرخصة/واجهة تفسير.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "150",
@@ -2382,7 +3055,14 @@
       "implementation_commits": {},
       "tests_or_checks": [],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول",
+      "continuation_tracking": {
+        "classification": "external_evidence_required",
+        "implementation_references": "RecitationRights.kt; RECITATION_EVALUATION_PROTOCOL.md",
+        "remaining": "حفص فقط؛ لا مقارنة فروق روايات أو مراجعة متخصصة متعددة الروايات.",
+        "source_table": "docs/PHASES_061_150_STATUS.md",
+        "acceptance": "Not final acceptance; historical status above remains unchanged."
+      }
     },
     {
       "phase": "151",
@@ -2716,7 +3396,12 @@
         "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "سجل حذف مؤكد مسبق واستكمال بعد الانقطاع؛ فساد السجل يحظر الاستعادة دون حذف غير مطلوب. اختبارات Android المطابقة نجحت؛ الأجهزة الحقيقية معلقة."
+      "problems": "سجل حذف مؤكد مسبق واستكمال بعد الانقطاع؛ فساد السجل يحظر الاستعادة دون حذف غير مطلوب. اختبارات Android المطابقة نجحت؛ الأجهزة الحقيقية معلقة.",
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "171",
@@ -3053,7 +3738,12 @@
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
       ],
       "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
-      "problems": "حماية من فساد سجل الحذف مع بقاء البيانات واختبارات فساد التقدم/المظهر الموجودة؛ CI المطابق اجتاز المصدر المحدد."
+      "problems": "حماية من فساد سجل الحذف مع بقاء البيانات واختبارات فساد التقدم/المظهر الموجودة؛ CI المطابق اجتاز المصدر المحدد.",
+      "continuation_verification": {
+        "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+        "evidence": "docs/evidence/2026-11-03/continuation-ci.json",
+        "result": "Current integration matrix passes; not final acceptance."
+      }
     },
     {
       "phase": "192",
@@ -3397,8 +4087,8 @@
     }
   ],
   "continuation_audit": {
-    "source_revision": "1f97d35df3b5e00c3330f5df11805455900a103d",
-    "source_tree": "7c656a5732e32fdbe156a979afde0db55e63c6c6",
+    "source_revision": "6829762760de2c87304ef66e2c3df1f53661dfab",
+    "source_tree": "35827e6a181170e61e822c8931fd3cdd47a08e72",
     "updated_phases": [
       "049",
       "054",
@@ -3406,14 +4096,35 @@
       "057",
       "069",
       "070",
+      "126",
+      "127",
+      "133",
+      "137",
       "170",
       "191"
     ],
-    "scope": "Selected current implementation rows only; remaining rows retain their historical evidence. No final acceptance inferred.",
+    "scope": "Selected continuation evidence and implementation tracking for61–150; historical acceptance statuses retained. No final acceptance.",
     "pull_requests": [
       16,
-      17
+      17,
+      18
     ],
-    "ci_conclusion": "All seven jobs passed for the stated source; no final acceptance inferred."
-  }
+    "ci_conclusion": "All seven jobs pass:69Python,105JVM,288Android; Lint0errors/38warnings. Current manual screenshot review blocked by unavailable executor."
+  },
+  "continuation_tracking_summary": {
+    "source_table": "docs/PHASES_061_150_STATUS.md",
+    "range": [
+      61,
+      150
+    ],
+    "rows": 90,
+    "partial_new": 27,
+    "partial_existing": 34,
+    "not_implemented": 12,
+    "external_evidence_required": 11,
+    "outside_local_scope": 6,
+    "final_acceptances": 0,
+    "note": "Separate implementation classification from historical acceptance status. No requirement is promoted to final_complete."
+  },
+  "latest_continuation_source_revision": "6829762760de2c87304ef66e2c3df1f53661dfab"
 }
