@@ -52,7 +52,9 @@ class RecitationPlaybackServiceTest {
             hash, "Generated waveform; no Quran recording", "synthetic-test-only", "hafs-an-asim", true, true)
         val record = CatalogRecording(rights, RecordingAddress(1, 1), file.length(), "synthetic-reference-only")
         val catalog = RecitationCatalog.create(listOf(record), QuranCorpus.load(context), setOf("test-generator"))
-        return Triple(catalog, listOf(catalog.bind(rights.recordingId, file, LocalDate.now().toEpochDay())), file)
+        val today = LocalDate.now().toEpochDay()
+        val selected = catalog.selectRange(record.address, record.address, rights.reciterId, today)
+        return Triple(catalog, selected.map { catalog.bind(it.rights.recordingId, file, today) }, file)
     }
     private fun start(scenario: ActivityScenario<MainActivity>): RecitationPlaybackService.PlaybackBinder {
         scenario.onActivity { RecitationPlaybackService.start(it) }
@@ -130,6 +132,23 @@ class RecitationPlaybackServiceTest {
             main { binder.load(catalog, assets) }
             await("Tampered file must end service instead of playing") {
                 notification() == null && binder.snapshot().phase == LocalRecitationQueue.Phase.EMPTY
+            }
+        } finally { main { binder.stop() }; scenario.close(); file.delete() }
+    }
+
+    @Test fun invalidReplacementStopsExistingPlaybackAndRemovesNotification() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        val (catalog, assets, file) = fixture(6000)
+        val binder = start(scenario)
+        try {
+            main { binder.load(catalog, assets); binder.play() }
+            await("Playing") { binder.snapshot().phase == LocalRecitationQueue.Phase.PLAYING }
+            main {
+                val rejection = runCatching { binder.load(catalog, emptyList()) }.exceptionOrNull()
+                assertTrue(rejection is IllegalArgumentException)
+            }
+            await("Rejected replacement releases playback and notification") {
+                binder.snapshot().phase == LocalRecitationQueue.Phase.EMPTY && notification() == null
             }
         } finally { main { binder.stop() }; scenario.close(); file.delete() }
     }

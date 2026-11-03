@@ -35,7 +35,7 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
     private lateinit var session: MediaSession
     private lateinit var notifications: NotificationManager
     private var foregroundStarted = false
-    private var loaded = false
+    private var requestedLoad: Long? = null
     private var closed = false
     private var lastPublished: LocalRecitationQueue.Snapshot? = null
     private var inactiveSince = 0L
@@ -44,8 +44,8 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
         override fun run() {
             if (closed || !foregroundStarted) return
             val state = queue.snapshot()
-            if (loaded && state.phase in setOf(LocalRecitationQueue.Phase.COMPLETED,
-                    LocalRecitationQueue.Phase.FAILED, LocalRecitationQueue.Phase.EMPTY)) {
+            if (requestedLoad != null && state.requestId == requestedLoad &&
+                state.phase in setOf(LocalRecitationQueue.Phase.COMPLETED, LocalRecitationQueue.Phase.FAILED)) {
                 stopPlayback(); return
             }
             if (state != lastPublished) { publish(state); lastPublished = state }
@@ -62,10 +62,13 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
         fun load(catalog: RecitationCatalog, assets: List<BoundRecitation>, extraRepeats: Int = 0,
             speed: Float = 1f, extraRangeRepeats: Int = 0) {
             requireMain(); check(foregroundStarted && !closed)
-            // Prevent the periodic observer treating the asynchronous load as an
-            // already completed empty selection. publish only after load leaves EMPTY.
-            loaded = false
-            queue.load(catalog, assets, extraRepeats, speed, extraRangeRepeats)
+            // A prior selection can finish while its replacement is still being prepared.
+            requestedLoad = try {
+                queue.load(catalog, assets, extraRepeats, speed, extraRangeRepeats)
+            } catch (error: IllegalArgumentException) {
+                stopPlayback()
+                throw error
+            }
             inactiveSince = android.os.SystemClock.elapsedRealtime()
         }
         fun play() { requireMain(); if (!closed && foregroundStarted) queue.play() }
@@ -116,7 +119,6 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
     }
 
     private fun publish(state: LocalRecitationQueue.Snapshot) {
-        if (state.phase !in setOf(LocalRecitationQueue.Phase.EMPTY, LocalRecitationQueue.Phase.LOADING)) loaded = true
         val playing = state.phase == LocalRecitationQueue.Phase.PLAYING
         val mediaState = when (state.phase) {
             LocalRecitationQueue.Phase.PLAYING -> PlaybackState.STATE_PLAYING
