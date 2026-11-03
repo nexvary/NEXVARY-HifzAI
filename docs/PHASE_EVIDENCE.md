@@ -2,7 +2,9 @@
 
 > نطاق القارئ محلي وفق LOCAL_ONLY_SCOPE.md. متطلبات الأكاديمية المتصلة في السجل التاريخي اختيارية وخارج الإصدار المحلي؛ ليست منجزة ولا تمنع الإصدار المحلي بمفردها. الخصوصية المحلية والحقوق والتقييم والعرض ما زالت مطلوبة.
 
-كل المراحل الـ219 موجودة. مراجعة المصدر: `3492ee58aa7a4c44afcc930dc32874a620353994`.
+كل المراحل الـ219 موجودة. أساس السجل التاريخي: `3492ee58aa7a4c44afcc930dc32874a620353994`.
+
+متابعة الصفوف049/054/056/057/069/070/170/191 مرتبطة بالمصدر `1f97d35df3b5e00c3330f5df11805455900a103d`، كما في continuation_audit داخل JSON. بقية الصفوف تحتفظ بأدلتها التاريخية؛ لا قبول نهائي جديد.
 
 الحالة «جزئي» تصف وجود تنفيذ أو جزء من بنيته؛ لا تعني تحقيق كل وظيفة في عنوان المرحلة. لا مربعات إنجاز تُملأ آليًا. البنية القابلة للربط ليست ميزة نهائية. `PHASE_EVIDENCE.json` يحتوي ملفات التنفيذ وCommit لكل ملف والاختبارات والمانع لكل مرحلة.
 
@@ -55,15 +57,15 @@
 | 046 | Design authentic Quran reading typography | جزئي / غير مقبول نهائيًا | amiri_quran.ttf, MainActivity.kt, NOTICE.md؛ تغطية المحارف لا تثبت سلامة تركيب كل علامة على كل جهاز |
 | 047 | Add controlled text-size settings | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
 | 048 | Support contrast-friendly dark mode | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
-| 049 | Provide optional bright reading mode | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
+| 049 | Provide optional bright reading mode | جزئي / غير مقبول نهائيًا | AppAppearance.kt, HifzTheme.kt, MainActivity.kt؛ الوضع الفاتح/الداكن/النظام وحفظ الاختيار منفذ؛ CI ولقطات المصدر الحالي والقبول البصري/الأجهزة الفعلية مطلوبة. |
 | 050 | Use real vector icons and labels | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
 | 051 | Keep all Arabic screens fully RTL | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
 | 052 | Preserve LTR for URLs and numbers | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 053 | Improve TalkBack navigation order | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 054 | Add screen-reader friendly verse indices | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
+| 054 | Add screen-reader friendly verse indices | جزئي / غير مقبول نهائيًا | MainActivity.kt, CanonicalQuranText.kt؛ وصف رقم الآية ودلالات العناوين موجودان؛ ليست مراجعة TalkBack شاملة. |
 | 055 | Offer minimal distraction mode | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 056 | Support font scaling without clipping | جزئي / غير مقبول نهائيًا | amiri_quran.ttf, MainActivity.kt, NOTICE.md؛ تغطية المحارف لا تثبت سلامة تركيب كل علامة على كل جهاز |
-| 057 | Handle rotation without losing session | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 056 | Support font scaling without clipping | جزئي / غير مقبول نهائيًا | MainActivity.kt, APPEARANCE_2026-11-03.md؛ مصفوفة أربع أجهزة عند الخطين1/1.5؛ نتائج المصدر الحالي وفحص اللقطات مطلوبة؛ لا قبول كل التشكيل أو الأجهزة الفعلية. |
+| 057 | Handle rotation without losing session | جزئي / غير مقبول نهائيًا | MainActivity.kt, RuntimeResetStore.kt, LocalDataReset.kt؛ حفظ المحاولة الصحيحة مع رفض الجيل المحذوف واستكمال الحذف المعلق قبل الاستعادة؛ مشكلة SlotWriter لا تعتبر مثبتة الحل دون CI مطابق. |
 | 058 | Show empty and error states | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
 | 059 | Clarify microphone permissions in UI | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
 | 060 | Run usability sessions with learners | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
@@ -75,8 +77,8 @@
 | 066 | Verify recording provenance and rights | جزئي / غير مقبول نهائيًا | THIRD_PARTY_CONTENT_REGISTER.md, RecitationRights.kt؛ حقول المنع موجودة؛ لا وثائق أذون تسجيلات فعلية |
 | 067 | Build streaming audio adapter | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 068 | Add background audio service | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 069 | Enable verse repeat and sequence | جزئي / غير مقبول نهائيًا | LicensedRecitationPlayer.kt, LocalAudioPlayer.kt, PrivateAudioControls.kt؛ مشغل محلي فعلي: استئناف وتكرار وسرعة وانتقال وفقدان تركيز الصوت؛ اختبارات بنغمات وميكروفون، لا تلاوات خارجية مرخصة ولا تشغيل خلفية أو مزامنة آيات |
-| 070 | Provide adjustable playback speed | جزئي / غير مقبول نهائيًا | LicensedRecitationPlayer.kt, LocalAudioPlayer.kt, PrivateAudioControls.kt؛ مشغل محلي فعلي: استئناف وتكرار وسرعة وانتقال وفقدان تركيز الصوت؛ اختبارات بنغمات وميكروفون، لا تلاوات خارجية مرخصة ولا تشغيل خلفية أو مزامنة آيات |
+| 069 | Enable verse repeat and sequence | جزئي / غير مقبول نهائيًا | LocalRecitationQueue.kt, RecitationRangeCursor.kt, LicensedRecitationPlayer.kt؛ تكرار الآية والنطاق كله محدود ومستقل وإعادة فحص كل ملف عند العودة؛ نغمات اصطناعية، لا مكتبة قارئ أو أصول مرخصة أو خدمة خلفية. |
+| 070 | Provide adjustable playback speed | جزئي / غير مقبول نهائيًا | LocalRecitationQueue.kt, LocalAudioPlayer.kt؛ تعديل السرعة0.5–1.5 دون بدء أو استئناف تلقائي؛ اختبارات النغمات المطابقة للمصدر مطلوبة، وواجهة المكتبة باقية. |
 | 071 | Design gapless ayah transitions | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 072 | Add pause and resume state | جزئي / غير مقبول نهائيًا | LicensedRecitationPlayer.kt, LocalAudioPlayer.kt, PrivateAudioControls.kt؛ مشغل محلي فعلي: استئناف وتكرار وسرعة وانتقال وفقدان تركيز الصوت؛ اختبارات بنغمات وميكروفون، لا تلاوات خارجية مرخصة ولا تشغيل خلفية أو مزامنة آيات |
 | 073 | Support headset media controls | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
@@ -176,7 +178,7 @@
 | 167 | Add HTTPS security review | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 168 | Establish encryption-at-rest threat model | جزئي / غير مقبول نهائيًا | SECURITY.md, AndroidManifest.xml, PrivateRecitationPractice.kt, TeacherNotebook.kt؛ تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية |
 | 169 | Implement secure authentication when needed | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 170 | Provide local data deletion | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 170 | Provide local data deletion | جزئي / غير مقبول نهائيًا | MainActivity.kt, RuntimeResetStore.kt, LocalDataReset.kt؛ سجل حذف مؤكد مسبق واستكمال بعد الانقطاع؛ فساد السجل يحظر الاستعادة دون حذف غير مطلوب. قبول Android/الأجهزة الحقيقية معلق. |
 | 171 | Add export of user progress | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
 | 172 | Support anonymous local mode | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
 | 173 | Define cloud opt-in consent | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
@@ -197,7 +199,7 @@
 | 188 | Add battery and memory benchmarks | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 189 | Test offline reading with no internet | جزئي / غير مقبول نهائيًا | android-ui-proof.yml, verify_screenshot_proof.py؛ صور فعلية فقط بعد نجاح PNG validation؛ ليست مقارنة baseline أو اعتمادًا بصريًا |
 | 190 | Test long background audio sessions | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 191 | Test corrupted local preferences | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 191 | Test corrupted local preferences | جزئي / غير مقبول نهائيًا | RuntimeResetStore.kt, LocalDataReset.kt, ProgressStore.kt؛ حماية من فساد سجل الحذف مع بقاء البيانات واختبارات فساد التقدم/المظهر الموجودة؛ CI مطابق مطلوب. |
 | 192 | Test database schema migrations | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 193 | Add fuzz tests for verse index bounds | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 194 | Test errors at API access revocation | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
@@ -227,3 +229,11 @@
 | 218 | Document server deployment and rollback | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 219 | Open scholarly feedback channel | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 220 | Release first expert-approved stable version | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
+
+
+## متابعة صوتيات 3 نوفمبر 2026
+
+المرحلتان069 و070 تقدمتا جزئيًا: LocalRecitationQueue يعيد النطاق كله بعدد محدود مع فحص الملف والحقوق في كل عودة، ويقبل تعديل السرعة دون فقد الوقف. RecitationRangeCursorTest وLocalAudioPlaybackTest يختبران الحدود والترتيب والتشغيل بنغمات مولدة. هذه متابعة أحدث من صفوف الأساس التاريخية أعلاه؛ PHASES_061_150_STATUS.md يسجل التفاصيل. لا قبول نهائي قبل CI المطابق ولا واجهة مكتبة أو أصول تلاوة معتمدة أو خدمة خلفية أو اعتماد تجويد.
+
+
+نتيجة متابعة1f97d35: جميع سبع وظائفCI نجحت (69Python/105JVM/280Android)، وتحُققت224PNG وفُحصت صور مختارة. الصفوف المحدّثة تبقى partial_unaccepted: ليست واجهة مكتبة صوتية مكتملة أو تدقيقTalkBack/أجهزةARM أو قبولًا قرآنيًا/نهائيًا. JSON وTEST_RESULTS.md يحفظان نتائج المصدر الدقيقة بدل الادعاءات العامة.

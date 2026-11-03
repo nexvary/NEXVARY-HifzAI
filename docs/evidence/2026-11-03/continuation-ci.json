@@ -1,0 +1,210 @@
+{
+  "source_commit": "1f97d35df3b5e00c3330f5df11805455900a103d",
+  "tested_merge_commit": "ef44feac314e5ee6ee5203765f471c71e1961065",
+  "source_and_merge_tree": "7c656a5732e32fdbe156a979afde0db55e63c6c6",
+  "matching_clean_local_source": "cf3c77759ae4989a79f0596a38b8c8222d56c11b",
+  "pull_requests": [
+    16,
+    17
+  ],
+  "python": {
+    "tests": 69,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "local_clean_source": true,
+    "ci_run": 41604350301
+  },
+  "jvm": {
+    "tests": 105,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xml_archive_inspected": true,
+    "artifact": 13215868573,
+    "archive_sha256": "3364e08c0721687b9ee151600fe1c9b068ac595a323230a3eeb6cd34c953e6ea"
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 39,
+    "warning_ids": {
+      "UseKtx": 29,
+      "GradleDependency": 8,
+      "OldTargetApi": 1,
+      "ConfigurationScreenWidthHeight": 1
+    }
+  },
+  "build": {
+    "run": 41604350301,
+    "conclusion": "success",
+    "includes": [
+      "debug assembly",
+      "native packaging and pinned ASR model/licenses",
+      "merged local-only permissions",
+      "APK debug signature",
+      "APK 16KiB alignment",
+      "attached public release guard"
+    ],
+    "public_apk_published": false
+  },
+  "instrumentation": {
+    "status": "passed",
+    "normal_methods_expected_per_profile": 49,
+    "large_font_methods_expected_per_profile": 21,
+    "phone_run": 41604350340,
+    "layout_run": 41604350327,
+    "profiles": [
+      {
+        "profile": "phone26",
+        "api": 26,
+        "job": 125810381340,
+        "normal_passed": 49,
+        "large_font_passed": 21,
+        "screenshot_artifact": 13216910831,
+        "archive_sha256": "4e93b1d4b550117e1b5b11dce09bb9fed5589f1e2022bd560f6367be2af7ccc1",
+        "png_count": 56,
+        "archive_and_all_png_manifests_verified": true
+      },
+      {
+        "profile": "phone35",
+        "api": 35,
+        "job": 125810380960,
+        "normal_passed": 49,
+        "large_font_passed": 21,
+        "screenshot_artifact": 13216227186,
+        "archive_sha256": "37f586cdf90ba4cf0080644df96bda26fc7cb8addf3dfcf1650e5f5dd79072b3",
+        "png_count": 56,
+        "archive_and_all_png_manifests_verified": true
+      },
+      {
+        "profile": "small-phone",
+        "api": 26,
+        "job": 125810381142,
+        "normal_passed": 49,
+        "large_font_passed": 21,
+        "screenshot_artifact": 13215839841,
+        "archive_sha256": "e6f29b2e1a9c955e892bc64d56ad28cea41807b70178b5ceba87fb43dad76a56",
+        "png_count": 56,
+        "archive_and_all_png_manifests_verified": true
+      },
+      {
+        "profile": "tablet",
+        "api": 35,
+        "job": 125810380770,
+        "normal_passed": 49,
+        "large_font_passed": 21,
+        "screenshot_artifact": 13217061267,
+        "archive_sha256": "e163ce0e72428aca118f3098743364e6cbffecbda405477325ab8121174232c9",
+        "png_count": 56,
+        "archive_and_all_png_manifests_verified": true
+      }
+    ],
+    "total_executions": 280
+  },
+  "historical_failures": [
+    {
+      "source": "955f191381c9bf0b8965200376a9b863ecba89ba",
+      "run": 41577671971,
+      "job": 125724984714,
+      "kind": "SlotWriter disposal, API26 normal font"
+    },
+    {
+      "source": "955f191381c9bf0b8965200376a9b863ecba89ba",
+      "run": 41577671963,
+      "job": 125725122093,
+      "kind": "SlotWriter disposal, API35 tablet"
+    },
+    {
+      "source": "955f191381c9bf0b8965200376a9b863ecba89ba",
+      "run": 41577671963,
+      "job": 125725122585,
+      "kind": "NDK ZipFile error before application tests; attempted rerun rejected while workflow active"
+    },
+    {
+      "source": "cd92082fa74f2c9785ca9cd2e190b9be983d36a1",
+      "run": 41577580149,
+      "job": 125724675630,
+      "kind": "Ambiguous native/Compose dialog root; 45 normal methods/1 failure"
+    },
+    {
+      "source": "17d308e6ce21e51343a67d1ff33181db8ff9ba83",
+      "run": 41579137543,
+      "job": 125729986349,
+      "artifact": 13205965066,
+      "kind": "48 normal methods pass then API26 large-font live font-change recreation SlotWriter crash",
+      "stack_excerpt": [
+        "ArrayIndexOutOfBoundsException: length=320; index=-101",
+        "SlotWriter.moveSlotGapTo(SlotTable.kt:4351)",
+        "SlotWriter.removeSlots(SlotTable.kt:3029)",
+        "CompositionImpl.dispose(Composition.kt:882)"
+      ]
+    }
+  ],
+  "historical_visual_review": {
+    "source": "17d308e6ce21e51343a67d1ff33181db8ff9ba83",
+    "artifact": 13205490442,
+    "sha256": "8a59dd0302069fae7849a3f82c27a168a6bf877be3016936c68ad9052cda93ba",
+    "png_count": 56,
+    "inspected": [
+      "small-phone normal light reader",
+      "small-phone large light reader",
+      "small-phone large dark reader",
+      "small-phone large appearance settings"
+    ],
+    "observation": "Settings bottom-nav label wraps across lines at1.5x; not final accessibility approval"
+  },
+  "canonical_quran_sha256": "6933e133dd56db778c801bf738848454e43648105a151e8d84d86a7cae39ec5f",
+  "amiri_font_sha256": "8fa95faaf7bd18b71789f6f57312003e30c5029218a035e5baf613a0222ab82d",
+  "phase_061_150": {
+    "total": 90,
+    "partial_new": 27,
+    "partial_existing": 34,
+    "not_implemented": 12,
+    "external_evidence_required": 11,
+    "outside_local_scope": 6,
+    "new_final_acceptances": 0
+  },
+  "limits": [
+    "No physical ARM devices, TalkBack session or specialist Quran display approval",
+    "No consented real-speech accuracy, tajweed or educational efficacy claim",
+    "No approved external reciter recordings or reader audio-library/background/headset implementation",
+    "No merge, public APK or released gate approval"
+  ],
+  "current_visual_review": {
+    "source": "1f97d35df3b5e00c3330f5df11805455900a103d",
+    "total_verified_pngs": 224,
+    "method": "Downloaded all four archives; matched ZIP digests, PNG signatures/CRC/payload/size/digests and CI source manifests at both scales. Inspected selected actual images, not every screenshot or Quran mark.",
+    "inspected": [
+      "phone26 large dark reader",
+      "phone26 large appearance settings",
+      "phone35 normal light reader",
+      "small-phone large light reader",
+      "tablet normal light reader",
+      "tablet large dark reader",
+      "tablet large appearance settings"
+    ],
+    "remaining_observation": "Small-phone bottom-nav settings label wraps at1.5x; no full accessibility, all-screen, physical-device or scholarly approval."
+  },
+  "workflows": [
+    {
+      "id": 41604350301,
+      "conclusion": "success",
+      "source_commit": "1f97d35df3b5e00c3330f5df11805455900a103d"
+    },
+    {
+      "id": 41604350340,
+      "conclusion": "success",
+      "source_commit": "1f97d35df3b5e00c3330f5df11805455900a103d"
+    },
+    {
+      "id": 41604350327,
+      "conclusion": "success",
+      "source_commit": "1f97d35df3b5e00c3330f5df11805455900a103d"
+    },
+    {
+      "id": 41604350289,
+      "conclusion": "success",
+      "source_commit": "1f97d35df3b5e00c3330f5df11805455900a103d"
+    }
+  ]
+}
