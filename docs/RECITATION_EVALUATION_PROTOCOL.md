@@ -91,3 +91,20 @@ judgment. Limits: 512 words and 4096 normalized nonspace characters per transcri
 with linear-memory character alignment. Reports contain no new participant data.
 Revoked consent/rights reject the input; remove those samples before rerunning.
 These synthetic arithmetic tests supply no real ASR accuracy result.
+
+## Paired baseline/candidate comparisons
+
+Run `python tools/compare_recitation.py baseline.json candidate.json --output comparison.json`.
+Both inputs use the evaluator schema above. They must contain the exact same sample
+set and fixed metadata, human transcripts, expert annotations, consent and rights
+records; only model identity, hypotheses and confidence may change. Sample order
+may differ. Every input is independently validated, including duplicate, revocation
+and speaker-split checks. Reports include input/canonical hashes and group-level
+candidate-minus-baseline WER, CER, coverage and conditional error-rate differences.
+Undefined denominators remain null. Inspect coverage and denominators together:
+a model that abstains more cannot be called better merely because its conditional
+false-alarm rate falls. These are descriptive paired differences, not significance,
+calibration, participant consent verification or real-world improvement evidence.
+No audio is collected; consent/rights assertions still require external review.
+The output path cannot overwrite either research dataset. No real dataset has been
+supplied or evaluated as part of this development batch.
