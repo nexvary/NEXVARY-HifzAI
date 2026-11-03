@@ -104,6 +104,23 @@ class HifzUiSmokeTest {
         }
     }
 
+    @Test fun rapidRecreationDuringVerificationKeepsOnlyTheLiveActivityAndTheValidAttempt() {
+        val store = ProgressStore(InstrumentationRegistry.getInstrumentation().targetContext)
+        rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+        repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+        click("تلميح")
+        val expected = store.session()!!
+        // Do not wait for corpus IO between recreations: destroyed Activities
+        // must never publish a late composition into a newer Activity.
+        repeat(6) { rule.activityRule.scenario.recreate() }
+        rule.awaitHifzReady()
+        org.junit.Assert.assertEquals(expected, store.session())
+        rule.onNodeWithText("الإعدادات").performClick(); rule.waitForIdle()
+        click("حذف تقدم الحفظ من الجهاز"); click("حذف البيانات")
+        rule.awaitHifzReady()
+        org.junit.Assert.assertNull(store.session())
+    }
+
     @Test fun interruptedDeletionRecoversBeforeRestoringTheOldAssistedAttempt() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val store = ProgressStore(context)
