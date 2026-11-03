@@ -19,3 +19,9 @@
 - https://kotlinlang.org/docs/releases.html — إصدار التصحيح2.1.21.
 - https://developer.android.com/jetpack/androidx/releases/compose-runtime — خط runtime1.8.3 المستقر.
 - https://developer.android.com/develop/ui/compose/bom/bom-mapping — استخدام عائلة BOM متوافقة، وليست ترقية إلى أحدث إصدار متاح.
+
+## نتيجة المرشح الأول والمتابعة
+
+التحديث وحده لم يحل الحالة: run41572621375/job125708807276 (هاتفAPI26 بخط كبير) وrun41572621090/job125708806115 (تابلتAPI35 عادي) فشلا في SlotWriter.moveSlotGapTo/removeSlots/dispose. فحص البناء نجح؛ لا يعوض فشل التشغيل. أضيف تعطيل StrongSkipping بواسطة ComposeFeatureFlag في توليد التطبيق والاختبارات، كإجراء تجريبي محافظ لمعرفة أثر التحسين؛ لا تعطيل لاختبار أو استثناء. قد يزيد إعادة التركيب؛ قياس الأداء الحقيقي باقٍ. نتائج المرشح التالي يجب فحصها قبل وصفه بالمعالجة المختبرة.
+
+إعداد المترجم الموثق: https://kotlinlang.org/docs/whatsnew2020.html . هذا ليس إثباتًا أن التحسين سبب العطل.
