@@ -104,6 +104,49 @@ class HifzUiSmokeTest {
         }
     }
 
+    @Test fun rapidRecreationDuringVerificationKeepsOnlyTheLiveActivityAndTheValidAttempt() {
+        val store = ProgressStore(InstrumentationRegistry.getInstrumentation().targetContext)
+        rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+        repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+        click("تلميح")
+        val expected = store.session()!!
+        // Do not wait for corpus IO between recreations: destroyed Activities
+        // must never publish a late composition into a newer Activity.
+        repeat(6) { rule.activityRule.scenario.recreate() }
+        rule.awaitHifzReady()
+        org.junit.Assert.assertEquals(expected, store.session())
+        rule.onNodeWithText("الإعدادات").performClick(); rule.waitForIdle()
+        click("حذف تقدم الحفظ من الجهاز"); click("حذف البيانات")
+        rule.awaitHifzReady()
+        org.junit.Assert.assertNull(store.session())
+    }
+
+    @Test fun interruptedDeletionRecoversBeforeRestoringTheOldAssistedAttempt() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val store = ProgressStore(context)
+        val notebook = TeacherNotebook(context)
+        notebook.addStudent("بيانات اصطناعية للاستعادة", true)
+        rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+        repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+        click("تلميح")
+        org.junit.Assert.assertTrue(store.session()!!.hints > 0)
+        rule.runOnUiThread {
+            check(RuntimeResetStore(context).begin())
+            check(store.clear()) // Interruption before the second store is cleared.
+        }
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        org.junit.Assert.assertNull(store.session())
+        org.junit.Assert.assertTrue(notebook.students().isEmpty())
+        org.junit.Assert.assertFalse(RuntimeResetStore(context).pending)
+        rule.onNodeWithText("افتح المصحف الكامل • ١١٤ سورة").assertExists()
+        rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+        org.junit.Assert.assertEquals(0, store.session()!!.hints)
+        org.junit.Assert.assertFalse(store.session()!!.exposed)
+        val fresh = store.session()
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        org.junit.Assert.assertEquals(fresh, store.session())
+    }
+
     @Test fun persistentResetRejectsSavedAttemptFromAnOlderDataGeneration() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val store = ProgressStore(context)

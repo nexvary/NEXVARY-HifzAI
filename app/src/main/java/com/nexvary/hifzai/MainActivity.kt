@@ -64,7 +64,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.LocalContext
@@ -81,8 +80,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.toArgb
 import com.nexvary.hifzai.learning.TeacherNotebook
 import com.nexvary.hifzai.learning.PracticeSession
 import com.nexvary.hifzai.learning.RecallObservation
@@ -98,6 +99,7 @@ import com.nexvary.hifzai.learning.HifzScheduler
 import com.nexvary.hifzai.learning.MemoryCoach
 import com.nexvary.hifzai.learning.MemoryFingerprint
 import com.nexvary.hifzai.learning.PracticeKind
+import com.nexvary.hifzai.learning.LocalDataReset
 import com.nexvary.hifzai.learning.RuntimeResetStore
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.ReciterCatalog
@@ -107,7 +109,6 @@ import com.nexvary.hifzai.learning.VerifiedVerse
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.nexvary.hifzai.learning.LearningGoal
 import com.nexvary.hifzai.learning.LearningTrends
@@ -128,57 +129,73 @@ private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS,
 class MainActivity : ComponentActivity() {
     private lateinit var resets: RuntimeResetStore
     private var creationToken = "initial"
+    private lateinit var dataReset: LocalDataReset
     override fun onCreate(savedInstanceState: Bundle?) {
         resets = RuntimeResetStore(this)
+        dataReset = LocalDataReset(resets, { ProgressStore(this).clear() }, { TeacherNotebook(this).clear() })
+        val resetResult = dataReset.recover()
         creationToken = resets.token
         val restored = savedInstanceState?.takeIf { resets.acceptsSaved(it.getString(RESET_STATE_KEY)) }
         super.onCreate(restored)
         java.io.File(cacheDir, "hifz_private_session.m4a").delete()
-        showVerificationStatus("جارٍ التحقق من النص القرآني المحلي…", true)
+        if (resetResult == LocalDataReset.Result.PENDING) {
+            showStartupMessage("تعذر التحقق من حالة البيانات؛ لن تُستعاد الجلسة قبل معالجة الخطأ.", retry = true)
+            return
+        }
+        showStartupMessage("جارٍ التحقق من النص القرآني المحلي…")
+        // Verify outside composition. A successful Activity gets one unconditional
+        // verified root, never a loading subtree that is replaced inside Compose.
         lifecycleScope.launch {
-            val corpus = withContext(Dispatchers.IO) {
-                runCatching { QuranCorpus.load(applicationContext) }.getOrNull()
-            }
-            if (corpus == null) {
-                showVerificationStatus("تعذر التحقق من سلامة النص القرآني. أعد تثبيت نسخة سليمة من المصدر الرسمي.", false)
-            } else {
-                setContent {
-                    val preferences = remember { ProgressStore(this@MainActivity) }
-                    var appearance by remember { mutableStateOf(preferences.appearance) }
-                    HifzTheme(appearance) {
-                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                            VerifiedAppContent(corpus, appearance, changeAppearance = {
-                                preferences.appearance = it
-                                appearance = it
-                            }, resetRuntime = { resets.advance().also { advanced -> if (advanced) recreate() } })
-                        }
-                    }
-                }
-            }
+            val result = withContext(Dispatchers.IO) { runCatching { QuranCorpus.load(applicationContext) } }
+            if (isFinishing || isDestroyed) return@launch
+            if (!resets.acceptsSaved(creationToken)) { recreate(); return@launch }
+            result.fold(onSuccess = { corpus -> showVerifiedContent(corpus) }, onFailure = { error ->
+                android.util.Log.e("HifzCorpus", "Bundled Quran verification failed", error)
+                showStartupMessage("تعذر التحقق من سلامة النص القرآني. تم إيقاف عرض المصحف؛ أعد تثبيت نسخة سليمة.")
+            })
         }
     }
 
-    /** No composition exists until source verification succeeds; lifecycle cancellation owns IO. */
-    private fun showVerificationStatus(message: String, progress: Boolean) {
-        val systemDark = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+    /** Native startup/error view: no saved Compose session is consumed before verification. */
+    private fun showStartupMessage(message: String, retry: Boolean = false) {
+        val appearance = ProgressStore(this).appearance
+        val night = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK ==
             android.content.res.Configuration.UI_MODE_NIGHT_YES
-        val palette = if (ProgressStore(this).appearance.usesDarkColors(systemDark)) HifzDarkColors else HifzLightColors
-        val container = android.widget.LinearLayout(this).apply {
+        val colors = if (appearance.usesDarkColors(night)) HifzDarkColors else HifzLightColors
+        val space = (24 * resources.displayMetrics.density).toInt()
+        val view = android.widget.LinearLayout(this).apply {
             orientation = android.widget.LinearLayout.VERTICAL
             gravity = android.view.Gravity.CENTER
             layoutDirection = android.view.View.LAYOUT_DIRECTION_RTL
-            val inset = (24 * resources.displayMetrics.density).toInt()
-            setPadding(inset, inset, inset, inset)
-            setBackgroundColor(palette.background.toArgb())
+            setPadding(space, space, space, space)
+            setBackgroundColor(colors.background.toArgb())
             addView(android.widget.TextView(this@MainActivity).apply {
-                text = message
-                textSize = 18f
-                gravity = android.view.Gravity.CENTER
-                setTextColor(palette.onBackground.toArgb())
+                text = message; textSize = 20f; setTextColor(colors.onBackground.toArgb())
             })
-            if (progress) addView(android.widget.ProgressBar(this@MainActivity))
+            if (retry) addView(android.widget.Button(this@MainActivity).apply {
+                text = "إعادة المحاولة"; setOnClickListener { recreate() }
+            })
         }
-        setContentView(container)
+        setContentView(view)
+    }
+
+    private fun showVerifiedContent(corpus: QuranCorpus) {
+        setContent {
+            val preferences = remember { ProgressStore(this@MainActivity) }
+            var appearance by remember { mutableStateOf(preferences.appearance) }
+            HifzTheme(appearance) {
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    VerifiedAppContent(corpus, appearance, changeAppearance = {
+                        preferences.appearance = it
+                        appearance = it
+                    }, resetRuntime = {
+                        val result = dataReset.request()
+                        if (result != LocalDataReset.Result.NOT_STARTED) recreate()
+                        result != LocalDataReset.Result.NOT_STARTED
+                    })
+                }
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -194,7 +211,7 @@ class MainActivity : ComponentActivity() {
     private companion object { const val RESET_STATE_KEY = "hifz_reset_generation" }
 }
 
-/** Keep the verified screen's remembered state in its own unconditional composition. */
+/** The Activity installs this root only after canonical verification succeeds. */
 @Composable
 private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
     val context = LocalContext.current
@@ -1139,13 +1156,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                             Button(onClick = {
                                 voicePractice.erase()
                                 typedRecall = ""
-                                val progressCleared = store.clear()
-                                val notebookCleared = TeacherNotebook(context).clear()
-                                if (progressCleared && notebookCleared) {
-                                    if (!resetRuntime()) message = "تعذر إعادة تهيئة الواجهة؛ أعد محاولة حذف البيانات"
-                                } else {
-                                    message = "تعذر حذف بعض البيانات؛ حاول مرة أخرى"
-                                }
+                                if (!resetRuntime()) message = "تعذر بدء حذف البيانات؛ حاول مرة أخرى"
                                 confirmClear = false
                             }) { Text("حذف البيانات") }
                         }

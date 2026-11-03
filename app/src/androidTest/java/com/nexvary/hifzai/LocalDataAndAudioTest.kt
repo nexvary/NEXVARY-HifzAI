@@ -53,6 +53,51 @@ class LocalDataAndAudioTest {
         assertEquals(resets.token, RuntimeResetStore(context).token)
     }
 
+    @Test fun corruptDeletionJournalCannotDeleteAnUnrequestedDataset() {
+        val progress = ProgressStore(context)
+        val notebook = TeacherNotebook(context)
+        val preferences = context.getSharedPreferences("hifz_runtime_reset_v1", 0)
+        val session = PracticeSession(1, 1, PracticeKind.RECALL, 1, true, DifficultyTag.WORDS)
+        progress.saveSession(session)
+        notebook.addStudent("سجل اصطناعي محفوظ", true)
+        val students = notebook.students()
+        try {
+            preferences.edit().putString("pending", "corrupt").commit()
+            val resets = RuntimeResetStore(context)
+            assertFalse(resets.readable)
+            assertFalse(resets.acceptsSaved(resets.token))
+            assertEquals(LocalDataReset.Result.PENDING, LocalDataReset(resets,
+                { progress.clear() }, { notebook.clear() }).recover())
+            assertEquals(session, progress.session())
+            assertEquals(students, notebook.students())
+        } finally { progress.clear(); notebook.clear(); preferences.edit().remove("pending").commit() }
+    }
+
+    @Test fun pendingDeletionSurvivesReloadAndBlocksSavedStateUntilBothStoresAreEmpty() {
+        val resets = RuntimeResetStore(context)
+        val progress = ProgressStore(context)
+        val notebook = TeacherNotebook(context)
+        progress.saveSession(PracticeSession(1, 1, PracticeKind.RECALL, 1, true, DifficultyTag.WORDS))
+        notebook.addStudent("بيانات اختبار الحذف", true)
+        val oldToken = resets.token
+        try {
+            assertTrue(resets.begin())
+            val restored = RuntimeResetStore(context)
+            assertTrue(restored.pending)
+            assertFalse(restored.acceptsSaved(oldToken))
+            assertFalse(restored.acceptsSaved(restored.token))
+            // Simulate death after clearing only the first file.
+            assertTrue(progress.clear())
+            assertEquals(LocalDataReset.Result.READY, LocalDataReset(restored,
+                { ProgressStore(context).clear() }, { TeacherNotebook(context).clear() }).recover())
+            assertNull(ProgressStore(context).session())
+            assertTrue(TeacherNotebook(context).students().isEmpty())
+            assertFalse(RuntimeResetStore(context).pending)
+            assertFalse(restored.acceptsSaved(oldToken))
+            assertTrue(restored.acceptsSaved(restored.token))
+        } finally { progress.clear(); notebook.clear(); resets.complete() }
+    }
+
     @Test fun corpusOrderAddressBasmalaAndSearchOnDevice() {
         val corpus = QuranCorpus.load(context)
         assertEquals(6236, corpus.verses.size)
