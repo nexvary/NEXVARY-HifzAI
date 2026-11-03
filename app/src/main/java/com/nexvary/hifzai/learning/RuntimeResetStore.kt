@@ -9,8 +9,12 @@ class RuntimeResetStore(context: Context) : ResetJournal {
     val token: String get() = runCatching { preferences.getString("generation", "initial") ?: "initial" }
         .getOrDefault("invalid")
     override val pending: Boolean get() = runCatching { preferences.getBoolean("pending", false) }
-        .getOrDefault(true)
-    fun acceptsSaved(saved: String?): Boolean = !pending && token != "invalid" && (saved ?: "initial") == token
+        .getOrDefault(false)
+    override val readable: Boolean get() = runCatching {
+        preferences.getBoolean("pending", false)
+        token != "invalid"
+    }.getOrDefault(false)
+    fun acceptsSaved(saved: String?): Boolean = readable && !pending && token != "invalid" && (saved ?: "initial") == token
     override fun begin(): Boolean = preferences.edit()
         .putString("generation", UUID.randomUUID().toString()).putBoolean("pending", true).commit()
     override fun complete(): Boolean = preferences.edit().putBoolean("pending", false).commit()

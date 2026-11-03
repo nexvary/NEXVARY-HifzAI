@@ -8,6 +8,7 @@ class LocalDataResetTest {
         override var pending = false
         var beginSucceeds = true
         var completeSucceeds = true
+        override var readable = true
         override fun begin(): Boolean {
             if (beginSucceeds) pending = true
             return beginSucceeds
@@ -40,6 +41,23 @@ class LocalDataResetTest {
         assertEquals(LocalDataReset.Result.READY, nextLaunch.recover())
         assertFalse(journal.pending)
         assertEquals(2, notebookCalls)
+    }
+
+    @Test fun unreadableJournalDoesNotAuthorizeDeletingExistingData() {
+        val journal = Journal().apply { readable = false; pending = true }
+        val reset = LocalDataReset(journal, { error("must not delete") }, { error("must not delete") })
+        assertEquals(LocalDataReset.Result.PENDING, reset.recover())
+    }
+
+    @Test fun notebookFailureKeepsTheIntentEvenAfterProgressDeletionSucceeds() {
+        val journal = Journal()
+        var notebookWorks = false
+        val reset = LocalDataReset(journal, { true }, { notebookWorks })
+        assertEquals(LocalDataReset.Result.PENDING, reset.request())
+        assertTrue(journal.pending)
+        notebookWorks = true
+        assertEquals(LocalDataReset.Result.READY, reset.recover())
+        assertFalse(journal.pending)
     }
 
     @Test fun processDeathAfterIntentOrFirstDeletionKeepsRecoveryRequired() {
