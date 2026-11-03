@@ -85,6 +85,14 @@ class RecitationPlaybackServiceTest {
             await("Paused speed updates without starting") { binder.snapshot().playback?.speed == 1.5f }
             assertEquals(LocalRecitationQueue.Phase.PAUSED, binder.snapshot().phase)
             scenario.moveToState(Lifecycle.State.RESUMED)
+            var original: MainActivity? = null
+            scenario.onActivity { original = it }
+            val monitor = instrumentation.addMonitor(MainActivity::class.java.name, null, false)
+            try {
+                notification()!!.contentIntent.send()
+                val opened = instrumentation.waitForMonitorWithTimeout(monitor, 1000)
+                assertTrue("Opening the notification must reuse the current Activity", opened == null || opened === original)
+            } finally { instrumentation.removeMonitor(monitor) }
             scenario.recreate()
             assertEquals(LocalRecitationQueue.Phase.PAUSED, binder.snapshot().phase)
             await("Notification exposes actual paused action") { notification()?.actions?.firstOrNull()?.title == "تشغيل" }
