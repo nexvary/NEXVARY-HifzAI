@@ -1,7 +1,5 @@
 package com.nexvary.hifzai
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +17,8 @@ import com.nexvary.hifzai.learning.QuranSearchIndex
 import com.nexvary.hifzai.learning.NotebookLesson
 import com.nexvary.hifzai.learning.NotebookAssignment
 import java.time.LocalDate
+
+private enum class NotebookPicker { NEW_LESSON, EDIT_LESSON, ASSIGNMENT }
 
 @Composable
 internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
@@ -49,6 +49,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
     var assignmentStart by remember { mutableStateOf("") }
     var assignmentEnd by remember { mutableStateOf("") }
     var assignmentDue by remember { mutableStateOf(LocalDate.now().toString()) }
+    var picker by remember { mutableStateOf<NotebookPicker?>(null) }
     fun act(operation: () -> Unit) {
         message = try { operation(); revision++; "تم حفظ التغيير محليًا" }
         catch (e: Exception) { e.message?.take(160) ?: "تعذر حفظ البيانات" }
@@ -117,16 +118,8 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
         }
         OutlinedTextField(value = teacher, onValueChange = { teacher = it.take(60) },
             label = { Text("اسم المعلم المعروف لك • غير موثق من التطبيق") }, modifier = Modifier.fillMaxWidth())
-        OutlinedButton(onClick = {
-            val now = LocalDateTime.now()
-            DatePickerDialog(context, { _, year, month, day ->
-                TimePickerDialog(context, { _, hour, minute ->
-                    time = LocalDateTime.of(year, month + 1, day, hour, minute).toString()
-                }, now.hour, now.minute, true).show()
-            }, now.year, now.monthValue - 1, now.dayOfMonth).show()
-        }, modifier = Modifier.fillMaxWidth()) {
-            Text(if (time.isBlank()) "اختر يوم ووقت الجلسة" else
-                NotebookRules.displayDateTime(time))
+        OutlinedButton(onClick = { picker = NotebookPicker.NEW_LESSON }, modifier = Modifier.fillMaxWidth()) {
+            Text(if (time.isBlank()) "اختر يوم ووقت الجلسة" else NotebookRules.displayDateTime(time))
         }
         OutlinedTextField(value = note, onValueChange = { note = it.take(500) },
             label = { Text("هدف الجلسة وملاحظات الحفظ") }, modifier = Modifier.fillMaxWidth())
@@ -181,17 +174,12 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
                 act { notebook.removeStudent(id) }; if (studentId == id) studentId = null; deleteStudent = null
             }) { Text("احذف") } }, dismissButton = { TextButton(onClick = { deleteStudent = null }) { Text("إلغاء") } })
     }
-    editing?.let { lesson ->
+    editing?.takeIf { picker == null }?.let { lesson ->
         AlertDialog(onDismissRequest = { editing = null }, title = { Text("تعديل الجلسة المحلية") },
             text = { Column(Modifier.verticalScroll(rememberScrollState())) {
-                OutlinedButton(onClick = {
-                    val initial = runCatching { LocalDateTime.parse(editedTime) }.getOrDefault(LocalDateTime.now())
-                    DatePickerDialog(context, { _, year, month, day ->
-                        TimePickerDialog(context, { _, hour, minute ->
-                            editedTime = LocalDateTime.of(year, month+1, day, hour, minute).toString()
-                        }, initial.hour, initial.minute, true).show()
-                    }, initial.year, initial.monthValue-1, initial.dayOfMonth).show()
-                }) { Text(NotebookRules.displayDateTime(editedTime)) }
+                OutlinedButton(onClick = { picker = NotebookPicker.EDIT_LESSON }) {
+                    Text(NotebookRules.displayDateTime(editedTime))
+                }
                 OutlinedTextField(value = editedNote, onValueChange = { editedNote = it.take(500) },
                     label = { Text("ملاحظات الجلسة") })
                 if (message.isNotEmpty()) Text(message)
@@ -200,7 +188,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
             } }) { Text("احفظ التعديل") } },
             dismissButton = { TextButton(onClick = { editing = null }) { Text("إلغاء") } })
     }
-    assignmentStudent?.let { id ->
+    assignmentStudent?.takeIf { picker == null }?.let { id ->
         AlertDialog(onDismissRequest = { assignmentStudent = null; editingAssignment = null },
             title = { Text(if (editingAssignment == null) "نطاق مراجعة محلي" else "تعديل مهمة المراجعة") },
             text = { Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -210,14 +198,9 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
                     label = { Text("البداية • سورة:آية") })
                 OutlinedTextField(value = assignmentEnd, onValueChange = { assignmentEnd = it.take(15) },
                     label = { Text("النهاية في السورة نفسها • سورة:آية") })
-                OutlinedButton(onClick = {
-                    // Only the picker's initial position falls back. Stored data stays
-                    // unchanged until the user explicitly chooses a day and saves.
-                    val initial = runCatching { LocalDate.parse(assignmentDue) }.getOrDefault(LocalDate.now())
-                    DatePickerDialog(context, { _, year, month, day ->
-                        assignmentDue = LocalDate.of(year, month+1, day).toString()
-                    }, initial.year, initial.monthValue-1, initial.dayOfMonth).show()
-                }) { Text("تاريخ المراجعة: " + assignmentDue) }
+                OutlinedButton(onClick = { picker = NotebookPicker.ASSIGNMENT }) {
+                    Text("تاريخ المراجعة: " + assignmentDue)
+                }
                 if (message.isNotEmpty()) Text(message)
             } }, confirmButton = { TextButton(onClick = { act {
                 val first = QuranSearchIndex.address(assignmentStart)
@@ -229,6 +212,23 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
                 assignmentStudent = null; editingAssignment = null; assignmentStart = ""; assignmentEnd = ""
             } }, enabled = assignmentStart.isNotBlank() && assignmentEnd.isNotBlank()) { Text("احفظ النطاق") } },
             dismissButton = { TextButton(onClick = { assignmentStudent = null; editingAssignment = null }) { Text("إلغاء") } })
+    }
+    // Hide the editor while a picker is active. Its draft fields remain above
+    // the dialog branch; choosing/cancelling a date never writes the notebook.
+    when (picker) {
+        NotebookPicker.ASSIGNMENT -> NotebookDatePicker(
+            runCatching { LocalDate.parse(assignmentDue) }.getOrDefault(LocalDate.now()),
+            selected = { assignmentDue = it.toString(); picker = null }, dismissed = { picker = null })
+        NotebookPicker.NEW_LESSON, NotebookPicker.EDIT_LESSON -> {
+            val editingTime = picker == NotebookPicker.EDIT_LESSON
+            val initial = runCatching { LocalDateTime.parse(if (editingTime) editedTime else time) }
+                .getOrDefault(LocalDateTime.now())
+            NotebookDateTimePicker(initial, selected = {
+                if (editingTime) editedTime = it.toString() else time = it.toString()
+                picker = null
+            }, dismissed = { picker = null })
+        }
+        null -> Unit
     }
     complaintLesson?.let { id ->
         AlertDialog(onDismissRequest = { complaintLesson = null }, title = { Text("تدوين مشكلة محليًا") },

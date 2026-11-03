@@ -28,6 +28,17 @@ class TeacherNotebookUiTest {
         else node.performScrollTo().performClick()
         rule.waitForIdle()
     }
+    private fun pickerButton(widget: Class<out android.view.View>, confirm: Boolean = true) {
+        val root = androidx.test.espresso.matcher.RootMatchers.withDecorView(
+            androidx.test.espresso.matcher.ViewMatchers.hasDescendant(
+                androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget)))
+        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget))
+            .inRoot(root).check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
+        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(
+            if (confirm) android.R.id.button1 else android.R.id.button2))
+            .inRoot(root).perform(androidx.test.espresso.action.ViewActions.click())
+        rule.waitForIdle()
+    }
     private fun openNotebook() {
         click("الإعدادات"); click("دفتر المعلم المحلي")
     }
@@ -62,20 +73,15 @@ class TeacherNotebookUiTest {
         rule.onNodeWithText("البداية • سورة:آية").performScrollTo().performTextReplacement("1:1")
         rule.onNodeWithText("النهاية في السورة نفسها • سورة:آية").performScrollTo().performTextReplacement("1:2")
         click("تاريخ المراجعة: broken")
-        // Confirm the real platform DatePicker's displayed day; no test-only model write.
-        // The Compose editor and native picker are BOTH dialogs. Match the
-        // decor containing the actual DatePicker, not the obscured editor.
-        val pickerRoot = androidx.test.espresso.matcher.RootMatchers.withDecorView(
-            androidx.test.espresso.matcher.ViewMatchers.hasDescendant(
-                androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(android.widget.DatePicker::class.java)))
-        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(android.widget.DatePicker::class.java))
-            .inRoot(pickerRoot)
-            .check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
-        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(android.R.id.button1))
-            .inRoot(pickerRoot)
-            .check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
-            .perform(androidx.test.espresso.action.ViewActions.click())
-        rule.waitForIdle()
+        // Actual cancel/confirm interactions, never a test-only date write.
+        rule.onAllNodesWithText("تعديل مهمة المراجعة").assertCountEquals(0)
+        pickerButton(android.widget.DatePicker::class.java, confirm = false)
+        rule.onNodeWithText("تعديل مهمة المراجعة").assertExists()
+        rule.onNodeWithText("البداية • سورة:آية").assertTextContains("1:1")
+        rule.onNodeWithText("النهاية في السورة نفسها • سورة:آية").assertTextContains("1:2")
+        assertEquals("broken", notebook.assignments().single().dueDate)
+        click("تاريخ المراجعة: broken")
+        pickerButton(android.widget.DatePicker::class.java)
         assertEquals("broken", notebook.assignments().single().dueDate)
         click("احفظ النطاق")
         assertEquals(1, notebook.assignments().single().chapter)
@@ -83,6 +89,44 @@ class TeacherNotebookUiTest {
         click("جدول المواعيد والمهام")
         rule.onNodeWithText("اليوم • 1 • محدد").assertExists()
         rule.onAllNodesWithText("تعذر عرض", substring = true).assertCountEquals(0)
+    }
+
+    @Test fun nativeLessonDateAndTimePickersReturnToTheEditorAndPreserveCancelledDrafts() {
+        val today = LocalDate.now()
+        openNotebook(); click("الجلسات")
+        rule.onNodeWithText("ملف اختبار أ").performScrollTo().performClick()
+        rule.onNodeWithText("اسم المعلم المعروف لك • غير موثق من التطبيق").performScrollTo().performTextReplacement("معلم اصطناعي")
+        rule.onNodeWithText("هدف الجلسة وملاحظات الحفظ").performScrollTo().performTextReplacement("موعد من المنتقي")
+        click("اختر يوم ووقت الجلسة")
+        pickerButton(android.widget.DatePicker::class.java)
+        pickerButton(android.widget.TimePicker::class.java)
+        assertTrue(notebook.lessons().isEmpty())
+        click("احفظ الموعد المحلي")
+        val original = notebook.lessons().single()
+        assertEquals(today, java.time.LocalDateTime.parse(original.dateTime).toLocalDate())
+        click("تعديل الموعد والملاحظات", first = true)
+        rule.onNodeWithText("ملاحظات الجلسة").performTextReplacement("مسودة محفوظة بعد الإلغاء")
+        fun chooseEditorTime() {
+            rule.onNode(hasText(NotebookRules.displayDateTime(original.dateTime)) and hasAnyAncestor(isDialog()))
+                .performScrollTo().performClick()
+            rule.waitForIdle()
+        }
+        chooseEditorTime()
+        rule.onAllNodesWithText("تعديل الجلسة المحلية").assertCountEquals(0)
+        pickerButton(android.widget.DatePicker::class.java)
+        pickerButton(android.widget.TimePicker::class.java, confirm = false)
+        rule.onNodeWithText("تعديل الجلسة المحلية").assertExists()
+        rule.onNodeWithText("ملاحظات الجلسة").assertTextContains("مسودة محفوظة بعد الإلغاء")
+        assertEquals(original, notebook.lessons().single())
+        chooseEditorTime()
+        pickerButton(android.widget.DatePicker::class.java)
+        pickerButton(android.widget.TimePicker::class.java)
+        assertEquals(original, notebook.lessons().single())
+        click("احفظ التعديل")
+        val changed = notebook.lessons().single()
+        assertEquals("مسودة محفوظة بعد الإلغاء", changed.note)
+        assertEquals(original.dateTime, changed.dateTime)
+        assertEquals(original.studentId, changed.studentId)
     }
 
     @Test fun agendaFiltersCompletionAndStudentSelectionSurviveReloadWithoutChangingPersonalProgress() {
