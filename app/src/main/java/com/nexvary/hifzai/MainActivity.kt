@@ -76,6 +76,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.LifecycleEventObserver
 import com.nexvary.hifzai.learning.TeacherNotebook
 import com.nexvary.hifzai.learning.PracticeSession
@@ -92,6 +93,7 @@ import com.nexvary.hifzai.learning.HifzScheduler
 import com.nexvary.hifzai.learning.MemoryCoach
 import com.nexvary.hifzai.learning.MemoryFingerprint
 import com.nexvary.hifzai.learning.PracticeKind
+import com.nexvary.hifzai.learning.RuntimeResetStore
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.ReciterCatalog
 import com.nexvary.hifzai.learning.RecallGrade
@@ -99,8 +101,8 @@ import com.nexvary.hifzai.learning.SimilarityIndex
 import com.nexvary.hifzai.learning.VerifiedVerse
 import com.nexvary.hifzai.learning.ReviewCard
 import com.nexvary.hifzai.learning.VerseMask
-import androidx.compose.runtime.key
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.nexvary.hifzai.learning.LearningGoal
 import com.nexvary.hifzai.learning.LearningTrends
@@ -119,66 +121,80 @@ private val muted = Color(0xFFB9C6CF)
 private enum class Screen { HOME, PRACTICE, MUSHAF, CHAPTERS, SIMILAR, INSIGHTS, RECITERS, SETTINGS, SEARCH, TODAY, PRIVACY, SOURCES, ABOUT, HELP, TEACHERS, EXERCISES, PARTITIONS, RANGE_PRACTICE, LOCAL_TRANSCRIPTION, SAVED_PLACES }
 
 class MainActivity : ComponentActivity() {
+    private lateinit var resets: RuntimeResetStore
+    private var creationToken = "initial"
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        resets = RuntimeResetStore(this)
+        creationToken = resets.token
+        val restored = savedInstanceState?.takeIf { resets.acceptsSaved(it.getString(RESET_STATE_KEY)) }
+        super.onCreate(restored)
         java.io.File(cacheDir, "hifz_private_session.m4a").delete()
-        setContent {
-            MaterialTheme(
-                colorScheme = darkColorScheme(
-                    primary = gold, onPrimary = navy,
-                    background = navy, onBackground = silver,
-                    surface = panel, onSurface = silver,
-                    secondary = green, onSecondary = navy,
-                    secondaryContainer = panel, onSecondaryContainer = gold
-                )
-            ) {
-                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    App()
+        showVerificationStatus("جارٍ التحقق من النص القرآني المحلي…", true)
+        lifecycleScope.launch {
+            val corpus = withContext(Dispatchers.IO) {
+                runCatching { QuranCorpus.load(applicationContext) }.getOrNull()
+            }
+            if (corpus == null) {
+                showVerificationStatus("تعذر التحقق من سلامة النص القرآني. أعد تثبيت نسخة سليمة من المصدر الرسمي.", false)
+            } else {
+                setContent {
+                    MaterialTheme(
+                        colorScheme = darkColorScheme(
+                            primary = gold, onPrimary = navy,
+                            background = navy, onBackground = silver,
+                            surface = panel, onSurface = silver,
+                            secondary = green, onSecondary = navy,
+                            secondaryContainer = panel, onSecondaryContainer = gold
+                        )
+                    ) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                            VerifiedAppContent(corpus) {
+                                resets.advance().also { advanced -> if (advanced) recreate() }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-}
 
-@Composable
-private fun App() {
-    // Restore the generation together with its children. Resetting it to zero on
-    // recreation can leave a previous generation's saved session unconsumed;
-    // the next deletion would then restore that old session when its key repeats.
-    var generation by rememberSaveable { mutableIntStateOf(0) }
-    key(generation) { AppContent { generation++ } }
-}
+    /** No composition exists until source verification succeeds; lifecycle cancellation owns IO. */
+    private fun showVerificationStatus(message: String, progress: Boolean) {
+        val container = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            gravity = android.view.Gravity.CENTER
+            layoutDirection = android.view.View.LAYOUT_DIRECTION_RTL
+            val inset = (24 * resources.displayMetrics.density).toInt()
+            setPadding(inset, inset, inset, inset)
+            setBackgroundColor(0xFF081521.toInt())
+            addView(android.widget.TextView(this@MainActivity).apply {
+                text = message
+                textSize = 18f
+                gravity = android.view.Gravity.CENTER
+                setTextColor(0xFFEEF1F2.toInt())
+            })
+            if (progress) addView(android.widget.ProgressBar(this@MainActivity))
+        }
+        setContentView(container)
+    }
 
-@Composable
-private fun AppContent(resetRuntime: () -> Unit) {
-    val context = LocalContext.current
-    var corpusResult by remember(context) { mutableStateOf<Result<QuranCorpus>?>(null) }
-    LaunchedEffect(context) {
-        corpusResult = withContext(Dispatchers.IO) { runCatching { QuranCorpus.load(context) } }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save the token used to CREATE this Activity, not a newer reset token.
+        outState.putString(RESET_STATE_KEY, creationToken)
     }
-    val corpus = corpusResult?.getOrNull()
-    if (corpusResult == null) {
-        Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
-            Text("جارٍ التحقق من النص القرآني المحلي…")
-            androidx.compose.material3.LinearProgressIndicator(Modifier.fillMaxWidth())
-        }
-    } else if (corpus == null) {
-        Column(
-            Modifier.fillMaxSize().background(navy).padding(24.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("تعذر التحقق من سلامة النص القرآني", color = gold, fontSize = 22.sp)
-            Text("تم إيقاف عرض المصحف لحماية سلامة النص. أعد تثبيت نسخة سليمة من المصدر الرسمي.",
-                color = silver)
-        }
-    } else {
-        VerifiedAppContent(corpus, resetRuntime)
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        if (resets.acceptsSaved(savedInstanceState.getString(RESET_STATE_KEY)))
+            super.onRestoreInstanceState(savedInstanceState)
     }
+
+    private companion object { const val RESET_STATE_KEY = "hifz_reset_generation" }
 }
 
 /** Keep the verified screen's remembered state in its own unconditional composition. */
 @Composable
-private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
+private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Boolean) {
     val context = LocalContext.current
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
@@ -1119,7 +1135,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, resetRuntime: () -> Unit) {
                                 val progressCleared = store.clear()
                                 val notebookCleared = TeacherNotebook(context).clear()
                                 if (progressCleared && notebookCleared) {
-                                    resetRuntime()
+                                    if (!resetRuntime()) message = "تعذر إعادة تهيئة الواجهة؛ أعد محاولة حذف البيانات"
                                 } else {
                                     message = "تعذر حذف بعض البيانات؛ حاول مرة أخرى"
                                 }

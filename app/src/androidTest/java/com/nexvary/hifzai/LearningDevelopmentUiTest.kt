@@ -109,22 +109,31 @@ class LearningDevelopmentUiTest {
         }
         val today = LocalDate.now().toEpochDay()
         val store = ProgressStore(context)
-        click("الحفظ")
-        attempt("نسيت")
-        attempt("جيد") // Retry the same verse: still one new verse, no charged review.
-        assertEquals(1, store.workload(today).newVerseIds.size)
-        assertTrue(store.workload(today).reviewVerseIds.isEmpty())
-        attempt("جيد")
-        rule.onNodeWithText("الرئيسية").performClick()
-        rule.waitForIdle()
-        rule.onNodeWithText("آيات قيّمتها اليوم: جديد 2/2 • مراجعة 0/15").assertExists()
-        rule.onNodeWithText("الآيات المستحقة: 0 • آيات جديدة مقترحة: 0").assertExists()
-        click("الحفظ") // The daily proposal is exhausted; explicit manual practice remains available.
-        attempt("جيد")
-        assertEquals(3, store.workload(today).newVerseIds.size)
-        rule.activityRule.scenario.recreate()
-        rule.awaitHifzReady()
-        assertEquals(3, ProgressStore(context).workload(today).newVerseIds.size)
+        // Recreate and dispose the daily-plan composition repeatedly. A later
+        // unchanged-code run crashed here in SlotWriter at 1.5x font on API 35.
+        repeat(4) {
+            click("الإعدادات")
+            click("حذف تقدم الحفظ من الجهاز")
+            click("حذف البيانات")
+            rule.awaitHifzReady()
+            click("الحفظ")
+            attempt("نسيت")
+            attempt("جيد") // Retry the same verse: still one new verse, no charged review.
+            assertEquals(1, store.workload(today).newVerseIds.size)
+            assertTrue(store.workload(today).reviewVerseIds.isEmpty())
+            attempt("جيد")
+            rule.onNodeWithText("الرئيسية").performClick()
+            rule.waitForIdle()
+            rule.onNodeWithText("آيات قيّمتها اليوم: جديد 2/2 • مراجعة 0/15").assertExists()
+            rule.onNodeWithText("الآيات المستحقة: 0 • آيات جديدة مقترحة: 0").assertExists()
+            click("الحفظ") // The daily proposal is exhausted; explicit manual practice remains available.
+            attempt("جيد")
+            assertEquals(3, store.workload(today).newVerseIds.size)
+            rule.activityRule.scenario.recreate()
+            rule.awaitHifzReady()
+            assertEquals(3, ProgressStore(context).workload(today).newVerseIds.size)
+        }
+
     }
 
     @Test fun listedGlobalReviewsAndGuidedSessionShareOnePlanAndKeepTheNewChapterOnResume() {

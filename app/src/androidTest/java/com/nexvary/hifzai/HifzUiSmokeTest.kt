@@ -14,6 +14,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import org.junit.Before
 import android.os.ParcelFileDescriptor
+import com.nexvary.hifzai.learning.RuntimeResetStore
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.TeacherNotebook
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -101,6 +102,25 @@ class HifzUiSmokeTest {
             rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
             org.junit.Assert.assertNull(store.session())
         }
+    }
+
+    @Test fun persistentResetRejectsSavedAttemptFromAnOlderDataGeneration() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val store = ProgressStore(context)
+        rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+        repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+        click("تلميح")
+        org.junit.Assert.assertNotNull(store.session())
+        rule.runOnUiThread {
+            check(store.clear())
+            check(RuntimeResetStore(context).advance())
+        }
+        rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
+        org.junit.Assert.assertNull(store.session())
+        rule.onNodeWithText("افتح المصحف الكامل • ١١٤ سورة").assertExists()
+        rule.onNodeWithText("الحفظ").performClick(); rule.waitForIdle()
+        org.junit.Assert.assertEquals(0, store.session()!!.hints)
+        org.junit.Assert.assertFalse(store.session()!!.exposed)
     }
 
     @Test
