@@ -103,10 +103,7 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
         if (closed) { stopSelf(); return START_NOT_STICKY }
         when (intent?.action) {
             ACTION_START -> {
-                val notification = notification(queue.snapshot())
-                if (Build.VERSION.SDK_INT >= 29) startForeground(NOTIFICATION_ID, notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
-                else startForeground(NOTIFICATION_ID, notification)
+                showForegroundNotification(notification(queue.snapshot()))
                 foregroundStarted = true
                 handler.removeCallbacks(refresh); handler.post(refresh)
             }
@@ -132,10 +129,22 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
                 PlaybackState.ACTION_PLAY_PAUSE or PlaybackState.ACTION_STOP)
             .setState(mediaState, state.playback?.positionMs?.toLong() ?: 0L,
                 if (playing) state.playback?.speed ?: 1f else 0f).build())
-        session.setMetadata(MediaMetadata.Builder()
-            .putString(MediaMetadata.METADATA_KEY_TITLE, title(state))
-            .putLong(MediaMetadata.METADATA_KEY_DURATION, state.playback?.durationMs?.toLong() ?: 0L).build())
-        notifications.notify(NOTIFICATION_ID, notification(state))
+        if (lastPublished?.address != state.address || lastPublished?.playback?.durationMs != state.playback?.durationMs) {
+            session.setMetadata(MediaMetadata.Builder()
+                .putString(MediaMetadata.METADATA_KEY_TITLE, title(state))
+                .putLong(MediaMetadata.METADATA_KEY_DURATION, state.playback?.durationMs?.toLong() ?: 0L).build())
+        }
+        // Update the existing foreground-service notification through the FGS
+        // API. This is not a general notification and needs no POST_NOTIFICATIONS.
+        // Position ticks update PlaybackState; don't repost the notification at 5Hz.
+        if (lastPublished?.phase != state.phase || lastPublished?.address != state.address)
+            showForegroundNotification(notification(state))
+    }
+
+    private fun showForegroundNotification(value: Notification) {
+        if (Build.VERSION.SDK_INT >= 29) startForeground(NOTIFICATION_ID, value,
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+        else startForeground(NOTIFICATION_ID, value)
     }
 
     private fun title(state: LocalRecitationQueue.Snapshot): String = state.address?.let {

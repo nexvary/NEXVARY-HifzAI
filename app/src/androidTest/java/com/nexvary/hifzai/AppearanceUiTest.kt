@@ -12,6 +12,9 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -45,7 +48,7 @@ class AppearanceUiTest {
         rule.awaitHifzReady()
         screenshot("navigation-before")
         for (label in listOf("الرئيسية", "الحفظ", "المصحف", "تقدمي", "الإعدادات")) {
-            val node = rule.onNodeWithText(label)
+            val node = rule.onNode(hasText(label) and hasAnyAncestor(hasTestTag("bottom-navigation")))
             node.assertIsDisplayed()
             val layouts = mutableListOf<TextLayoutResult>()
             node.performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(layouts) }
@@ -57,7 +60,7 @@ class AppearanceUiTest {
             })
             node.performClick()
             rule.waitForIdle()
-            rule.onNodeWithText(label).assertIsSelected()
+            node.assertIsSelected()
         }
         screenshot("navigation")
     }

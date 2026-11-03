@@ -26,5 +26,12 @@
     "job": 125875271862,
     "layout": "الرئيسية: lines=1, overflowWidth=true, overflowHeight=false, size=109 x 48",
     "action": "Give the label the full tab width, rather than an intrinsic wrap-content width that can round below the paragraph width. Keep the strict no-wrap/no-overflow assertion unchanged."
+  },
+  "selector_failure": {
+    "source_commit": "fc1099b8b21f78faee6397a0f72f8b391520d8f0",
+    "run": 41624741533,
+    "job": 125879146002,
+    "failure": "All five labels passed the strict layout check; selected Settings assertion matched both the Settings heading and the navigation tab.",
+    "fix": "Scope the original text/layout/click/selected assertions to descendants of bottom-navigation. No assertion removed or made weaker."
   }
 }
