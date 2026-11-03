@@ -15,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.nexvary.hifzai.learning.AppAppearance
 import com.nexvary.hifzai.learning.ProgressStore
+import com.nexvary.hifzai.learning.QuranCorpus
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -59,11 +60,16 @@ class AppearanceUiTest {
         assertEquals(attempt, store.session())
         click("المصحف")
         rule.onNodeWithContentDescription("الآية 1").assertExists()
+        val corpus = QuranCorpus.load(context)
+        val firstAyah = corpus.ayahText(corpus.find(1, 1)!!)
+        rule.onNodeWithText(firstAyah).performScrollTo()
         screenshot("reader-light")
         click("الإعدادات"); click("داكن")
         assertEquals(AppAppearance.DARK, store.appearance)
         assertEquals(attempt, store.session())
-        click("المصحف"); screenshot("reader-dark")
+        click("المصحف")
+        rule.onNodeWithText(firstAyah).performScrollTo()
+        screenshot("reader-dark")
         click("الإعدادات"); click("حسب النظام")
         rule.activityRule.scenario.recreate(); rule.awaitHifzReady()
         assertEquals(AppAppearance.SYSTEM, store.appearance)
