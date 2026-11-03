@@ -63,11 +63,16 @@ class TeacherNotebookUiTest {
         rule.onNodeWithText("النهاية في السورة نفسها • سورة:آية").performScrollTo().performTextReplacement("1:2")
         click("تاريخ المراجعة: broken")
         // Confirm the real platform DatePicker's displayed day; no test-only model write.
+        // The Compose editor and native picker are BOTH dialogs. Match the
+        // decor containing the actual DatePicker, not the obscured editor.
+        val pickerRoot = androidx.test.espresso.matcher.RootMatchers.withDecorView(
+            androidx.test.espresso.matcher.ViewMatchers.hasDescendant(
+                androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(android.widget.DatePicker::class.java)))
         androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(android.widget.DatePicker::class.java))
-            .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+            .inRoot(pickerRoot)
             .check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
         androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(android.R.id.button1))
-            .inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog())
+            .inRoot(pickerRoot)
             .check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
             .perform(androidx.test.espresso.action.ViewActions.click())
         rule.waitForIdle()
