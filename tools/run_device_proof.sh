@@ -18,6 +18,15 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 adb shell am force-stop com.nexvary.hifzai
 adb shell settings put system font_scale 1.0
+
+# A focused 2x-font pass verifies full navigation text rather than accepting a
+# screenshot container as evidence that labels fit. Keep its failure log too.
+adb shell am force-stop com.nexvary.hifzai
+adb shell settings put system font_scale 2.0
+adb shell am instrument -w -e class com.nexvary.hifzai.AppearanceUiTest#everyNavigationLabelFitsAndAllDestinationsRemainReachable com.nexvary.hifzai.test/androidx.test.runner.AndroidJUnitRunner | tee ui-proof/instrumentation-navigation-2x.txt
+grep -Eq '^OK \([1-9][0-9]* tests?\)' ui-proof/instrumentation-navigation-2x.txt
+adb exec-out run-as com.nexvary.hifzai cat files/hifz-navigation.png > ui-proof/hifz-navigation-2x.png
+adb shell settings put system font_scale 1.0
 adb shell am instrument -w com.nexvary.hifzai.test/androidx.test.runner.AndroidJUnitRunner | tee ui-proof/instrumentation.txt
 grep -Eq '^OK \([1-9][0-9]* tests?\)' ui-proof/instrumentation.txt
 if grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=' ui-proof/instrumentation.txt; then exit 1; fi

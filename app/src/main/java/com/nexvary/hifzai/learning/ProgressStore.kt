@@ -78,6 +78,15 @@ class ProgressStore(context: Context) {
         set(value) { prefs.edit().putInt("goal_new", value.newVerses).putInt("goal_reviews", value.reviews)
             .putString("goal_mode", value.mode.name).apply() }
 
+    var dailyStudyMinutes: Int?
+        get() = intValue("daily_study_minutes", 0).takeIf { it in StudyTimeBudget.choices }
+        set(value) {
+            require(value == null || value in StudyTimeBudget.choices)
+            prefs.edit().apply {
+                if (value == null) remove("daily_study_minutes") else putInt("daily_study_minutes", value)
+            }.apply()
+        }
+
     var favoriteReciter: String?
         get() = runCatching { prefs.getString("favorite_reciter", null) }.getOrNull()
             ?.takeIf { slug -> ReciterCatalog.all.any { it.slug == slug } }

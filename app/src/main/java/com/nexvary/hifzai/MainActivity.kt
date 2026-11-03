@@ -41,8 +41,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -264,6 +262,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
     var quranFontSize by remember { mutableIntStateOf(store.fontSize) }
     var advanced by remember { mutableStateOf(store.advanced) }
     var learningGoal by remember { mutableStateOf(store.learningGoal) }
+    var dailyStudyMinutes by remember { mutableStateOf(store.dailyStudyMinutes) }
     var savedPlaces by remember { mutableStateOf(store.savedPlaces(corpus)) }
     var favoriteReciter by remember { mutableStateOf(store.favoriteReciter) }
     var gentleReturnEnabled by remember { mutableStateOf(store.gentleReturnEnabled) }
@@ -450,38 +449,16 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
     Scaffold(
         containerColor = navy,
         bottomBar = {
-            NavigationBar(containerColor = panel) {
-                NavigationBarItem(
-                    selected = screen == Screen.HOME,
-                    onClick = { screen = Screen.HOME },
-                    icon = { Icon(Icons.Rounded.Home, contentDescription = null) },
-                    label = { Text("الرئيسية") }
-                )
-                NavigationBarItem(
-                    selected = screen == Screen.PRACTICE,
-                    onClick = { followsDailyPlan = false; screen = Screen.PRACTICE },
-                    icon = { Icon(Icons.Rounded.AutoStories, contentDescription = null) },
-                    label = { Text("الحفظ") }
-                )
-                NavigationBarItem(
-                    selected = screen == Screen.MUSHAF || screen == Screen.CHAPTERS,
-                    onClick = { screen = Screen.MUSHAF },
-                    icon = { Icon(Icons.AutoMirrored.Rounded.MenuBook, contentDescription = null) },
-                    label = { Text("المصحف") }
-                )
-                NavigationBarItem(
-                    selected = screen == Screen.INSIGHTS,
-                    onClick = { screen = Screen.INSIGHTS },
-                    icon = { Icon(Icons.Rounded.Insights, contentDescription = null) },
-                    label = { Text("تقدمي") }
-                )
-                NavigationBarItem(
-                    selected = screen == Screen.SETTINGS,
-                    onClick = { screen = Screen.SETTINGS },
-                    icon = { Icon(Icons.Rounded.Settings, contentDescription = null) },
-                    label = { Text("الإعدادات") }
-                )
-            }
+            AdaptiveBottomNavigation(listOf(
+                NavigationDestination("الرئيسية", Icons.Rounded.Home, screen == Screen.HOME) { screen = Screen.HOME },
+                NavigationDestination("الحفظ", Icons.Rounded.AutoStories, screen == Screen.PRACTICE) {
+                    followsDailyPlan = false; screen = Screen.PRACTICE
+                },
+                NavigationDestination("المصحف", Icons.AutoMirrored.Rounded.MenuBook,
+                    screen in setOf(Screen.MUSHAF, Screen.CHAPTERS, Screen.SAVED_PLACES)) { screen = Screen.MUSHAF },
+                NavigationDestination("تقدمي", Icons.Rounded.Insights, screen == Screen.INSIGHTS) { screen = Screen.INSIGHTS },
+                NavigationDestination("الإعدادات", Icons.Rounded.Settings, screen == Screen.SETTINGS) { screen = Screen.SETTINGS }
+            ))
         }
     ) { inset ->
         Column(
@@ -1107,7 +1084,9 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                     }
                     Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
                     AppearanceControls(appearance, changeAppearance)
-                    LearningGoalControls(learningGoal) { value ->
+                    LearningGoalControls(learningGoal, dailyStudyMinutes, { value ->
+                        dailyStudyMinutes = value; store.dailyStudyMinutes = value
+                    }) { value ->
                         learningGoal = value; store.learningGoal = value
                     }
                     Text("تذكير العودة داخل التطبيق", style = MaterialTheme.typography.titleLarge)

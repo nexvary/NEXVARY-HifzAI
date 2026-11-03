@@ -5,6 +5,10 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -36,6 +40,23 @@ class AppearanceUiTest {
         File(context.filesDir, "hifz-$name.png").outputStream().use {
             check(rule.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
         }
+    }
+    @Test fun everyNavigationLabelFitsAndAllDestinationsRemainReachable() {
+        rule.awaitHifzReady()
+        for (label in listOf("الرئيسية", "الحفظ", "المصحف", "تقدمي", "الإعدادات")) {
+            val node = rule.onNodeWithText(label)
+            node.assertIsDisplayed()
+            val layouts = mutableListOf<TextLayoutResult>()
+            node.performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(layouts) }
+            assertTrue("Missing label layout: $label", layouts.isNotEmpty())
+            assertTrue("Wrapped or clipped navigation: $label", layouts.all {
+                it.lineCount == 1 && !it.hasVisualOverflow
+            })
+            node.performClick()
+            rule.waitForIdle()
+            rule.onNodeWithText(label).assertIsSelected()
+        }
+        screenshot("navigation")
     }
     @Test fun themesPreserveAttemptAcrossLiveChangesRecreationAndConfirmedReset() {
         rule.awaitHifzReady()

@@ -10,7 +10,8 @@ import com.nexvary.hifzai.learning.*
 import kotlin.math.roundToInt
 
 @Composable
-internal fun LearningGoalControls(goal: LearningGoal, changed: (LearningGoal) -> Unit) {
+internal fun LearningGoalControls(goal: LearningGoal, minutes: Int?,
+    timeChanged: (Int?) -> Unit, changed: (LearningGoal) -> Unit) {
     Text("خطتك اليومية", style = MaterialTheme.typography.titleLarge)
     Text("حدود مقترحة لليوم حسب تاريخ الهاتف والتقييمات المسجلة. يبقى اختيار أي آية يدويًا متاحًا، دون سلسلة أيام إلزامية أو وعد بنتيجة تعليمية.")
     StudyMode.entries.forEach { mode ->
@@ -18,6 +19,20 @@ internal fun LearningGoalControls(goal: LearningGoal, changed: (LearningGoal) ->
             Text(mode.arabic + if (goal.mode == mode) " • محدد" else "")
         }
     }
+    Text("الوقت اليومي المتاح: " + (minutes?.let { "$it دقيقة" } ?: "غير محدد"))
+    val selectedMinutes = minutes ?: 15
+    Slider(value = StudyTimeBudget.choices.indexOf(selectedMinutes).toFloat(),
+        onValueChange = { timeChanged(StudyTimeBudget.choices[it.roundToInt()]) },
+        valueRange = 0f..StudyTimeBudget.choices.lastIndex.toFloat(),
+        steps = StudyTimeBudget.choices.size - 2,
+        modifier = Modifier.semantics { contentDescription = "الوقت اليومي المتاح بالدقائق" })
+    val suggestion = StudyTimeBudget.suggest(selectedMinutes, goal.mode)
+    Text("اقتراح لـ $selectedMinutes دقيقة: ${suggestion.newVerses} آية جديدة و" +
+        (if (goal.mode == StudyMode.NEW_ONLY) "٠ مراجعات" else "${suggestion.reviews} مراجعات"))
+    Text("تقدير قابل للتعديل يفترض ٣ دقائق للآية الجديدة ودقيقة للمراجعة؛ قد تحتاج الآية وقتًا أطول. تغيير الوقت لا يعدّل أهدافك حتى تختار تطبيق الاقتراح.")
+    OutlinedButton(onClick = { timeChanged(selectedMinutes); changed(suggestion) },
+        modifier = Modifier.fillMaxWidth()) { Text("تطبيق اقتراح الوقت") }
+    if (minutes != null) TextButton(onClick = { timeChanged(null) }) { Text("إلغاء تحديد الوقت") }
     Text("هدف الحفظ الجديد: ${goal.newVerses} آية في اليوم")
     Slider(value = goal.newVerses.toFloat(), onValueChange = { changed(goal.copy(newVerses = it.roundToInt())) },
         valueRange = 0f..20f, steps = 19, modifier = Modifier.semantics { contentDescription = "عدد آيات الحفظ الجديد" })

@@ -31,6 +31,23 @@ data class LearningGoal(val newVerses: Int = 2, val reviews: Int = 15,
     }
 }
 
+/** Explicit planning assumption, not a measured reading speed or learning prediction. */
+object StudyTimeBudget {
+    val choices = listOf(5, 10, 15, 20, 30, 45, 60)
+
+    /** Reserve roughly two thirds for review in balanced mode; never change the mode. */
+    fun suggest(minutes: Int, mode: StudyMode): LearningGoal {
+        require(minutes in choices)
+        val newVerses = when (mode) {
+            StudyMode.REVIEW_ONLY -> 0
+            StudyMode.NEW_ONLY -> (minutes / 3).coerceAtMost(20)
+            StudyMode.BALANCED -> (minutes / 9).coerceAtLeast(1).coerceAtMost(20)
+        }
+        val reviewMinutes = if (mode == StudyMode.REVIEW_ONLY) minutes else minutes - newVerses * 3
+        return LearningGoal(newVerses, reviewMinutes.coerceIn(1, 100), mode)
+    }
+}
+
 data class WeeklyLearningSummary(val attempts: Int, val independent: Int, val assisted: Int,
     val forgotten: Int, val activeDays: Int) {
     val independentPercent: Int? get() = if (attempts == 0) null else (100L * independent / attempts).toInt()
