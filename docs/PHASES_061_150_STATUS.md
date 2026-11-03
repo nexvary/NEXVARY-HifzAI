@@ -94,3 +94,10 @@
 | 148 | Build tafsir content attribution layer | not_implemented | — | لا محرر سير/مسار موافقات تحريرية/أصول تفسير مرخصة/واجهة تفسير. |
 | 149 | Create carefully scoped verse explanation view | not_implemented | — | لا محرر سير/مسار موافقات تحريرية/أصول تفسير مرخصة/واجهة تفسير. |
 | 150 | Validate narration-specific differences | external_evidence_required | RecitationRights.kt; RECITATION_EVALUATION_PROTOCOL.md | حفص فقط؛ لا مقارنة فروق روايات أو مراجعة متخصصة متعددة الروايات. |
+
+
+## متابعة المصدر الموحد 6829762
+
+اجتاز المصدر `6829762` مصفوفة CI: 69 Python و105 JVM و288 تنفيذ Android، مع صفر أخطاء Lint و38 تحذيرًا. الأدلة مرتبطة بالمصدر في TEST_RESULTS.md وcontinuation-ci.json. تشمل اختبارات الدفتر إلغاء التاريخ والوقت، وبقاء المسودات، وعدم تعديل التخزين قبل الحفظ. تبقى المرحلتان 069 و070 جزئيتين: المحرك الداخلي مختبر، وواجهة مكتبة التلاوات والأصول المعتمدة والخلفية والسماعة باقية.
+
+تصنيف التنفيذ في جدول 061–150 هو: 27 partial_new و34 partial_existing و12 not_implemented و11 external_evidence_required و6 outside_local_scope. أضيفت مطابقة لكل صف في PHASE_EVIDENCE.json تحت continuation_tracking، مع إبقاء حالات القبول التاريخية مستقلة وواضحة. هذه المطابقة لا تعني مراجعة قبول جديدة لكل متطلب، ولا ترفع أي مرحلة إلى مكتملة. يضم السجل 219 مرحلة من 002 إلى 220، وعدد الاعتمادات النهائية صفر. مراجعة الصور الجديدة محجوبة بانقطاع البيئة المحلية.

@@ -144,6 +144,14 @@
       "run": 41607394062,
       "job": 125820549131,
       "kind": "Native DatePicker RootViewWithoutFocusException with overlapping Compose editor; 49 normal methods, one failure; no SlotWriter in this observed failure"
+    },
+    {
+      "source": "ae70063b5dc6af789053e0da6c1314d90e887a72",
+      "run": 41612720562,
+      "job": 125838396035,
+      "artifact": 13221235401,
+      "kind": "ADB device offline during evidence collection after OK(46) normal and OK(21) large; job exits255, not a successful workflow or observed Compose failure",
+      "rerun": false
     }
   ],
   "historical_visual_review": {
@@ -348,6 +356,156 @@
       "reason": "Local executor disconnected after publication; historical 1f97d35 images do not approve changed modal flow."
     },
     "public_apk_published": false,
+    "release_gates_changed": false
+  },
+  "latest_integration": {
+    "source_commit": "6829762760de2c87304ef66e2c3df1f53661dfab",
+    "ci_merge_commit": "3dea45676db8e835fd9d236ccd0bacb3aea1fe42",
+    "source_and_ci_tree": "35827e6a181170e61e822c8931fd3cdd47a08e72",
+    "tree_equality_verified_via_git_api": true,
+    "upstream": {
+      "pr14": "1695523ec87385c6e3d2d0295ce455125de7835a",
+      "pr15": "2c5b985159d005e54e2619f9babcda68a6ade1fb",
+      "pr16": "ae70063b5dc6af789053e0da6c1314d90e887a72",
+      "pr17": "1a4f931f177d35a2e297ac9264ade7e7349b3241",
+      "prs_still_draft": true
+    },
+    "workflows": [
+      {
+        "id": 41612957004,
+        "name": "Private Academy Console Proof",
+        "conclusion": "success"
+      },
+      {
+        "id": 41612956983,
+        "name": "Android CI",
+        "conclusion": "success"
+      },
+      {
+        "id": 41612957032,
+        "name": "Android UI Device Proof",
+        "conclusion": "success"
+      },
+      {
+        "id": 41612956979,
+        "name": "Android Small Phone and Tablet Proof",
+        "conclusion": "success"
+      }
+    ],
+    "python": {
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": "CI log"
+    },
+    "jvm": {
+      "tests": 105,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": "CI XML summary log; archive not downloaded",
+      "artifact": 13220915246,
+      "github_reported_archive_sha256": "7f158974c28b3812b0240ea7d0a7cc8315eca6ac4457d3d6fa58a60a2962a129"
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 38,
+      "configuration_width_warning_removed_by_actual_window_sizing": true
+    },
+    "instrumentation": {
+      "total_executions": 288,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "profiles": [
+        {
+          "profile": "phone26",
+          "api": 26,
+          "job": 125839203156,
+          "normal_passed": 50,
+          "large_font_passed": 22,
+          "ci_validated_png_containers": 56,
+          "screenshot_artifact": 13220915610
+        },
+        {
+          "profile": "phone35",
+          "api": 35,
+          "job": 125839202738,
+          "normal_passed": 50,
+          "large_font_passed": 22,
+          "ci_validated_png_containers": 56,
+          "screenshot_artifact": 13220158640
+        },
+        {
+          "profile": "small-phone",
+          "api": 26,
+          "job": 125839202779,
+          "normal_passed": 50,
+          "large_font_passed": 22,
+          "ci_validated_png_containers": 56,
+          "screenshot_artifact": 13220582146
+        },
+        {
+          "profile": "tablet",
+          "api": 35,
+          "job": 125839203255,
+          "normal_passed": 50,
+          "large_font_passed": 22,
+          "ci_validated_png_containers": 56,
+          "screenshot_artifact": 13221370678
+        }
+      ]
+    },
+    "artifacts": [
+      {
+        "id": 13221055416,
+        "name": "HifzAI-instrumentation-report-API-26",
+        "github_reported_digest": "sha256:a932b1f23fdf60131e67f7ac82dfc1ecbef882c0916ee7fd26dcf8d42d275874"
+      },
+      {
+        "id": 13220915610,
+        "name": "HifzAI-0.5.0-dev-emulator-UI-proof-API-26",
+        "github_reported_digest": "sha256:1b272649eeed48c935acd3184789e5842adc5ad0b64aa4e55e608dec96fa033f"
+      },
+      {
+        "id": 13220158640,
+        "name": "HifzAI-0.5.0-dev-emulator-UI-proof-API-35",
+        "github_reported_digest": "sha256:285428ef2e9947b30e7325ae35cb3dd9333a3e116dd05bd0b3a23f9097be2695"
+      },
+      {
+        "id": 13219584770,
+        "name": "HifzAI-instrumentation-report-API-35",
+        "github_reported_digest": "sha256:29c6bd8cba23f8d55224ec70b63a566ca5b145ba87cb135f3ddafce2364f501d"
+      },
+      {
+        "id": 13221370678,
+        "name": "HifzAI-0.5.0-dev-layout-tablet-API-35",
+        "github_reported_digest": "sha256:2a902ae4b02c09cdb63519df78037987a26325fb56f89eda8a3e82c9cee18eb5"
+      },
+      {
+        "id": 13221086962,
+        "name": "HifzAI-layout-instrumentation-tablet-API-35",
+        "github_reported_digest": "sha256:76f56cfcb68908cf2b753dfea5402d3290fe3c4ee99c9a044101d9b79690ddde"
+      },
+      {
+        "id": 13220582146,
+        "name": "HifzAI-0.5.0-dev-layout-small-phone-API-26",
+        "github_reported_digest": "sha256:f55c4f4ab82013dd3e94c4222e524866043e345bc0ce2788bcd77f53d23f1206"
+      },
+      {
+        "id": 13220093067,
+        "name": "HifzAI-layout-instrumentation-small-phone-API-26",
+        "github_reported_digest": "sha256:65854f27334252f0a74a7b118dfa28b360f0705878ae20e8ba0a188f6b641ed8"
+      }
+    ],
+    "visual_review": {
+      "new_archives_downloaded": false,
+      "manual_review": false,
+      "reason": "Local executor unavailable; previous-source images are historical."
+    },
+    "public_apk_published": false,
+    "production_branches_merged": false,
     "release_gates_changed": false
   }
 }
