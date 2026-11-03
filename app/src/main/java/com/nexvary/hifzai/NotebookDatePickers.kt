@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
+import android.view.WindowInsets
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.app.DatePickerDialog
@@ -81,13 +83,19 @@ private fun presentAfterOwnerFocus(context: Context, dialog: Dialog): () -> Unit
     var active = true
     var presented = false
     fun present(focused: Boolean) {
-        if (active && focused && !presented && !activity.isFinishing && !activity.isDestroyed) {
+        val keyboardVisible = Build.VERSION.SDK_INT >= 30 &&
+            decor.rootWindowInsets?.isVisible(WindowInsets.Type.ime()) == true
+        if (active && focused && !keyboardVisible && !presented && !activity.isFinishing && !activity.isDestroyed) {
             presented = true
             dialog.show()
         }
     }
     val listener = ViewTreeObserver.OnWindowFocusChangeListener { present(it) }
+    // On API30+ an IME hide can finish after focus is already true. Read the
+    // applied insets at draw time instead of racing its asynchronous teardown.
+    val beforeDraw = ViewTreeObserver.OnPreDrawListener { present(decor.hasWindowFocus()); true }
     observer.addOnWindowFocusChangeListener(listener)
+    observer.addOnPreDrawListener(beforeDraw)
     // A date/time picker replaces text input. Do not leave an IME window
     // competing for input while waiting for the old modal to detach.
     val keyboard = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -95,7 +103,10 @@ private fun presentAfterOwnerFocus(context: Context, dialog: Dialog): () -> Unit
     present(decor.hasWindowFocus())
     return {
         active = false
-        if (observer.isAlive) observer.removeOnWindowFocusChangeListener(listener)
+        if (observer.isAlive) {
+            observer.removeOnWindowFocusChangeListener(listener)
+            observer.removeOnPreDrawListener(beforeDraw)
+        }
         dialog.setOnDismissListener(null)
         dialog.dismiss()
     }
