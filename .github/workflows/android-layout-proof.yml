@@ -65,8 +65,6 @@ jobs:
       - name: Summarize actual instrumentation results in logs
         if: always()
         run: python tools/summarize_test_results.py --instrumentation ui-proof/instrumentation*.txt
-            ui-proof/instrumentation-navigation-2x.txt
-            ui-proof/hifz-navigation*.png
       - name: Upload genuine emulator screenshots
         if: success()
         uses: actions/upload-artifact@v4
