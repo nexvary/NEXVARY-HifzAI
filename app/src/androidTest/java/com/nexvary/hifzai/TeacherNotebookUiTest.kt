@@ -34,6 +34,15 @@ class TeacherNotebookUiTest {
                 androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget)))
         androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget))
             .inRoot(root).check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
+        // Capture the actual platform window; Compose captureToImage only sees
+        // the Activity beneath this native picker. No generated UI or fixtures.
+        val image = checkNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
+        val page = if (widget == android.widget.DatePicker::class.java) "date" else "time"
+        try {
+            File(context.filesDir, "hifz-notebook-$page-picker.png").outputStream().use {
+                check(image.compress(Bitmap.CompressFormat.PNG, 100, it))
+            }
+        } finally { image.recycle() }
         androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withId(
             if (confirm) android.R.id.button1 else android.R.id.button2))
             .inRoot(root).perform(androidx.test.espresso.action.ViewActions.click())
