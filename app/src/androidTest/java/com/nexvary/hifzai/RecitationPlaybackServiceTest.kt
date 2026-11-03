@@ -1,6 +1,7 @@
 package com.nexvary.hifzai
 
 import android.app.NotificationManager
+import android.app.ActivityManager
 import android.content.Intent
 import android.media.session.MediaController
 import android.view.KeyEvent
@@ -141,5 +142,23 @@ class RecitationPlaybackServiceTest {
             main { binder.play() }
             assertEquals(LocalRecitationQueue.Phase.EMPTY, binder.snapshot().phase)
         } finally { main { binder.stop() }; scenario.close(); file.delete() }
+    }
+
+    @Suppress("DEPRECATION") // Android exposes only this app's services to this caller.
+    @Test fun staleNotificationCommandsCannotResurrectAnEmptyPlaybackService() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        try {
+            for (action in listOf("PLAY", "PAUSE")) {
+                scenario.onActivity {
+                    it.startService(Intent(context, RecitationPlaybackService::class.java)
+                        .setAction("com.nexvary.hifzai.recitation.$action"))
+                }
+                await("Stale notification action must stop its empty service") {
+                    context.getSystemService(ActivityManager::class.java).getRunningServices(Int.MAX_VALUE)
+                        .none { it.service.className == RecitationPlaybackService::class.java.name }
+                }
+                assertNull(notification())
+            }
+        } finally { context.stopService(Intent(context, RecitationPlaybackService::class.java)); scenario.close() }
     }
 }

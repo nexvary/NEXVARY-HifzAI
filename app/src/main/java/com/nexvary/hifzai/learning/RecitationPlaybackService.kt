@@ -110,8 +110,8 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
                 foregroundStarted = true
                 handler.removeCallbacks(refresh); handler.post(refresh)
             }
-            ACTION_PLAY -> binder.play()
-            ACTION_PAUSE -> binder.pause()
+            ACTION_PLAY -> if (foregroundStarted) binder.play() else stopPlayback()
+            ACTION_PAUSE -> if (foregroundStarted) binder.pause() else stopPlayback()
             ACTION_STOP -> stopPlayback()
             else -> stopPlayback()
         }
@@ -152,7 +152,7 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         return Notification.Builder(this, CHANNEL).setSmallIcon(R.drawable.ic_hifz_logo)
             .setContentTitle(title(state)).setContentText(if (playing) "قيد التشغيل" else "متوقف مؤقتًا • اضغط تشغيل للاستماع")
-            .setContentIntent(open).setOnlyAlertOnce(true).setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setContentIntent(open).setOnlyAlertOnce(true).setVisibility(Notification.VISIBILITY_PRIVATE)
             .setCategory(Notification.CATEGORY_TRANSPORT).setOngoing(playing)
             .addAction(Notification.Action.Builder(
                 android.graphics.drawable.Icon.createWithResource(this,
