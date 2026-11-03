@@ -95,3 +95,11 @@ to exercise combined repeats, mutation before wrap and ready/playing/paused spee
 changes. Matching CI is required; fixtures are not approved Quran recordings.
 The reader audio library UI, licensed content, background/notification/headset
 controls and physical-device interruption tests remain outstanding.
+
+
+Validation update: source1f97d35 passes all seven CI jobs,105 JVM tests and
+49 normal+21 large-font methods in each of four emulator profiles. The five
+range-cursor JVM cases and all ten generated-tone Android playback methods pass;
+no real reciter recording, hardware headset or real-speech evaluation is inferred.
+Exact sources, artifact digests and prior failures remain in TEST_RESULTS.md and
+`docs/evidence/2026-11-03/continuation-ci.json`.

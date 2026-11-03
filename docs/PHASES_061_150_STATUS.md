@@ -12,8 +12,8 @@
 | 066 | Verify recording provenance and rights | external_evidence_required | THIRD_PARTY_CONTENT_REGISTER.md | يلزم إثبات مصدر وحقوق كل تسجيل من صاحب الحق. |
 | 067 | Build streaming audio adapter | outside_local_scope | LOCAL_ONLY_SCOPE.md | البث الشبكي خارج النطاق المحلي؛ لا تنفيذ. |
 | 068 | Add background audio service | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
-| 069 | Enable verse repeat and sequence | partial_new | LocalRecitationQueue.kt; RecitationRangeCursor.kt; RecitationRangeCursorTest.kt; LocalAudioPlaybackTest.kt | تكرار الآية وتسلسل متصل وتكرار نطاق كامل محدود مستقل، دون نسخ القائمة؛ إعادة فحص الحقوق والبصمة عند الرجوع لأول آية. اختبار WAV اصطناعي وCI مطابق مطلوبان؛ واجهة مكتبة التلاوات باقية. |
-| 070 | Provide adjustable playback speed | partial_new | LocalAudioPlayer.kt; LocalRecitationQueue.kt; LocalAudioPlaybackTest.kt | سرعة0.5–1.5 عند التحميل والتعديل أثناء التشغيل/الإيقاف دون بدء تلقائي، مستمرة عبر الآيات والدورات؛ اختبارات Android على نفس الرأس مطلوبة، ولا واجهة مكتبة صوتية بعد. |
+| 069 | Enable verse repeat and sequence | partial_new | LocalRecitationQueue.kt; RecitationRangeCursor.kt; RecitationRangeCursorTest.kt; LocalAudioPlaybackTest.kt | تكرار الآية وتسلسل متصل وتكرار نطاق كامل محدود مستقل، دون نسخ القائمة؛ إعادة فحص الحقوق والبصمة عند الرجوع لأول آية. نجحت اختباراتWAV الاصطناعية وCI للمصدر1f97d35؛ واجهة مكتبة التلاوات باقية. |
+| 070 | Provide adjustable playback speed | partial_new | LocalAudioPlayer.kt; LocalRecitationQueue.kt; LocalAudioPlaybackTest.kt | سرعة0.5–1.5 عند التحميل والتعديل أثناء التشغيل/الإيقاف دون بدء تلقائي، مستمرة عبر الآيات والدورات؛ نجحت اختباراتAndroid للمصدر1f97d35، ولا واجهة مكتبة صوتية بعد. |
 | 071 | Design gapless ayah transitions | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
 | 072 | Add pause and resume state | partial_existing | LocalAudioPlayer.kt; LicensedRecitationPlayer.kt | تكرار وسرعة واستئناف محلي، مع تسلسل أمامي داخلي؛ لا واجهة مكتبة صوت أو محتوى مرخص. |
 | 073 | Support headset media controls | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |

@@ -768,12 +768,23 @@
     {
       "phase": "049",
       "required_function": "Provide optional bright reading mode",
-      "status": "not_implemented_or_not_evidenced",
-      "implementation": [],
-      "implementation_commits": {},
-      "tests_or_checks": [],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AppAppearance.kt",
+        "app/src/main/java/com/nexvary/hifzai/HifzTheme.kt",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AppAppearance.kt": "3e333e338cad90cb68d5fb0d783ffcfa687dc5a2",
+        "app/src/main/java/com/nexvary/hifzai/HifzTheme.kt": "3e333e338cad90cb68d5fb0d783ffcfa687dc5a2",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "856cf57fab0625dbf6249432eba5b0b2c3ac2d71"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/AppearanceTest.kt",
+        "app/src/androidTest/java/com/nexvary/hifzai/AppearanceUiTest.kt"
+      ],
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "الوضع الفاتح/الداكن/النظام وحفظ الاختيار منفذ؛ CI المطابق وصور مختارة فُحصت؛ قبول الإتاحة/الأجهزة الفعلية معلق."
     },
     {
       "phase": "050",
@@ -832,16 +843,18 @@
       "required_function": "Add screen-reader friendly verse indices",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
+        "app/src/main/java/com/nexvary/hifzai/CanonicalQuranText.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "856cf57fab0625dbf6249432eba5b0b2c3ac2d71",
+        "app/src/main/java/com/nexvary/hifzai/CanonicalQuranText.kt": "3e333e338cad90cb68d5fb0d783ffcfa687dc5a2"
       },
       "tests_or_checks": [
-        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
+        "app/src/androidTest/java/com/nexvary/hifzai/AppearanceUiTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد"
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "وصف رقم الآية ودلالات العناوين موجودان؛ ليست مراجعة TalkBack شاملة."
     },
     {
       "phase": "055",
@@ -858,38 +871,40 @@
       "required_function": "Support font scaling without clipping",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/res/font/amiri_quran.ttf",
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
-        "NOTICE.md"
+        "docs/APPEARANCE_2026-11-03.md"
       ],
       "implementation_commits": {
-        "app/src/main/res/font/amiri_quran.ttf": "c4e656a8c50759f97a77c858475a65a1c607c35a",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994",
-        "NOTICE.md": "853600b2e1f64f64ce83ecd47d487f71d89efe7e"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "856cf57fab0625dbf6249432eba5b0b2c3ac2d71",
+        "docs/APPEARANCE_2026-11-03.md": "3e333e338cad90cb68d5fb0d783ffcfa687dc5a2"
       },
       "tests_or_checks": [
-        "Unicode cmap coverage; pending visual inspection"
+        "app/src/androidTest/java/com/nexvary/hifzai/AppearanceUiTest.kt",
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "تغطية المحارف لا تثبت سلامة تركيب كل علامة على كل جهاز"
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "مصفوفة أربع أجهزة عند الخطين1/1.5؛ المصدر الحالي اجتاز المصفوفة وفُحصت صور مختارة؛ لا قبول كل التشكيل أو الأجهزة الفعلية."
     },
     {
       "phase": "057",
       "required_function": "Handle rotation without losing session",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RuntimeResetStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalDataReset.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "856cf57fab0625dbf6249432eba5b0b2c3ac2d71",
+        "app/src/main/java/com/nexvary/hifzai/learning/RuntimeResetStore.kt": "cd92082fa74f2c9785ca9cd2e190b9be983d36a1",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalDataReset.kt": "cd92082fa74f2c9785ca9cd2e190b9be983d36a1"
       },
       "tests_or_checks": [
-        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+        "app/src/test/java/com/nexvary/hifzai/learning/LocalDataResetTest.kt",
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "حفظ المحاولة الصحيحة مع رفض الجيل المحذوف واستكمال الحذف المعلق قبل الاستعادة؛ مرشح الجذر الثابت اجتاز CI المطابق، دون تشخيص upstream أو ضمان شامل."
     },
     {
       "phase": "058",
@@ -1058,44 +1073,39 @@
       "required_function": "Enable verse repeat and sequence",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt",
-        "app/src/main/java/com/nexvary/hifzai/learning/LocalAudioPlayer.kt",
-        "app/src/main/java/com/nexvary/hifzai/PrivateAudioControls.kt"
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalRecitationQueue.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRangeCursor.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303",
-        "app/src/main/java/com/nexvary/hifzai/learning/LocalAudioPlayer.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303",
-        "app/src/main/java/com/nexvary/hifzai/PrivateAudioControls.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303"
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalRecitationQueue.kt": "c4df63619a93b09f95598f9a9e26e907efac8b2c",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecitationRangeCursor.kt": "c4df63619a93b09f95598f9a9e26e907efac8b2c",
+        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt": "428060cab1ee723577d2613e6a4446a2123f0625"
       },
       "tests_or_checks": [
-        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt",
-        "app/src/androidTest/java/com/nexvary/hifzai/LocalAudioPlaybackTest.kt",
-        "app/src/androidTest/java/com/nexvary/hifzai/PrivateAudioUiTest.kt"
+        "app/src/test/java/com/nexvary/hifzai/learning/RecitationRangeCursorTest.kt",
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalAudioPlaybackTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "مشغل محلي فعلي: استئناف وتكرار وسرعة وانتقال وفقدان تركيز الصوت؛ اختبارات بنغمات وميكروفون، لا تلاوات خارجية مرخصة ولا تشغيل خلفية أو مزامنة آيات"
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "تكرار الآية والنطاق كله محدود ومستقل وإعادة فحص كل ملف عند العودة؛ نغمات اصطناعية، لا مكتبة قارئ أو أصول مرخصة أو خدمة خلفية."
     },
     {
       "phase": "070",
       "required_function": "Provide adjustable playback speed",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt",
-        "app/src/main/java/com/nexvary/hifzai/learning/LocalAudioPlayer.kt",
-        "app/src/main/java/com/nexvary/hifzai/PrivateAudioControls.kt"
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalRecitationQueue.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalAudioPlayer.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/LicensedRecitationPlayer.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303",
-        "app/src/main/java/com/nexvary/hifzai/learning/LocalAudioPlayer.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303",
-        "app/src/main/java/com/nexvary/hifzai/PrivateAudioControls.kt": "8c14e5b149a2435c3634f7d053be4aa4b3bc8303"
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalRecitationQueue.kt": "c4df63619a93b09f95598f9a9e26e907efac8b2c",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalAudioPlayer.kt": "428060cab1ee723577d2613e6a4446a2123f0625"
       },
       "tests_or_checks": [
-        "app/src/test/java/com/nexvary/hifzai/learning/RecitationSafetyTest.kt",
-        "app/src/androidTest/java/com/nexvary/hifzai/LocalAudioPlaybackTest.kt",
-        "app/src/androidTest/java/com/nexvary/hifzai/PrivateAudioUiTest.kt"
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalAudioPlaybackTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "مشغل محلي فعلي: استئناف وتكرار وسرعة وانتقال وفقدان تركيز الصوت؛ اختبارات بنغمات وميكروفون، لا تلاوات خارجية مرخصة ولا تشغيل خلفية أو مزامنة آيات"
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "تعديل السرعة0.5–1.5 دون بدء أو استئناف تلقائي؛ اختبارات النغمات المطابقة للمصدر نجحت، وواجهة المكتبة باقية."
     },
     {
       "phase": "071",
@@ -2691,18 +2701,22 @@
       "required_function": "Provide local data deletion",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/RuntimeResetStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalDataReset.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "856cf57fab0625dbf6249432eba5b0b2c3ac2d71",
+        "app/src/main/java/com/nexvary/hifzai/learning/RuntimeResetStore.kt": "cd92082fa74f2c9785ca9cd2e190b9be983d36a1",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalDataReset.kt": "cd92082fa74f2c9785ca9cd2e190b9be983d36a1"
       },
       "tests_or_checks": [
-        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+        "app/src/test/java/com/nexvary/hifzai/learning/LocalDataResetTest.kt",
+        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt",
+        "app/src/androidTest/java/com/nexvary/hifzai/HifzUiSmokeTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "سجل حذف مؤكد مسبق واستكمال بعد الانقطاع؛ فساد السجل يحظر الاستعادة دون حذف غير مطلوب. اختبارات Android المطابقة نجحت؛ الأجهزة الحقيقية معلقة."
     },
     {
       "phase": "171",
@@ -3025,18 +3039,21 @@
       "required_function": "Test corrupted local preferences",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
+        "app/src/main/java/com/nexvary/hifzai/learning/RuntimeResetStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalDataReset.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
+        "app/src/main/java/com/nexvary/hifzai/learning/RuntimeResetStore.kt": "cd92082fa74f2c9785ca9cd2e190b9be983d36a1",
+        "app/src/main/java/com/nexvary/hifzai/learning/LocalDataReset.kt": "cd92082fa74f2c9785ca9cd2e190b9be983d36a1",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "3e333e338cad90cb68d5fb0d783ffcfa687dc5a2"
       },
       "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/LocalDataResetTest.kt",
         "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+      "verification": "CI passed for1f97d35df3b5e00c3330f5df11805455900a103d; merge tree identical.69Python/105JVM/280Android; selected screenshots inspected. No final acceptance. See TEST_RESULTS.md and evidence/2026-11-03/continuation-ci.json.",
+      "problems": "حماية من فساد سجل الحذف مع بقاء البيانات واختبارات فساد التقدم/المظهر الموجودة؛ CI المطابق اجتاز المصدر المحدد."
     },
     {
       "phase": "192",
@@ -3378,5 +3395,25 @@
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
       "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
     }
-  ]
+  ],
+  "continuation_audit": {
+    "source_revision": "1f97d35df3b5e00c3330f5df11805455900a103d",
+    "source_tree": "7c656a5732e32fdbe156a979afde0db55e63c6c6",
+    "updated_phases": [
+      "049",
+      "054",
+      "056",
+      "057",
+      "069",
+      "070",
+      "170",
+      "191"
+    ],
+    "scope": "Selected current implementation rows only; remaining rows retain their historical evidence. No final acceptance inferred.",
+    "pull_requests": [
+      16,
+      17
+    ],
+    "ci_conclusion": "All seven jobs passed for the stated source; no final acceptance inferred."
+  }
 }
