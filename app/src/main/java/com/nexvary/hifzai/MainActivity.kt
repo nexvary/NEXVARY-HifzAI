@@ -99,6 +99,7 @@ import com.nexvary.hifzai.learning.MemoryFingerprint
 import com.nexvary.hifzai.learning.PracticeKind
 import com.nexvary.hifzai.learning.LocalDataReset
 import com.nexvary.hifzai.learning.RuntimeResetStore
+import com.nexvary.hifzai.learning.RecitationPlaybackService
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.ReciterCatalog
 import com.nexvary.hifzai.learning.RecallGrade
@@ -130,6 +131,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var dataReset: LocalDataReset
     override fun onCreate(savedInstanceState: Bundle?) {
         resets = RuntimeResetStore(this)
+        if (resets.pending) RecitationPlaybackService.stopForDataReset()
         dataReset = LocalDataReset(resets, { ProgressStore(this).clear() }, { TeacherNotebook(this).clear() })
         val resetResult = dataReset.recover()
         creationToken = resets.token
@@ -188,6 +190,7 @@ class MainActivity : ComponentActivity() {
                         appearance = it
                     }, resetRuntime = {
                         val result = dataReset.request()
+                        if (result != LocalDataReset.Result.NOT_STARTED) RecitationPlaybackService.stopForDataReset()
                         if (result != LocalDataReset.Result.NOT_STARTED) recreate()
                         result != LocalDataReset.Result.NOT_STARTED
                     })

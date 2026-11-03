@@ -11,12 +11,12 @@
 | 065 | Link each recording to chapter and ayah | partial_new | RecitationCatalog.kt; RecitationCatalogTest.kt; LocalAudioPlaybackTest.kt; LOCAL_AUDIO_CATALOG.md | ربط بمرجع أصلي موجود وطول وبصمة ومراجعة مرجع، مع اختبار تشغيل ملف اصطناعي؛ لا كتالوج تسجيلات خارجية معتمد أو واجهة استيراد. |
 | 066 | Verify recording provenance and rights | external_evidence_required | THIRD_PARTY_CONTENT_REGISTER.md | يلزم إثبات مصدر وحقوق كل تسجيل من صاحب الحق. |
 | 067 | Build streaming audio adapter | outside_local_scope | LOCAL_ONLY_SCOPE.md | البث الشبكي خارج النطاق المحلي؛ لا تنفيذ. |
-| 068 | Add background audio service | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
+| 068 | Add background audio service | partial_new | RecitationPlaybackService.kt; RecitationPlaybackServiceTest.kt | خدمة محلية غير مصدرة، مع إشعار وMediaSession وتحرير الموارد؛ اختبارات Android للمصدر الجديد مطلوبة. لا واجهة كتالوج أو تسجيلات مرخصة بعد، ولا اعتماد أجهزة فعلية. |
 | 069 | Enable verse repeat and sequence | partial_new | LocalRecitationQueue.kt; RecitationRangeCursor.kt; RecitationRangeCursorTest.kt; LocalAudioPlaybackTest.kt | تكرار الآية وتسلسل متصل وتكرار نطاق كامل محدود مستقل، دون نسخ القائمة؛ إعادة فحص الحقوق والبصمة عند الرجوع لأول آية. نجحت اختباراتWAV الاصطناعية وCI للمصدر1f97d35؛ واجهة مكتبة التلاوات باقية. |
 | 070 | Provide adjustable playback speed | partial_new | LocalAudioPlayer.kt; LocalRecitationQueue.kt; LocalAudioPlaybackTest.kt | سرعة0.5–1.5 عند التحميل والتعديل أثناء التشغيل/الإيقاف دون بدء تلقائي، مستمرة عبر الآيات والدورات؛ نجحت اختباراتAndroid للمصدر1f97d35، ولا واجهة مكتبة صوتية بعد. |
 | 071 | Design gapless ayah transitions | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
 | 072 | Add pause and resume state | partial_existing | LocalAudioPlayer.kt; LicensedRecitationPlayer.kt | تكرار وسرعة واستئناف محلي، مع تسلسل أمامي داخلي؛ لا واجهة مكتبة صوت أو محتوى مرخص. |
-| 073 | Support headset media controls | not_implemented | — | خدمة خلفية/انتقالات بلا فجوات/أزرار سماعة للتلاوات غير منفذة. |
+| 073 | Support headset media controls | partial_new | RecitationPlaybackService.kt; RecitationPlaybackServiceTest.kt | مسار MediaSession لأزرار الوسائط والإشعار؛ اختبار أحداث إطار Android مطلوب ثم سماعات ومكالمات فعلية. لا ادعاء اختبار أجهزة سماعة من المحاكي. |
 | 074 | Enable approved offline downloads | partial_new | OfflineAudioStore.kt; OfflineAudioStoreTest.kt | استيراد محلي محدود كأداة داخلية؛ لا واجهة استيراد أو تنزيل أو محتوى معتمد. |
 | 075 | Manage offline audio storage quotas | partial_new | OfflineAudioStore.kt; OfflineAudioStoreTest.kt | حد التخزين وفشل الاستيراد مختبران بوحدات؛ الأداة غير مربوطة بواجهة المستخدم. |
 | 076 | Apply recording expiration conditions | partial_new | RecitationRights.kt; LicensedRecitationPlayer.kt | حظر انتهاء/سحب وتحقق دوري؛ لا نظام تجديد حقوق أو سجل صوتيات مستخدم. |
@@ -101,3 +101,7 @@
 اجتاز المصدر `6829762` مصفوفة CI: 69 Python و105 JVM و288 تنفيذ Android، مع صفر أخطاء Lint و38 تحذيرًا. الأدلة مرتبطة بالمصدر في TEST_RESULTS.md وcontinuation-ci.json. تشمل اختبارات الدفتر إلغاء التاريخ والوقت، وبقاء المسودات، وعدم تعديل التخزين قبل الحفظ. تبقى المرحلتان 069 و070 جزئيتين: المحرك الداخلي مختبر، وواجهة مكتبة التلاوات والأصول المعتمدة والخلفية والسماعة باقية.
 
 تصنيف التنفيذ في جدول 061–150 هو: 27 partial_new و34 partial_existing و12 not_implemented و11 external_evidence_required و6 outside_local_scope. أضيفت مطابقة لكل صف في PHASE_EVIDENCE.json تحت continuation_tracking، مع إبقاء حالات القبول التاريخية مستقلة وواضحة. هذه المطابقة لا تعني مراجعة قبول جديدة لكل متطلب، ولا ترفع أي مرحلة إلى مكتملة. يضم السجل 219 مرحلة من 002 إلى 220، وعدد الاعتمادات النهائية صفر. مراجعة الصور الجديدة محجوبة بانقطاع البيئة المحلية.
+
+## تحديث خدمة التلاوات المحلية
+
+التصنيف الحالي: 29 partial_new و34 partial_existing و10 not_implemented و11 external_evidence_required و6 outside_local_scope. لا اعتماد نهائي. أضيفت بنية الخدمة والتحكم؛ تبقى واجهة الكتالوج والأصول المأذونة والانتقالات بلا فجوات. انظر BACKGROUND_RECITATION.md للأذونات والحدود والأدلة المطابقة.

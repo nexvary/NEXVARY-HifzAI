@@ -9,7 +9,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import java.time.LocalDate
 
 /** Foreground, explicit canonical selection only. No service, network or persistent voice storage. */
-class LocalRecitationQueue(context: Context, private val lifecycle: Lifecycle) : AutoCloseable {
+class LocalRecitationQueue(context: Context, private val lifecycle: Lifecycle,
+    keepAwake: Boolean = false) : AutoCloseable {
     enum class Phase { EMPTY, LOADING, READY, PLAYING, PAUSED, COMPLETED, FAILED }
     enum class Failure { INVALID_SELECTION, FILE_OR_PLAYBACK }
     data class Snapshot(val phase: Phase, val index: Int?, val size: Int, val completedItems: Int,
@@ -41,7 +42,7 @@ class LocalRecitationQueue(context: Context, private val lifecycle: Lifecycle) :
         require(lifecycle.currentState != Lifecycle.State.DESTROYED)
         thread.start()
         worker = Handler(thread.looper)
-        player = LicensedRecitationPlayer(context.applicationContext, worker)
+        player = LicensedRecitationPlayer(context.applicationContext, worker, keepAwake)
         observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> foreground = true

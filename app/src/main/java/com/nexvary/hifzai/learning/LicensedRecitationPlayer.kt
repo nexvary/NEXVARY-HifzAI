@@ -8,8 +8,8 @@ import android.os.Looper
 
 /** Offline adapter for future approved assets. No external recordings bundled or fetched. */
 class LicensedRecitationPlayer(context: Context,
-    private val rightsHandler: Handler = Handler(Looper.getMainLooper())) {
-    private val player = LocalAudioPlayer(context)
+    private val rightsHandler: Handler = Handler(Looper.getMainLooper()), keepAwake: Boolean = false) {
+    private val player = LocalAudioPlayer(context, keepAwake)
     private var currentRights: RecitationRights? = null
     private val expiryCheck = object : Runnable {
         override fun run() {
