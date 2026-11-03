@@ -1,14 +1,7 @@
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-}
-// Conservative generation while the recurring SlotWriter disposal crash is investigated.
-// This changes optimization, not test coverage or lifecycle exception handling.
-composeCompiler {
-    featureFlags = setOf(ComposeFeatureFlag.StrongSkipping.disabled())
 }
 android {
     namespace = "com.nexvary.hifzai"
