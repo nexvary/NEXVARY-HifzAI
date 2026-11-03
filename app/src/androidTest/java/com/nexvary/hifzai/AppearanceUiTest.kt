@@ -43,13 +43,16 @@ class AppearanceUiTest {
     }
     @Test fun everyNavigationLabelFitsAndAllDestinationsRemainReachable() {
         rule.awaitHifzReady()
+        screenshot("navigation-before")
         for (label in listOf("الرئيسية", "الحفظ", "المصحف", "تقدمي", "الإعدادات")) {
             val node = rule.onNodeWithText(label)
             node.assertIsDisplayed()
             val layouts = mutableListOf<TextLayoutResult>()
             node.performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(layouts) }
             assertTrue("Missing label layout: $label", layouts.isNotEmpty())
-            assertTrue("Wrapped or clipped navigation: $label", layouts.all {
+            assertTrue("Wrapped or clipped navigation: $label; " + layouts.map {
+                "lines=${it.lineCount}, overflowWidth=${it.didOverflowWidth}, overflowHeight=${it.didOverflowHeight}, size=${it.size}"
+            }, layouts.all {
                 it.lineCount == 1 && !it.hasVisualOverflow
             })
             node.performClick()

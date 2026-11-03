@@ -64,7 +64,9 @@ jobs:
           script: bash tools/run_device_proof.sh
       - name: Summarize actual instrumentation results in logs
         if: always()
-        run: python tools/summarize_test_results.py --instrumentation ui-proof/instrumentation.txt ui-proof/instrumentation-large-font.txt
+        run: python tools/summarize_test_results.py --instrumentation ui-proof/instrumentation*.txt
+            ui-proof/instrumentation-navigation-2x.txt
+            ui-proof/hifz-navigation*.png
       - name: Upload genuine emulator screenshots
         if: success()
         uses: actions/upload-artifact@v4
@@ -81,5 +83,7 @@ jobs:
             app/build/outputs/androidTest-results/
             ui-proof/instrumentation.txt
             ui-proof/instrumentation-large-font.txt
+            ui-proof/instrumentation-navigation-2x.txt
+            ui-proof/hifz-navigation*.png
             ui-proof/logcat-failure.txt
           if-no-files-found: ignore

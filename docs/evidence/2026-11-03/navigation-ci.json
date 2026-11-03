@@ -1,0 +1,23 @@
+{
+  "initial_source_commit": "e18578993ac67115583cc6b4ed524cc3765e1b8a",
+  "android_build_run": 41621588384,
+  "python_tests": 73,
+  "jvm_tests": 107,
+  "lint_errors": 0,
+  "lint_warnings": 39,
+  "instrumentation_status": "failed; not a successful device matrix",
+  "failed_runs": [
+    41621588356,
+    41621588372
+  ],
+  "failed_jobs": [
+    125868378658,
+    125868378849,
+    125868378451,
+    125868378680
+  ],
+  "failure": "everyNavigationLabelFitsAndAllDestinationsRemainReachable: Wrapped or clipped navigation: الرئيسية, at 2x system font",
+  "fix": "Replace fixed-height NavigationBarItem labels with intrinsic-height selectable tabs; retain the original no-wrap/no-overflow assertion and add detailed layout diagnostics. Preserve the independent 2x log and before/failure screenshot.",
+  "replacement_validation": "pending new source-bound CI; no application test retries",
+  "acceptance": "No human visual, physical-device, scholarly or release acceptance"
+}
