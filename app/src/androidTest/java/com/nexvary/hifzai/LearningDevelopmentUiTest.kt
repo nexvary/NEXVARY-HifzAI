@@ -1,6 +1,13 @@
 package com.nexvary.hifzai
 
+import android.graphics.Bitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performTextReplacement
+import java.io.File
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.performClick
@@ -16,6 +23,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
 class LearningDevelopmentUiTest {
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()
@@ -83,6 +91,34 @@ class LearningDevelopmentUiTest {
         assertEquals(PracticeKind.READ, recreated.stage)
         assertEquals(0, recreated.hints)
         assertFalse(recreated.exposed)
+    }
+
+    @Test fun recitationRangeChecksArabicAddressesAndKeepsDraftOnRecreation() {
+        click("دليل القراء")
+        rule.onNodeWithText("اختر قارئًا مفضلًا من القائمة أدناه للتحقق من توفر نطاق له.").assertExists()
+        rule.onAllNodesWithText("اختيار قارئ مفضل")[0].performScrollTo().performClick()
+        val first = rule.onNodeWithText("بداية نطاق التلاوة")
+        val last = rule.onNodeWithText("نهاية نطاق التلاوة")
+        first.performScrollTo().performTextReplacement("١:٧")
+        last.performScrollTo().performTextReplacement("١:٨")
+        click("تحقق من توفر التلاوة")
+        rule.onNodeWithText("نهاية النطاق خارج المصحف").assertExists()
+
+        last.performScrollTo().performTextReplacement("٢:١")
+        rule.onNodeWithText("نهاية النطاق خارج المصحف").assertDoesNotExist()
+        click("تحقق من توفر التلاوة")
+        val unavailable = rule.onNodeWithText("لا تتوفر تسجيلات مأذونة لكل آيات هذا النطاق")
+        unavailable.assertExists()
+        rule.activityRule.scenario.recreate()
+        rule.awaitHifzReady()
+        rule.onNodeWithText("١:٧").assertExists()
+        rule.onNodeWithText("٢:١").assertExists()
+        unavailable.performScrollTo()
+        rule.onNodeWithText("تشغيل", substring = false).assertDoesNotExist()
+        val bitmap = rule.onRoot().captureToImage().asAndroidBitmap()
+        File(context.filesDir, "hifz-recitation-range.png").outputStream().use {
+            assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, it))
+        }
     }
 
     @Test fun optedInSuggestionAppearsOnReturnAndCanBePostponedOrDisabled() {

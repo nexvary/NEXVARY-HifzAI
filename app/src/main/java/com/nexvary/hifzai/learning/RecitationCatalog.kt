@@ -36,9 +36,10 @@ class RecitationCatalog private constructor(records: List<CatalogRecording>, cor
         val end = requireNotNull(offsets[last.verseId]) { "نهاية النطاق خارج المصحف" }
         require(end - start in 0 until 2000) { "ترتيب النطاق أو طوله غير صالح" }
         val selected = verseIds.subList(start, end + 1).map { id ->
-            requireNotNull(eligibleRecordings(id, reciterId, today).singleOrNull()) {
-                "يلزم تسجيل مأذون واحد لكل آية في النطاق"
-            }.rights.recordingId
+            val candidates = eligibleRecordings(id, reciterId, today)
+            require(candidates.isNotEmpty()) { "لا تتوفر تسجيلات مأذونة لكل آيات هذا النطاق" }
+            require(candidates.size == 1) { "يوجد أكثر من تسجيل مأذون لإحدى آيات النطاق" }
+            candidates.single().rights.recordingId
         }
         return sequence(selected, today)
     }
