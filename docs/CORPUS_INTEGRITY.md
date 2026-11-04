@@ -49,3 +49,12 @@ juz boundaries and requires each altered metadata fixture to be rejected.
 The original Quran and partition assets are unchanged. The existing full-index
 coverage tests remain in place. This is implementation evidence for one input
 surface of phase 193; matching JVM results and broader acceptance remain pending.
+
+## Phase 155 — Local content report draft
+
+Every verse card offers a report preview with the canonical numeric address,
+the issue category selected by the reader and the bundled source credit.
+Sharing opens the Android chooser only on request. The payload has no verse
+text, account data, learner history, device identifiers or recordings. Drafts
+are not submitted to a server and cannot edit the corpus. A supported editorial
+inbox and its review process remain separate acceptance work.

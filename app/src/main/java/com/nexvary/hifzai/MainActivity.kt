@@ -728,6 +728,10 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                         color = muted, fontSize = 12.sp)
                 }
                 Screen.MUSHAF -> {
+                    var reportAyah by rememberSaveable(selectedSurah) { mutableStateOf<Int?>(null) }
+                    reportAyah?.let { ayah ->
+                        corpus.find(selectedSurah, ayah)?.let { ContentReportDialog(it) { reportAyah = null } }
+                    }
                     Section("المصحف الشريف", "تصفح آيات " + corpus.info(selectedSurah).arabicName +
                         " كما وردت من المصدر • دون تعديل أو إخفاء")
                     OutlinedButton(onClick = { screen = Screen.CHAPTERS },
@@ -775,6 +779,9 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                                 }) { Text("أضف علامة للآية ${item.verse}") }
                                 OutlinedButton(onClick = { openVerse(readerPage * 8 + pageIndex) }) {
                                     Text("تدريب الحفظ لهذه الآية")
+                                }
+                                OutlinedButton(onClick = { reportAyah = item.verse }) {
+                                    Text("أبلغ عن مشكلة في الآية ${item.verse}")
                                 }
                             }
                         }
