@@ -35,7 +35,10 @@ class QuranPartitions private constructor(val partitions: List<QuranPartition>) 
                 require(section.isNotEmpty())
                 val pattern = Regex("<$tag index=\"(\\d+)\" sura=\"(\\d+)\" aya=\"(\\d+)\" />")
                 val starts = pattern.findAll(section).map { m ->
-                    m.groupValues[1].toInt() to (m.groupValues[2].toInt()*1000+m.groupValues[3].toInt())
+                    val chapter = m.groupValues[2].toInt()
+                    val ayah = m.groupValues[3].toInt()
+                    val verse = requireNotNull(corpus.find(chapter, ayah)) { "Unknown partition start" }
+                    m.groupValues[1].toInt() to verse.id
                 }.toList()
                 require(starts.size == count && starts.map { it.first } == (1..count).toList())
                 val indices = starts.map { offsets[it.second] ?: error("Unknown partition start") }

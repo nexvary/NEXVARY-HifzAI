@@ -1,6 +1,7 @@
 package com.nexvary.hifzai.learning
 
 import java.io.File
+import kotlin.random.Random
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -34,6 +35,26 @@ class QuranPartitionsTest {
         assertTrue(runCatching { QuranPartitions.parse(xml.replace("<page index=\"2\" sura=\"2\" aya=\"1\"", "<page index=\"2\" sura=\"115\" aya=\"1\""), corpus) }.isFailure)
         assertTrue(runCatching { QuranPartitions.parse("<!DOCTYPE untrusted>"+xml, corpus) }.isFailure)
     }
+    @Test fun generatedInvalidPartitionAddressesCannotAliasCanonicalBoundaries() {
+        val corpus = corpus()
+        val source = xml
+        val starts = Regex("""<(?:page|juz) index="\d+" sura="(\d+)" aya="(\d+)" />""")
+            .findAll(source).filter { it.groupValues[1].toInt() > 1 }.toList()
+        val random = Random(193)
+        for (start in starts.shuffled(random).take(64)) {
+            val chapter = start.groupValues[1].toInt()
+            val ayah = start.groupValues[2].toInt()
+            val shift = random.nextInt(1, chapter)
+            val invalidChapter = chapter - shift
+            val invalidAyah = ayah + shift * 1000
+            val replacement = start.value.replace("sura=\"$chapter\" aya=\"$ayah\"",
+                "sura=\"$invalidChapter\" aya=\"$invalidAyah\"")
+            val mutated = source.replaceRange(start.range, replacement)
+            assertThrows("Rejected aliased address $invalidChapter:$invalidAyah",
+                IllegalArgumentException::class.java) { QuranPartitions.parse(mutated, corpus) }
+        }
+    }
+
     @Test fun rangeSessionPreservesAssistance() {
         val session = PracticeSession(1,1,PracticeKind.RECALL,1,true,DifficultyTag.NONE,1001,2141)
         assertEquals(2141, session.changeStage(PracticeKind.MASK_LIGHT).rangeEnd)

@@ -38,3 +38,14 @@ These API restrictions do not apply by default to a separately licensed official
 Official provider note: https://tanzil.net/docs/a_note_on_bismillah . The 6236 numbered records store the unnumbered opening Basmala together with the first ayah of surahs other than 1 and 9. Openings at surahs 95 and 97 include a shadda on the first beh, as explained by the provider. A generic copy of Fatihah's opening would lose that source distinction and duplicate the prefix if also rendering the whole first record.
 
 The renderer now slices each original first record into opening, exact separator, and numbered-ayah body. Rejoining the three must produce the original string character-for-character for every one of the 6236 records. It inserts no Basmala from another surah and never rewrites the asset. The opening is labelled unnumbered; the ayah number belongs to the body. Training, transition hints, search and similarity comparisons use a separate derived ayah body so a common opening does not become an incorrect ayah-word cue. Corpus SHA-256 and Git blob remain unchanged. These technical controls do not replace scholarly visual acceptance.
+
+## Phase 193 — Partition address bounds
+
+Partition metadata parsing now verifies each chapter and ayah against the
+canonical corpus before using its numeric ID. An invalid address such as
+1:1001 previously collided with the valid address 2:1 when converted to an
+integer. A seeded JVM regression generates 64 such collisions across page and
+juz boundaries and requires each altered metadata fixture to be rejected.
+The original Quran and partition assets are unchanged. The existing full-index
+coverage tests remain in place. This is implementation evidence for one input
+surface of phase 193; matching JVM results and broader acceptance remain pending.
