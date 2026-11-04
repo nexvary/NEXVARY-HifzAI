@@ -94,7 +94,7 @@ class LearningDevelopmentUiTest {
     }
 
     @Test fun recitationRangeChecksArabicAddressesAndKeepsDraftOnRecreation() {
-        click("دليل القراء")
+        click("دليل القرّاء المصريين والسعوديين")
         rule.onNodeWithText("اختر قارئًا مفضلًا من القائمة أدناه للتحقق من توفر نطاق له.").assertExists()
         rule.onAllNodesWithText("اختيار قارئ مفضل")[0].performScrollTo().performClick()
         val first = rule.onNodeWithText("بداية نطاق التلاوة")
