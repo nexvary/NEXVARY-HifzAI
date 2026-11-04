@@ -48,21 +48,28 @@ object StudyTimeBudget {
     }
 }
 
-data class WeeklyLearningSummary(val attempts: Int, val independent: Int, val assisted: Int,
+data class LearningPeriodSummary(val attempts: Int, val independent: Int, val assisted: Int,
     val forgotten: Int, val activeDays: Int) {
     val independentPercent: Int? get() = if (attempts == 0) null else (100L * independent / attempts).toInt()
 }
 
 object LearningTrends {
+    fun week(observations: List<RecallObservation>, endDay: Long): LearningPeriodSummary =
+        summarize(observations, endDay - 6, endDay)
+
+    fun last30Days(observations: List<RecallObservation>, endDay: Long): LearningPeriodSummary =
+        summarize(observations, endDay - 29, endDay)
+
     /** Only retained observations are counted; this is not a complete lifetime cohort. */
-    fun week(observations: List<RecallObservation>, endDay: Long): WeeklyLearningSummary {
-        val events = observations.filter { it.epochDay in (endDay - 6)..endDay }
-        return WeeklyLearningSummary(events.size, events.count {
+    private fun summarize(observations: List<RecallObservation>, startDay: Long,
+        endDay: Long): LearningPeriodSummary {
+        val events = observations.filter { it.epochDay in startDay..endDay }
+        return LearningPeriodSummary(events.size, events.count {
             it.hints == 0 && !it.exposed && it.grade in setOf(RecallGrade.GOOD, RecallGrade.EASY)
         }, events.count { it.hints > 0 || it.exposed }, events.count { it.grade == RecallGrade.AGAIN },
             events.map { it.epochDay }.distinct().size)
     }
-    fun byMode(observations: List<RecallObservation>, endDay: Long): Map<PracticeKind, WeeklyLearningSummary> =
+    fun byMode(observations: List<RecallObservation>, endDay: Long): Map<PracticeKind, LearningPeriodSummary> =
         observations.filter { it.kind != null }.groupBy { it.kind!! }.mapValues { week(it.value, endDay) }
 
     /** More recent observations guide a drill without changing the review schedule. */

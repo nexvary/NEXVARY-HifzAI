@@ -44,12 +44,12 @@ internal fun LearningGoalControls(goal: LearningGoal, minutes: Int?,
 }
 
 @Composable
-internal fun WeeklyLearningCard(summary: WeeklyLearningSummary, previous: WeeklyLearningSummary) {
-    Text("آخر ٧ أيام", style = MaterialTheme.typography.titleLarge)
+internal fun LearningPeriodCard(title: String, previousLabel: String, summary: LearningPeriodSummary,
+    previous: LearningPeriodSummary) {
+    Text(title, style = MaterialTheme.typography.titleLarge)
     Text("محاولات: ${summary.attempts} • باسترجاع مستقل: ${summary.independent} • بمساعدة: ${summary.assisted}")
     Text("تعثر: ${summary.forgotten} • أيام ممارسة: ${summary.activeDays}")
     Text("نسبة الاسترجاع المستقل: " + (summary.independentPercent?.let { "$it%" } ?: "لا توجد بيانات"))
-    Text("الأسبوع السابق: ${previous.attempts} محاولة • " +
+    Text("$previousLabel: ${previous.attempts} محاولة • " +
         (previous.independentPercent?.let { "$it% استرجاع مستقل" } ?: "لا توجد بيانات"))
-    Text("تقييم ذاتي من آخر ٣٠ محاولة محفوظة لكل آية؛ لا يثبت تحسنًا سببيًا أو احتفاظًا طويل المدى.")
 }

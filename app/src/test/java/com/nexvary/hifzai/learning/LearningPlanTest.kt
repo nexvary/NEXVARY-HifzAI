@@ -34,6 +34,16 @@ class LearningPlanTest {
         assertEquals(40, result.independentPercent)
         assertNull(LearningTrends.week(emptyList(), 10).independentPercent)
     }
+    @Test fun rollingMonthlyPeriodsAreAdjacentWithoutCountingFutureOrOlderAttempts() {
+        val events = listOf(observation(0), observation(1), observation(30, hints = 1),
+            observation(31), observation(60, exposed = true), observation(61))
+        val current = LearningTrends.last30Days(events, 60)
+        val previous = LearningTrends.last30Days(events, 30)
+        assertEquals(LearningPeriodSummary(2, 1, 1, 0, 2), current)
+        assertEquals(LearningPeriodSummary(2, 1, 1, 0, 2), previous)
+        assertNull(LearningTrends.last30Days(events, 100).independentPercent)
+    }
+
     @Test fun oldUnknownModeIsNotInventedAndRecentFailuresGuideOnlyDrills() {
         val events = listOf(observation(10, kind = null), observation(10, kind = PracticeKind.BRIDGE))
         assertEquals(setOf(PracticeKind.BRIDGE), LearningTrends.byMode(events, 10).keys)

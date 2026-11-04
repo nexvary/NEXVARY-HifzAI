@@ -875,7 +875,11 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                     val retained = observations
                     if (retained == null) Text("جارٍ قراءة المحاولات المحلية…")
                     else {
-                        WeeklyLearningCard(LearningTrends.week(retained, today), LearningTrends.week(retained, today - 7))
+                        LearningPeriodCard("آخر ٧ أيام", "الأسبوع السابق",
+                            LearningTrends.week(retained, today), LearningTrends.week(retained, today - 7))
+                        LearningPeriodCard("آخر ٣٠ يومًا", "فترة الثلاثين يومًا السابقة",
+                            LearningTrends.last30Days(retained, today), LearningTrends.last30Days(retained, today - 30))
+                        Text("تقييم ذاتي من آخر ٣٠ محاولة محفوظة لكل آية؛ لا يثبت تحسنًا سببيًا أو احتفاظًا طويل المدى.")
                         LearningTrends.byMode(retained, today).forEach { (kind, summary) ->
                             Text((if (kind == PracticeKind.BRIDGE) "ربط الآيات" else "استرجاع الآية") +
                                 " • " + summary.attempts + " محاولة • " +
