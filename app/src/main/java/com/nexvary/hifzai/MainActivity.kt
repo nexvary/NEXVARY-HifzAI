@@ -923,6 +923,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                 Screen.LOCAL_TRANSCRIPTION -> LocalTranscriptionScreen()
                 Screen.RECITERS -> {
                     Section("دليل قرّاء مصر والسعودية", "أسماء مبدئية • التسجيلات تحتاج مراجعة التراخيص")
+                    RecitationRangePreview(corpus, favoriteReciter, verse, today)
                     ReciterCatalog.all.groupBy { it.country }.forEach { (country, people) ->
                         Text(country.displayArabic, color = green, fontSize = 21.sp)
                         people.forEach { person ->
