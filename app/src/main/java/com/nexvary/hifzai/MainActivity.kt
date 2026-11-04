@@ -630,6 +630,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                         }
                     }
                     Text(recommendation.explanation, color = muted, fontSize = 14.sp)
+                    Text(recommendation.evidence.description, color = muted, fontSize = 13.sp)
                     if (stage != PracticeKind.READ) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             if (!revealed && hintCount < 2) {

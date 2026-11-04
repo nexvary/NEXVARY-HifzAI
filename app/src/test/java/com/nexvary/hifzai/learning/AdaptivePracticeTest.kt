@@ -20,7 +20,9 @@ class AdaptivePracticeTest {
     @Test fun tracksTransitionDifficulties() {
         val result = MemoryCoach.record(MemoryFingerprint(1001), RecallGrade.AGAIN, 0, true)
         assertEquals(1, result.transitionsMissed)
-        assertEquals(PracticeKind.BRIDGE, MemoryCoach.recommend(ReviewCard(1001), result).kind)
+        val recommendation = MemoryCoach.recommend(ReviewCard(1001), result)
+        assertEquals(PracticeKind.BRIDGE, recommendation.kind)
+        assertEquals(RecommendationEvidence(1, RecommendationWindow.ACCUMULATED), recommendation.evidence)
     }
 
     @Test fun overdueCardsComeBeforeNewOnes() {
@@ -44,6 +46,8 @@ class AdaptivePracticeTest {
     @Test fun coldStartHasNoFictitiousProgress() {
         val a = MemoryFingerprint(42)
         assertEquals(0, MemoryCoach.independentRecallPercent(listOf(a)))
-        assertEquals(PracticeKind.READ, MemoryCoach.recommend(ReviewCard(42), a).kind)
+        val recommendation = MemoryCoach.recommend(ReviewCard(42), a)
+        assertEquals(PracticeKind.READ, recommendation.kind)
+        assertEquals(RecommendationEvidence(0, RecommendationWindow.ACCUMULATED), recommendation.evidence)
     }
 }

@@ -247,6 +247,8 @@ class HifzUiSmokeTest {
         click("انتقل إلى الآية")
         rule.onNodeWithText("اختيار السورة • البقرة").assertExists()
         rule.onNodeWithText("الحفظ").performClick()
+        rule.onNodeWithText("اقتراح بداية • لا توجد محاولات مسجلة لهذه الآية")
+            .performScrollTo().assertIsDisplayed()
         screenshot("hifz-practice.png")
         repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
         screenshot("hifz-recall.png")

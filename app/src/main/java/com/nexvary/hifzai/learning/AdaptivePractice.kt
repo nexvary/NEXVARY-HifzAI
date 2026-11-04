@@ -25,8 +25,20 @@ enum class DifficultyTag { NONE, WORDS, TRANSITION, SIMILAR_VERSE }
 data class TrainingRecommendation(
     val kind: PracticeKind,
     val explanation: String,
-    val maskFraction: Float
+    val maskFraction: Float,
+    val evidence: RecommendationEvidence
 )
+
+enum class RecommendationWindow { ACCUMULATED, RECENT }
+
+data class RecommendationEvidence(val attempts: Int, val window: RecommendationWindow) {
+    /** Sample size describes the available self-assessments, without predicting future recall. */
+    val description: String get() = when {
+        attempts == 0 -> "اقتراح بداية • لا توجد محاولات مسجلة لهذه الآية"
+        window == RecommendationWindow.RECENT -> "أساس الاقتراح: $attempts من محاولات التقييم الذاتي خلال آخر ١٤ يومًا"
+        else -> "أساس الاقتراح: $attempts من محاولات التقييم الذاتي المتراكمة لهذه الآية"
+    }
+}
 
 object MemoryCoach {
     fun record(
@@ -52,25 +64,29 @@ object MemoryCoach {
         )
     }
 
-    fun recommend(card: ReviewCard, memory: MemoryFingerprint): TrainingRecommendation =
-        when {
+    fun recommend(card: ReviewCard, memory: MemoryFingerprint): TrainingRecommendation {
+        val evidence = RecommendationEvidence(memory.attempts, RecommendationWindow.ACCUMULATED)
+        fun recommendation(kind: PracticeKind, explanation: String, mask: Float) =
+            TrainingRecommendation(kind, explanation, mask, evidence)
+        return when {
             memory.attempts == 0 ->
-                TrainingRecommendation(PracticeKind.READ, "ابدأ بقراءة الآية ثم إخفاء كلماتها", 0f)
+                recommendation(PracticeKind.READ, "ابدأ بقراءة الآية ثم إخفاء كلماتها", 0f)
             memory.transitionsMissed > 0 && memory.transitionsMissed * 3 >= memory.attempts ->
-                TrainingRecommendation(PracticeKind.BRIDGE, "تحتاج إلى تدريب ربط الآيات", 1f)
+                recommendation(PracticeKind.BRIDGE, "تحتاج إلى تدريب ربط الآيات", 1f)
             memory.similarityMisses > 0 && memory.similarityMisses * 3 >= memory.attempts ->
-                TrainingRecommendation(PracticeKind.MASK_LIGHT, "راجع الكلمات التي تختلط عليك؛ تصنيف التشابه يحتاج مراجعة معلّم", 0.35f)
+                recommendation(PracticeKind.MASK_LIGHT, "راجع الكلمات التي تختلط عليك؛ تصنيف التشابه يحتاج مراجعة معلّم", 0.35f)
             memory.wordMisses > 0 && memory.wordMisses * 3 >= memory.attempts ->
-                TrainingRecommendation(PracticeKind.MASK_LIGHT, "تدرّب على الكلمات المتعثرة بالتدرج", 0.35f)
+                recommendation(PracticeKind.MASK_LIGHT, "تدرّب على الكلمات المتعثرة بالتدرج", 0.35f)
             memory.hinted * 2 >= memory.attempts ->
-                TrainingRecommendation(PracticeKind.MASK_LIGHT, "ابدأ بتلميحات أقل تدريجيًا", 0.35f)
+                recommendation(PracticeKind.MASK_LIGHT, "ابدأ بتلميحات أقل تدريجيًا", 0.35f)
             card.lapses >= 2 ->
-                TrainingRecommendation(PracticeKind.MASK_LIGHT, "نعيد تثبيت موضع يتكرر نسيانه", 0.35f)
+                recommendation(PracticeKind.MASK_LIGHT, "نعيد تثبيت موضع يتكرر نسيانه", 0.35f)
             memory.independentRecallRate >= 0.8 && memory.attempts >= 3 ->
-                TrainingRecommendation(PracticeKind.RECALL, "جرّب التسميع دون رؤية الآية", 1f)
+                recommendation(PracticeKind.RECALL, "جرّب التسميع دون رؤية الآية", 1f)
             else ->
-                TrainingRecommendation(PracticeKind.MASK_HEAVY, "استرجع معظم الكلمات دون النظر", 0.7f)
+                recommendation(PracticeKind.MASK_HEAVY, "استرجع معظم الكلمات دون النظر", 0.7f)
         }
+    }
 
     /** Prioritise overdue reviews, then learning cards, then non-due reviewed cards. */
     fun studyOrder(
