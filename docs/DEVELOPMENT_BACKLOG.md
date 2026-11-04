@@ -48,3 +48,12 @@
 ## دفعة PR19 وPR20
 
 أضيف اقتراح الوقت اليومي مع تطبيق صريح؛ الملخص الشهري ما زال ناقصًا. عولج تخطيط التنقل مع اختبار النص عند 1×/1.5×/2×؛ سجلا الفشل الأوليان محفوظان في navigation-ci.json وActions. أضيفت مقارنة ASR زوجية للعينات نفسها، وخدمة تلاوات محلية لا تستقبل الصوت الخاص. لا كتالوج تلاوات مأذون موصول بالواجهة أو ضمان gapless أو نتيجة دقة صوت حقيقية. مراجعة المنافسين موثقة في COMPETITOR_GAPS_2026-11-03.md. نجاح CI يجب أن يؤخذ من رأس كل PR المطابق، لا من النص التاريخي أعلاه.
+
+### Phase 171 — Save progress as CSV
+
+Settings can save a UTF-8 CSV through Android's document picker. The file
+contains canonical numeric verse addresses and cumulative assessment counters
+for assessed verses, in corpus order. It does not contain Quran text, notes,
+audio, identifiers or session history. The chosen document provider controls
+where the export is stored. The existing text-summary share remains available.
+This export is not an import or a backup/restore format.

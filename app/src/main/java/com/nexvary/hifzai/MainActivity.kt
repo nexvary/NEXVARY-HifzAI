@@ -56,6 +56,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,6 +101,7 @@ import com.nexvary.hifzai.learning.PracticeKind
 import com.nexvary.hifzai.learning.LocalDataReset
 import com.nexvary.hifzai.learning.RuntimeResetStore
 import com.nexvary.hifzai.learning.RecitationPlaybackService
+import com.nexvary.hifzai.learning.ProgressCsv
 import com.nexvary.hifzai.learning.ProgressStore
 import com.nexvary.hifzai.learning.ReciterCatalog
 import com.nexvary.hifzai.learning.RecallGrade
@@ -280,6 +282,31 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
     var followsDailyPlan by rememberSaveable { mutableStateOf(savedSession?.followsDailyPlan ?: false) }
     var dailyPlanChapter by rememberSaveable { mutableIntStateOf(savedSession?.planChapter?.takeIf { it > 0 } ?: selectedSurah) }
     var message by remember { mutableStateOf("") }
+    val exportScope = rememberCoroutineScope()
+    var exportingProgress by remember { mutableStateOf(false) }
+    val createProgressFile = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
+        if (uri != null) {
+            val snapshot = memories.toMap()
+            exportingProgress = true
+            exportScope.launch {
+                try {
+                    withContext(Dispatchers.IO) {
+                        val payload = ProgressCsv.encode(corpus.verses, snapshot).toByteArray(Charsets.UTF_8)
+                        val stream = context.contentResolver.openOutputStream(uri, "wt")
+                            ?: throw java.io.IOException("No output stream for progress export")
+                        stream.use { it.write(payload) }
+                    }
+                    message = "حُفظ ملف التقدم"
+                } catch (_: java.io.IOException) {
+                    message = "تعذر حفظ ملف التقدم؛ قد يكون الملف ناقصًا"
+                } catch (_: SecurityException) {
+                    message = "تعذر الوصول إلى وجهة حفظ ملف التقدم"
+                } finally {
+                    exportingProgress = false
+                }
+            }
+        }
+    }
     var confirmClear by remember { mutableStateOf(false) }
     var today by remember { mutableLongStateOf(LocalDate.now().toEpochDay()) }
     val verse = verses[index]
@@ -1142,6 +1169,11 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                             putExtra(Intent.EXTRA_TEXT, summary)
                         }
                         context.startActivity(Intent.createChooser(intent, "مشاركة التقدم"))
+                    }
+                    Text("ملف CSV يحتوي على أرقام الآيات وعدادات التقدم. اختر مكان حفظ تثق به.")
+                    OutlinedButton(onClick = { createProgressFile.launch("hifz-progress.csv") },
+                        enabled = !exportingProgress, modifier = Modifier.fillMaxWidth()) {
+                        Text("حفظ التقدم في ملف CSV")
                     }
                     if (confirmClear) {
                         Text("تأكيد: سيُحذف التقدم والجلسة ودفتر المعلم المحلي ولا يمكن استعادتها.",
