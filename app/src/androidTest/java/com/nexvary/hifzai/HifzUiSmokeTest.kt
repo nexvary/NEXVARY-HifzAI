@@ -274,6 +274,7 @@ class HifzUiSmokeTest {
             .performScrollTo().assertIsDisplayed()
         rule.onNodeWithText("الإعدادات").performClick()
         screenshot("hifz-settings.png")
+        rule.onNodeWithText("حفظ التقدم في ملف CSV").performScrollTo().assertIsDisplayed()
         listOf("الخصوصية وحماية الأطفال" to "privacy", "المصادر والتراخيص" to "sources",
             "دفتر المعلم المحلي" to "teachers", "المساعدة" to "help", "حول التطبيق" to "about").forEach { (label, name) ->
             click(label)
