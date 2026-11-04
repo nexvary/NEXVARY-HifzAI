@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.nexvary.hifzai.learning.TeacherNotebook
 import java.time.LocalDateTime
@@ -118,7 +120,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
         }
         OutlinedTextField(value = teacher, onValueChange = { teacher = it.take(60) },
             label = { Text("اسم المعلم المعروف لك • غير موثق من التطبيق") }, modifier = Modifier.fillMaxWidth())
-        OutlinedButton(onClick = { picker = NotebookPicker.NEW_LESSON }, modifier = Modifier.fillMaxWidth()) {
+        NotebookPickerButton(onOpen = { picker = NotebookPicker.NEW_LESSON }, modifier = Modifier.fillMaxWidth()) {
             Text(if (time.isBlank()) "اختر يوم ووقت الجلسة" else NotebookRules.displayDateTime(time))
         }
         OutlinedTextField(value = note, onValueChange = { note = it.take(500) },
@@ -177,7 +179,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
     editing?.takeIf { picker == null }?.let { lesson ->
         AlertDialog(onDismissRequest = { editing = null }, title = { Text("تعديل الجلسة المحلية") },
             text = { Column(Modifier.verticalScroll(rememberScrollState())) {
-                OutlinedButton(onClick = { picker = NotebookPicker.EDIT_LESSON }) {
+                NotebookPickerButton(onOpen = { picker = NotebookPicker.EDIT_LESSON }) {
                     Text(NotebookRules.displayDateTime(editedTime))
                 }
                 OutlinedTextField(value = editedNote, onValueChange = { editedNote = it.take(500) },
@@ -198,7 +200,7 @@ internal fun TeacherNotebookScreen(corpus: QuranCorpus, today: LocalDate) {
                     label = { Text("البداية • سورة:آية") })
                 OutlinedTextField(value = assignmentEnd, onValueChange = { assignmentEnd = it.take(15) },
                     label = { Text("النهاية في السورة نفسها • سورة:آية") })
-                OutlinedButton(onClick = { picker = NotebookPicker.ASSIGNMENT }) {
+                NotebookPickerButton(onOpen = { picker = NotebookPicker.ASSIGNMENT }) {
                     Text("تاريخ المراجعة: " + assignmentDue)
                 }
                 if (message.isNotEmpty()) Text(message)
@@ -248,4 +250,18 @@ private fun NotebookDeleteDialog(title: String, detail: String, onDelete: () -> 
         text = { Text(detail, Modifier.verticalScroll(rememberScrollState())) },
         confirmButton = { TextButton(onClick = onDelete) { Text("احذف من الدفتر") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("إلغاء") } })
+}
+
+
+@Composable
+private fun NotebookPickerButton(onOpen: () -> Unit, modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit) {
+    val keyboard = LocalSoftwareKeyboardController.current
+    val focus = LocalFocusManager.current
+    OutlinedButton(onClick = {
+        // Release input through the current editor's window before it detaches.
+        keyboard?.hide()
+        focus.clearFocus(force = true)
+        onOpen()
+    }, modifier = modifier, content = content)
 }
