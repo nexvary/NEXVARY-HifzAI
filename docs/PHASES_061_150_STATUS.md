@@ -57,7 +57,7 @@
 | 111 | Tune review intervals empirically | external_evidence_required | RECITATION_EVALUATION_PROTOCOL.md | يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة. |
 | 112 | Allow learner to override training plan | partial_new | LearningGoalControls.kt; LearningPlan.kt; LearningDevelopmentUiTest.kt | أوضاع حفظ/مراجعة وحد يومي مقترح مع إتاحة التدريب اليدوي وإعادة المواضع المتعثرة؛ لا منع عند تجاوز الهدف ولا ادعاء تحسن مقيس. |
 | 113 | Explain recommended drills transparently | partial_new | LearningPlan.kt; MainActivity.kt | سبب واضح واقتراح اختياري من المحاولات الأخيرة؛ تحقق UX معلق. |
-| 114 | Add confidence estimate to model choices | not_implemented | — | لا درجة ثقة احتمالية معايرة لتوصيات التعلم؛ لا اختلاق نسبة. |
+| 114 | Add confidence estimate to model choices | partial_new | AdaptivePractice.kt; LearningPlan.kt; AdaptivePracticeTest.kt; LearningPlanTest.kt | شاشة التدريب تعرض غياب التقييمات أو عدد التقييمات الذاتية المستخدمة ونطاقها. لا توجد درجة ثقة احتمالية معايرة؛ يلزم تقييم مستقل. |
 | 115 | Track long-term retention cohorts | external_evidence_required | RECITATION_EVALUATION_PROTOCOL.md | يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة. |
 | 116 | Add weekly learning trends | partial_new | LearningPlan.kt; LearningGoalControls.kt; LearningPlanTest.kt | ملخصات أسبوعية ومقارنة آخر 30 يومًا بالفترة السابقة، من المحاولات المحفوظة محليًا؛ ليست تحسنًا سببيًا أو سجلًا كاملًا. |
 | 117 | Measure improvement by practice mode | partial_new | LearningPlan.kt; LearningGoalControls.kt; LearningPlanTest.kt | ملخصات أسبوعية وحسب التدريب من آخر30 محاولة لكل آية؛ ليست تحسنًا سببيًا أو سجلًا كاملًا. |
@@ -105,3 +105,7 @@
 ## تحديث خدمة التلاوات المحلية
 
 التصنيف الحالي: 29 partial_new و34 partial_existing و10 not_implemented و11 external_evidence_required و6 outside_local_scope. لا اعتماد نهائي. أضيفت بنية الخدمة والتحكم؛ تبقى واجهة الكتالوج والأصول المأذونة والانتقالات بلا فجوات. انظر BACKGROUND_RECITATION.md للأذونات والحدود والأدلة المطابقة.
+
+## تحديث أساس اقتراح التدريب
+
+بعد تنفيذ جزء من المرحلة 114: 30 partial_new و34 partial_existing و9 not_implemented و11 external_evidence_required و6 outside_local_scope. لا اعتماد نهائي.

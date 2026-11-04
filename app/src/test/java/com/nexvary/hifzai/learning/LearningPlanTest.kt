@@ -44,6 +44,17 @@ class LearningPlanTest {
         assertNull(LearningTrends.last30Days(events, 100).independentPercent)
     }
 
+    @Test fun recentRecommendationReportsOnlyTheBoundedSampleItUses() {
+        val history = listOf(observation(6), observation(21)) +
+            List(12) { observation(20, RecallGrade.AGAIN) }
+        val recommendation = checkNotNull(LearningTrends.recentRecommendation(history, 20))
+        assertEquals(RecommendationEvidence(10, RecommendationWindow.RECENT), recommendation.evidence)
+        val smaller = listOf(observation(6), observation(7, RecallGrade.AGAIN),
+            observation(19, RecallGrade.AGAIN), observation(20, RecallGrade.AGAIN), observation(21))
+        assertEquals(RecommendationEvidence(3, RecommendationWindow.RECENT),
+            LearningTrends.recentRecommendation(smaller, 20)?.evidence)
+    }
+
     @Test fun oldUnknownModeIsNotInventedAndRecentFailuresGuideOnlyDrills() {
         val events = listOf(observation(10, kind = null), observation(10, kind = PracticeKind.BRIDGE))
         assertEquals(setOf(PracticeKind.BRIDGE), LearningTrends.byMode(events, 10).keys)

@@ -81,8 +81,9 @@ object LearningTrends {
         val struggling = recent.filter { it.grade == RecallGrade.AGAIN || it.grade == RecallGrade.HARD }
         if (struggling.sumOf(::weight) / total < 0.5) return null
         val transition = struggling.filter { it.difficulty == DifficultyTag.TRANSITION || it.kind == PracticeKind.BRIDGE }
+        val evidence = RecommendationEvidence(recent.size, RecommendationWindow.RECENT)
         return if (transition.sumOf(::weight) / total >= 0.5)
-            TrainingRecommendation(PracticeKind.BRIDGE, "تكررت صعوبة الانتقال في آخر محاولاتك؛ جرّب الربط. اقتراح من تقييمك الذاتي", 1f)
-        else TrainingRecommendation(PracticeKind.MASK_LIGHT, "آخر محاولاتك تحتاج تثبيتًا؛ جرّب الإخفاء الخفيف. يمكنك اختيار تدريب آخر", 0.35f)
+            TrainingRecommendation(PracticeKind.BRIDGE, "تكررت صعوبة الانتقال في آخر محاولاتك؛ جرّب الربط. اقتراح من تقييمك الذاتي", 1f, evidence)
+        else TrainingRecommendation(PracticeKind.MASK_LIGHT, "آخر محاولاتك تحتاج تثبيتًا؛ جرّب الإخفاء الخفيف. يمكنك اختيار تدريب آخر", 0.35f, evidence)
     }
 }
