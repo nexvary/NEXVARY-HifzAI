@@ -59,7 +59,7 @@
 | 113 | Explain recommended drills transparently | partial_new | LearningPlan.kt; MainActivity.kt | سبب واضح واقتراح اختياري من المحاولات الأخيرة؛ تحقق UX معلق. |
 | 114 | Add confidence estimate to model choices | not_implemented | — | لا درجة ثقة احتمالية معايرة لتوصيات التعلم؛ لا اختلاق نسبة. |
 | 115 | Track long-term retention cohorts | external_evidence_required | RECITATION_EVALUATION_PROTOCOL.md | يلزم تصميم ومشاركون ودراسة احتفاظ فعلية؛ لا cohorts أو فعالية مقيسة. |
-| 116 | Add weekly learning trends | partial_new | LearningPlan.kt; LearningGoalControls.kt; LearningPlanTest.kt | ملخصات أسبوعية وحسب التدريب من آخر30 محاولة لكل آية؛ ليست تحسنًا سببيًا أو سجلًا كاملًا. |
+| 116 | Add weekly learning trends | partial_new | LearningPlan.kt; LearningGoalControls.kt; LearningPlanTest.kt | ملخصات أسبوعية ومقارنة آخر 30 يومًا بالفترة السابقة، من المحاولات المحفوظة محليًا؛ ليست تحسنًا سببيًا أو سجلًا كاملًا. |
 | 117 | Measure improvement by practice mode | partial_new | LearningPlan.kt; LearningGoalControls.kt; LearningPlanTest.kt | ملخصات أسبوعية وحسب التدريب من آخر30 محاولة لكل آية؛ ليست تحسنًا سببيًا أو سجلًا كاملًا. |
 | 118 | Detect disengagement with consent | partial_new | GentleReturnPolicy.kt; ProgressStore.kt; MainActivity.kt; GentleReturnPolicyTest.kt; LocalDataAndAudioTest.kt | اقتراح عودة محلي بعد أسبوع بموافقة اختيارية، وإيقاف يمحو تاريخ التذكير؛ لا إشعارات أو إرسال بيانات أو قياس فاعلية. اختبار أندرويد المطابق مطلوب. |
 | 119 | Avoid addictive or misleading streaks | partial_existing | MainActivity.kt | لا سلسلة أيام ملزمة؛ الأرقام تقييم ذاتي، دون ادعاء أثر تعليمي مثبت. |

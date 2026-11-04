@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -255,7 +256,13 @@ class HifzUiSmokeTest {
         click("تدرّب على الآيات المتشابهة لفظيًا")
         screenshot("hifz-similar.png")
         rule.onNodeWithText("تقدمي").performClick()
+        rule.waitUntil(15000) {
+            rule.onAllNodesWithText("آخر ٣٠ يومًا").fetchSemanticsNodes().isNotEmpty()
+        }
         screenshot("hifz-insights.png")
+        rule.onNodeWithText("آخر ٣٠ يومًا").performScrollTo().assertIsDisplayed()
+        rule.onNodeWithText("فترة الثلاثين يومًا السابقة:", substring = true)
+            .performScrollTo().assertIsDisplayed()
         rule.onNodeWithText("الإعدادات").performClick()
         screenshot("hifz-settings.png")
         listOf("الخصوصية وحماية الأطفال" to "privacy", "المصادر والتراخيص" to "sources",
