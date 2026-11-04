@@ -90,7 +90,14 @@ private fun presentAfterOwnerFocus(context: Context, dialog: Dialog): () -> Unit
             dialog.show()
         }
     }
-    val listener = ViewTreeObserver.OnWindowFocusChangeListener { present(it) }
+    val listener = ViewTreeObserver.OnWindowFocusChangeListener { focused ->
+        // A hide sent during modal teardown can target the old input window.
+        // Repeat the request from the Activity once it owns focus again.
+        if (focused && !presented && Build.VERSION.SDK_INT >= 30) {
+            decor.windowInsetsController?.hide(WindowInsets.Type.ime())
+        }
+        present(focused)
+    }
     // On API30+ an IME hide can finish after focus is already true. Read the
     // applied insets at draw time instead of racing its asynchronous teardown.
     val beforeDraw = ViewTreeObserver.OnPreDrawListener { present(decor.hasWindowFocus()); true }
