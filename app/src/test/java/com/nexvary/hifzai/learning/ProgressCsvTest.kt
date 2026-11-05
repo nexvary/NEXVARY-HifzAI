@@ -1,6 +1,11 @@
 package com.nexvary.hifzai.learning
 
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ProgressCsvTest {
@@ -24,4 +29,48 @@ class ProgressCsvTest {
     @Test fun emptyProgressExportsAHeaderWithoutInventingData() {
         assertEquals(header, ProgressCsv.encode(listOf(VerifiedVerse(1, 1, "fixture")), emptyMap()))
     }
+    @Test fun writesUtf8BytesAndClosesTheDestinationBeforeReportingSuccess() {
+        val payload = "١،٢\r\n"
+        var closed = false
+        val destination = object : ByteArrayOutputStream() {
+            override fun close() {
+                closed = true
+                super.close()
+            }
+        }
+        assertEquals(ProgressCsv.WriteResult.SAVED, ProgressCsv.write(payload) { destination })
+        assertArrayEquals(payload.toByteArray(Charsets.UTF_8), destination.toByteArray())
+        assertTrue(closed)
+    }
+
+    @Test fun classifiesDeniedAccessAndMissingStreams() {
+        assertEquals(ProgressCsv.WriteResult.ACCESS_DENIED,
+            ProgressCsv.write(header) { throw SecurityException("Permission revoked") })
+        assertEquals(ProgressCsv.WriteResult.WRITE_FAILED, ProgressCsv.write(header) { null })
+    }
+
+    @Test fun storageFullDuringWriteStillClosesTheStreamAndReportsFailure() {
+        var closed = false
+        val destination = object : OutputStream() {
+            override fun write(value: Int) {
+                throw IOException("ENOSPC")
+            }
+
+            override fun close() {
+                closed = true
+            }
+        }
+        assertEquals(ProgressCsv.WriteResult.WRITE_FAILED, ProgressCsv.write(header) { destination })
+        assertTrue(closed)
+    }
+
+    @Test fun delayedProviderFailureOnCloseIsNotReportedAsSuccess() {
+        val destination = object : ByteArrayOutputStream() {
+            override fun close() {
+                throw IOException("Provider commit failed")
+            }
+        }
+        assertEquals(ProgressCsv.WriteResult.WRITE_FAILED, ProgressCsv.write(header) { destination })
+    }
+
 }

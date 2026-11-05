@@ -1,7 +1,12 @@
 package com.nexvary.hifzai
 
 import android.graphics.Bitmap
-import android.view.KeyEvent
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.UiAutomation
+import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.view.accessibility.AccessibilityNodeInfo
+import java.util.UUID
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.captureToImage
@@ -94,25 +99,95 @@ class LearningDevelopmentUiTest {
         assertFalse(recreated.exposed)
     }
 
-    @Test fun cancellingAndroidDocumentPickerReturnsToSettingsWithoutChangingProgress() {
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val store = ProgressStore(context)
-        val before = MemoryFingerprint(1001, attempts = 1, recalled = 1)
-        store.save(ReviewCard(1001), before)
+    private fun UiAutomation.shell(command: String): ByteArray =
+        ParcelFileDescriptor.AutoCloseInputStream(executeShellCommand(command)).use { it.readBytes() }
+
+    private fun openProgressPicker(automation: UiAutomation) {
         click("الإعدادات")
         // Don't synchronize with Compose while the external picker owns focus.
         rule.onNodeWithText("حفظ التقدم في ملف CSV").performScrollTo().performClick()
-        val automation = instrumentation.uiAutomation
         rule.waitUntil(15000) {
             automation.rootInActiveWindow?.packageName?.toString()?.endsWith(".documentsui") == true
         }
-        assertTrue(automation.injectInputEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK), true))
-        assertTrue(automation.injectInputEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK), true))
+    }
+
+    @Test fun cancellingAndroidDocumentPickerReturnsToSettingsWithoutChangingProgress() {
+        val store = ProgressStore(context)
+        val before = MemoryFingerprint(1001, attempts = 1, recalled = 1)
+        store.save(ReviewCard(1001), before)
+        val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+        openProgressPicker(automation)
+        // The shell input command supplies a correctly timed down/up sequence.
+        automation.shell("input keyevent KEYCODE_BACK")
         rule.waitUntil(15000) {
             automation.rootInActiveWindow?.packageName?.toString() == context.packageName
         }
         rule.onNodeWithText("أُلغي حفظ ملف التقدم").performScrollTo().assertExists()
         assertEquals(before, store.memory(1001))
+    }
+
+    @Test fun savesExactCsvBytesThroughAndroidDocumentPicker() {
+        val store = ProgressStore(context)
+        val later = MemoryFingerprint(2001, attempts = 2, hinted = 1)
+        val earlier = MemoryFingerprint(1007, attempts = 1, recalled = 1)
+        store.save(ReviewCard(2001), later)
+        store.save(ReviewCard(1007), earlier)
+        rule.activityRule.scenario.recreate()
+        rule.awaitHifzReady()
+
+        val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+        val originalServiceInfo = automation.serviceInfo
+        val reportViewIds = automation.serviceInfo.apply {
+            flags = flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+        }
+        val filename = "hifz-proof-${UUID.randomUUID()}.csv"
+        // UiAutomation executes argv directly, so use find -exec instead of shell syntax.
+        val findFile = "find /storage/emulated/0 -name $filename -type f"
+        try {
+            automation.serviceInfo = reportViewIds
+            openProgressPicker(automation)
+            rule.waitUntil(15000) {
+                val name = automation.rootInActiveWindow?.findNode {
+                    it.isEditable && it.viewIdResourceName == "android:id/title"
+                }
+                name?.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, Bundle().apply {
+                    putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, filename)
+                }) == true
+            }
+            rule.waitUntil(15000) {
+                val save = automation.rootInActiveWindow?.findNode {
+                    it.isClickable && it.isEnabled && it.viewIdResourceName == "android:id/button1"
+                }
+                save?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true
+            }
+            rule.waitUntil(15000) {
+                automation.rootInActiveWindow?.packageName?.toString() == context.packageName
+            }
+            val saved = rule.onNodeWithText("حُفظ ملف التقدم")
+            rule.waitUntil(15000) {
+                rule.onAllNodesWithText("حُفظ ملف التقدم").fetchSemanticsNodes().isNotEmpty()
+            }
+            saved.performScrollTo().assertExists()
+            val paths = automation.shell(findFile).decodeToString().lineSequence().filter { it.isNotBlank() }.toList()
+            assertEquals("Expected one document in shared storage", 1, paths.size)
+            val expected = "surah,ayah,attempts,independent_recall,hinted,transition_misses,word_misses,similarity_misses\r\n" +
+                "1,7,1,1,0,0,0,0\r\n2,1,2,0,1,0,0,0\r\n"
+            assertArrayEquals(expected.toByteArray(Charsets.UTF_8),
+                automation.shell("$findFile -exec cat {} ;"))
+            assertEquals(earlier, store.memory(1007))
+            assertEquals(later, store.memory(2001))
+        } finally {
+            automation.serviceInfo = originalServiceInfo
+            automation.shell("$findFile -exec rm -f {} ;")
+        }
+    }
+
+    private fun AccessibilityNodeInfo.findNode(predicate: (AccessibilityNodeInfo) -> Boolean): AccessibilityNodeInfo? {
+        if (predicate(this)) return this
+        for (index in 0 until childCount) {
+            getChild(index)?.findNode(predicate)?.let { return it }
+        }
+        return null
     }
 
     @Test fun recitationRangeChecksArabicAddressesAndKeepsDraftOnRecreation() {
