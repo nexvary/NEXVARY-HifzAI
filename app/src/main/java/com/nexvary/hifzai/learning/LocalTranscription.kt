@@ -9,6 +9,7 @@ import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -20,7 +21,7 @@ internal class LocalTranscription(context: Context, private val changed: (State)
         data object Recording : State()
         data object Processing : State()
         data class Unable(val reason: String) : State()
-        data class Draft(val text: String) : State()
+        data class Draft(val text: String, val processingMillis: Long) : State()
     }
     private val app = context.applicationContext
     private val main = Handler(Looper.getMainLooper())
@@ -81,6 +82,7 @@ internal class LocalTranscription(context: Context, private val changed: (State)
                 val pcm = buffer.copyOf(count)
                 try {
                     if (!AudioInputGate.usable(pcm)) { emit(id,State.Unable("غير قادر على التأكد: التسجيل قصير أو منخفض الصوت")); return@execute }
+                    val processingStarted = SystemClock.elapsedRealtime()
                     emit(id,State.Processing)
                     val model = LocalWhisperModel.verifiedFile(app)
                     val handle = synchronized(this) {
@@ -90,7 +92,12 @@ internal class LocalTranscription(context: Context, private val changed: (State)
                     try {
                         val bytes = NativeWhisper.transcribe(handle,model.absolutePath,pcm)
                         val draft = bytes?.toString(Charsets.UTF_8)?.trim()?.take(2000)
-                        emit(id, if (draft.isNullOrBlank()) State.Unable("غير قادر على التأكد من التفريغ") else State.Draft(draft))
+                        val result = if (draft.isNullOrBlank()) {
+                            State.Unable("غير قادر على التأكد من التفريغ")
+                        } else {
+                            State.Draft(draft, SystemClock.elapsedRealtime() - processingStarted)
+                        }
+                        emit(id, result)
                         bytes?.fill(0)
                     } finally { synchronized(this) {
                         if (nativeSession==handle) nativeSession = 0
