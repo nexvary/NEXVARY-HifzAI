@@ -1,6 +1,7 @@
 package com.nexvary.hifzai
 
 import android.graphics.Bitmap
+import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.captureToImage
@@ -91,6 +92,27 @@ class LearningDevelopmentUiTest {
         assertEquals(PracticeKind.READ, recreated.stage)
         assertEquals(0, recreated.hints)
         assertFalse(recreated.exposed)
+    }
+
+    @Test fun cancellingAndroidDocumentPickerReturnsToSettingsWithoutChangingProgress() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val store = ProgressStore(context)
+        val before = MemoryFingerprint(1001, attempts = 1, recalled = 1)
+        store.save(ReviewCard(1001), before)
+        click("الإعدادات")
+        // Don't synchronize with Compose while the external picker owns focus.
+        rule.onNodeWithText("حفظ التقدم في ملف CSV").performScrollTo().performClick()
+        val automation = instrumentation.uiAutomation
+        rule.waitUntil(15000) {
+            automation.rootInActiveWindow?.packageName?.toString()?.endsWith(".documentsui") == true
+        }
+        assertTrue(automation.injectInputEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK), true))
+        assertTrue(automation.injectInputEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK), true))
+        rule.waitUntil(15000) {
+            automation.rootInActiveWindow?.packageName?.toString() == context.packageName
+        }
+        rule.onNodeWithText("أُلغي حفظ ملف التقدم").performScrollTo().assertExists()
+        assertEquals(before, store.memory(1001))
     }
 
     @Test fun recitationRangeChecksArabicAddressesAndKeepsDraftOnRecreation() {

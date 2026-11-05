@@ -57,3 +57,9 @@ for assessed verses, in corpus order. It does not contain Quran text, notes,
 audio, identifiers or session history. The chosen document provider controls
 where the export is stored. The existing text-summary share remains available.
 This export is not an import or a backup/restore format.
+
+Export completion, cancellation and I/O failure feedback appears beside the
+save control and is announced to accessibility services. Emulator coverage opens
+the Android document picker and dismisses it with Back before checking the local
+settings screen and progress counters. Successful writes to a chosen provider
+still need device-level verification.
