@@ -136,7 +136,8 @@ class LearningDevelopmentUiTest {
 
         val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
         val filename = "hifz-proof-${UUID.randomUUID()}.csv"
-        val findFile = "find /sdcard/ -name '$filename' -type f 2>/dev/null"
+        // UiAutomation executes argv directly, so use find -exec instead of shell syntax.
+        val findFile = "find /storage/emulated/0 -name $filename -type f"
         try {
             openProgressPicker(automation)
             rule.waitUntil(15000) {
@@ -164,11 +165,11 @@ class LearningDevelopmentUiTest {
             val expected = "surah,ayah,attempts,independent_recall,hinted,transition_misses,word_misses,similarity_misses\r\n" +
                 "1,7,1,1,0,0,0,0\r\n2,1,2,0,1,0,0,0\r\n"
             assertArrayEquals(expected.toByteArray(Charsets.UTF_8),
-                automation.shell("$findFile | while IFS= read -r path; do cat \"\$path\"; done"))
+                automation.shell("$findFile -exec cat {} ;"))
             assertEquals(earlier, store.memory(1007))
             assertEquals(later, store.memory(2001))
         } finally {
-            automation.shell("$findFile | while IFS= read -r path; do rm -f \"\$path\"; done")
+            automation.shell("$findFile -exec rm -f {} ;")
         }
     }
 
