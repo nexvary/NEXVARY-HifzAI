@@ -62,6 +62,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -284,6 +286,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
     var message by remember { mutableStateOf("") }
     val exportScope = rememberCoroutineScope()
     var exportingProgress by remember { mutableStateOf(false) }
+    var exportStatus by rememberSaveable { mutableStateOf("") }
     val createProgressFile = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
         if (uri != null) {
             val snapshot = memories.toMap()
@@ -296,15 +299,17 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                             ?: throw java.io.IOException("No output stream for progress export")
                         stream.use { it.write(payload) }
                     }
-                    message = "حُفظ ملف التقدم"
+                    exportStatus = "حُفظ ملف التقدم"
                 } catch (_: java.io.IOException) {
-                    message = "تعذر حفظ ملف التقدم؛ قد يكون الملف ناقصًا"
+                    exportStatus = "تعذر حفظ ملف التقدم؛ قد يكون الملف ناقصًا"
                 } catch (_: SecurityException) {
-                    message = "تعذر الوصول إلى وجهة حفظ ملف التقدم"
+                    exportStatus = "تعذر الوصول إلى وجهة حفظ ملف التقدم"
                 } finally {
                     exportingProgress = false
                 }
             }
+        } else {
+            exportStatus = "أُلغي حفظ ملف التقدم"
         }
     }
     var confirmClear by remember { mutableStateOf(false) }
@@ -1171,9 +1176,15 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                         context.startActivity(Intent.createChooser(intent, "مشاركة التقدم"))
                     }
                     Text("ملف CSV يحتوي على أرقام الآيات وعدادات التقدم. اختر مكان حفظ تثق به.")
-                    OutlinedButton(onClick = { createProgressFile.launch("hifz-progress.csv") },
-                        enabled = !exportingProgress, modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(onClick = {
+                        exportStatus = ""
+                        createProgressFile.launch("hifz-progress.csv")
+                    }, enabled = !exportingProgress, modifier = Modifier.fillMaxWidth()) {
                         Text("حفظ التقدم في ملف CSV")
+                    }
+                    if (exportingProgress || exportStatus.isNotEmpty()) {
+                        Text(if (exportingProgress) "جارٍ حفظ ملف التقدم…" else exportStatus,
+                            Modifier.semantics { liveRegion = LiveRegionMode.Polite })
                     }
                     if (confirmClear) {
                         Text("تأكيد: سيُحذف التقدم والجلسة ودفتر المعلم المحلي ولا يمكن استعادتها.",
