@@ -50,6 +50,7 @@ internal fun LocalTranscriptionScreen() {
         is LocalTranscription.State.Draft -> {
             Text("مسودة آلية قد تخطئ أو تضيف كلامًا لم يُنطق • ليست نصًا قرآنيًا معتمدًا")
             Text(value.text, fontFamily=FontFamily.SansSerif)
+            Text("زمن تجهيز النموذج والتفريغ على هذا الجهاز: ${value.processingMillis} مللي ثانية")
         }
         is LocalTranscription.State.Unable -> Text(value.reason)
         else -> Text("لا تسجيل ولا تفريغ محفوظ في هذه الصفحة.")
