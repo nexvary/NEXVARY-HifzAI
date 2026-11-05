@@ -23,8 +23,8 @@
 | 012 | Add representative Quran text tests | جزئي / غير مقبول نهائيًا | QuranCorpus.kt, OFFICIAL_CORPUS_COMPARISON.json؛ مطابقة الأصل الرسمي مثبتة؛ تدقيق العرض العلمي الداخلي لم يكتمل |
 | 013 | Provide right-to-left Arabic baseline | جزئي / غير مقبول نهائيًا | MainActivity.kt؛ تنفيذ الواجهة موجود؛ فحص الهاتف والتابلت وTalkBack والخط الكبير ليس مثبتًا بعد |
 | 014 | Add accessibility labels for all controls | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 015 | Persist review progress locally | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
-| 016 | Add reset confirmation for user data | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 015 | Persist review progress locally | جزئي / غير مقبول نهائيًا | ProgressCsv.kt وMainActivity.kt؛ تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب |
+| 016 | Add reset confirmation for user data | جزئي / غير مقبول نهائيًا | ProgressCsv.kt وMainActivity.kt؛ تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب |
 | 017 | Separate UI, domain and persistence | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 018 | Document demo-vs-production status | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 019 | Implement protected secrets policy | جزئي / غير مقبول نهائيًا | SECURITY.md, AndroidManifest.xml, PrivateRecitationPractice.kt, TeacherNotebook.kt؛ تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية |
@@ -36,7 +36,7 @@
 | 025 | Implement progressive word concealment | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 026 | Add full-verse active recall | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 027 | Add optional first-word hints | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
-| 028 | Track hint usage in review events | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 028 | Track hint usage in review events | جزئي / غير مقبول نهائيًا | ProgressCsv.kt وMainActivity.kt؛ تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب |
 | 029 | Implement verse transition practice | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 030 | Add reverse transition prompts | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 031 | Add end-of-page continuation practice | جزئي / غير مقبول نهائيًا | QuranPartitions.kt, PartitionPickerScreen.kt, RangePracticeScreen.kt؛ نطاق أجزاء وصفحات مثبت؛ تدريب إكمال نهاية الصفحة إلى التالية وأهداف مقاطع مخصصة غير مكتملين |
@@ -44,10 +44,10 @@
 | 033 | Provide repetition without losing place | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 034 | Support slow learners with shorter tasks | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
 | 035 | Allow manual replay of failed items | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
-| 036 | Add review due-date display | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 036 | Add review due-date display | جزئي / غير مقبول نهائيًا | ProgressCsv.kt وMainActivity.kt؛ تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب |
 | 037 | Separate memorization from revision modes | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 038 | Add recovery drill for forgotten ayat | جزئي / غير مقبول نهائيًا | RecallLadder.kt, HifzEngine.kt, MainActivity.kt؛ تقييم ذاتي؛ التكيف والقيمة التعليمية يحتاجان تقييمًا مستقلًا |
-| 039 | Enable saved stop points | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 039 | Enable saved stop points | جزئي / غير مقبول نهائيًا | ProgressCsv.kt وMainActivity.kt؛ تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب |
 | 040 | Test entire memorization flow on device | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 041 | Implement single-screen focus practice | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 042 | Design clear home dashboard | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
@@ -179,8 +179,8 @@
 | 168 | Establish encryption-at-rest threat model | جزئي / غير مقبول نهائيًا | SECURITY.md, AndroidManifest.xml, PrivateRecitationPractice.kt, TeacherNotebook.kt؛ تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية |
 | 169 | Implement secure authentication when needed | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 170 | Provide local data deletion | جزئي / غير مقبول نهائيًا | MainActivity.kt, RuntimeResetStore.kt, LocalDataReset.kt؛ سجل حذف مؤكد مسبق واستكمال بعد الانقطاع؛ فساد السجل يحظر الاستعادة دون حذف غير مطلوب. قبول Android/الأجهزة الحقيقية معلق. |
-| 171 | Add export of user progress | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
-| 172 | Support anonymous local mode | جزئي / غير مقبول نهائيًا | ProgressStore.kt, MainActivity.kt؛ التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة |
+| 171 | Add export of user progress | جزئي / غير مقبول نهائيًا | ProgressCsv.kt وMainActivity.kt؛ تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب |
+| 172 | Support anonymous local mode | جزئي / غير مقبول نهائيًا | ProgressCsv.kt وMainActivity.kt؛ تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب |
 | 173 | Define cloud opt-in consent | غير منفذ أو بلا دليل | لا دليل تنفيذ؛ لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول |
 | 174 | Protect children's data by default | جزئي / غير مقبول نهائيًا | SECURITY.md, AndroidManifest.xml, PrivateRecitationPractice.kt, TeacherNotebook.kt؛ تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية |
 | 175 | Prevent raw microphone log collection | جزئي / غير مقبول نهائيًا | SECURITY.md, AndroidManifest.xml, PrivateRecitationPractice.kt, TeacherNotebook.kt؛ تحكم محلي وغياب إذن الإنترنت؛ يحتاج تدقيقًا مستقلًا وقياسًا على أجهزة فعلية |

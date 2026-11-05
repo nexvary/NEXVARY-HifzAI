@@ -293,17 +293,15 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
             exportingProgress = true
             exportScope.launch {
                 try {
-                    withContext(Dispatchers.IO) {
-                        val payload = ProgressCsv.encode(corpus.verses, snapshot).toByteArray(Charsets.UTF_8)
-                        val stream = context.contentResolver.openOutputStream(uri, "wt")
-                            ?: throw java.io.IOException("No output stream for progress export")
-                        stream.use { it.write(payload) }
+                    val result = withContext(Dispatchers.IO) {
+                        val payload = ProgressCsv.encode(corpus.verses, snapshot)
+                        ProgressCsv.write(payload) { context.contentResolver.openOutputStream(uri, "wt") }
                     }
-                    exportStatus = "حُفظ ملف التقدم"
-                } catch (_: java.io.IOException) {
-                    exportStatus = "تعذر حفظ ملف التقدم؛ قد يكون الملف ناقصًا"
-                } catch (_: SecurityException) {
-                    exportStatus = "تعذر الوصول إلى وجهة حفظ ملف التقدم"
+                    exportStatus = when (result) {
+                        ProgressCsv.WriteResult.SAVED -> "حُفظ ملف التقدم"
+                        ProgressCsv.WriteResult.ACCESS_DENIED -> "تعذر الوصول إلى وجهة حفظ ملف التقدم"
+                        ProgressCsv.WriteResult.WRITE_FAILED -> "تعذر حفظ ملف التقدم؛ قد يكون الملف ناقصًا"
+                    }
                 } finally {
                     exportingProgress = false
                 }
@@ -1178,7 +1176,11 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                     Text("ملف CSV يحتوي على أرقام الآيات وعدادات التقدم. اختر مكان حفظ تثق به.")
                     OutlinedButton(onClick = {
                         exportStatus = ""
-                        createProgressFile.launch("hifz-progress.csv")
+                        try {
+                            createProgressFile.launch("hifz-progress.csv")
+                        } catch (_: android.content.ActivityNotFoundException) {
+                            exportStatus = "لا يتوفر تطبيق لاختيار مكان حفظ ملف التقدم"
+                        }
                     }, enabled = !exportingProgress, modifier = Modifier.fillMaxWidth()) {
                         Text("حفظ التقدم في ملف CSV")
                     }
