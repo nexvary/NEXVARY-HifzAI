@@ -3408,18 +3408,19 @@
       "required_function": "Add export of user progress",
       "status": "partial_unaccepted",
       "implementation": [
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt",
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressCsv.kt",
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
-        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
+        "app/src/main/java/com/nexvary/hifzai/learning/ProgressCsv.kt": "371550c13703452abe7046b5f36d502699adc245",
+        "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "371550c13703452abe7046b5f36d502699adc245"
       },
       "tests_or_checks": [
-        "app/src/androidTest/java/com/nexvary/hifzai/LocalDataAndAudioTest.kt"
+        "app/src/test/java/com/nexvary/hifzai/learning/ProgressCsvTest.kt",
+        "app/src/androidTest/java/com/nexvary/hifzai/LearningDevelopmentUiTest.kt"
       ],
-      "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "التخزين محلي؛ التصدير ملخص نصي فقط؛ لا استيراد أو مزامنة متعددة الأجهزة"
+      "verification": "See TEST_RESULTS.md for matching run evidence. Device validation and overall acceptance are pending.",
+      "problems": "تصدير عدادات الآيات بترتيب المصحف عبر منتقي Android، مع الملخص النصي؛ تحقق المحاكي لهذا التغيير والأجهزة الفعلية مطلوب"
     },
     {
       "phase": "172",

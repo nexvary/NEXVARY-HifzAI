@@ -1,6 +1,7 @@
 package com.nexvary.hifzai
 
 import android.graphics.Bitmap
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.UiAutomation
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
@@ -135,20 +136,27 @@ class LearningDevelopmentUiTest {
         rule.awaitHifzReady()
 
         val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+        val originalServiceInfo = automation.serviceInfo
+        val reportViewIds = automation.serviceInfo.apply {
+            flags = flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+        }
         val filename = "hifz-proof-${UUID.randomUUID()}.csv"
         // UiAutomation executes argv directly, so use find -exec instead of shell syntax.
         val findFile = "find /storage/emulated/0 -name $filename -type f"
         try {
+            automation.serviceInfo = reportViewIds
             openProgressPicker(automation)
             rule.waitUntil(15000) {
-                val name = automation.rootInActiveWindow?.findNode { it.isEditable }
+                val name = automation.rootInActiveWindow?.findNode {
+                    it.isEditable && it.viewIdResourceName == "android:id/title"
+                }
                 name?.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, Bundle().apply {
                     putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, filename)
                 }) == true
             }
             rule.waitUntil(15000) {
                 val save = automation.rootInActiveWindow?.findNode {
-                    it.isClickable && it.isEnabled && it.text?.toString().equals("Save", ignoreCase = true)
+                    it.isClickable && it.isEnabled && it.viewIdResourceName == "android:id/button1"
                 }
                 save?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true
             }
@@ -169,6 +177,7 @@ class LearningDevelopmentUiTest {
             assertEquals(earlier, store.memory(1007))
             assertEquals(later, store.memory(2001))
         } finally {
+            automation.serviceInfo = originalServiceInfo
             automation.shell("$findFile -exec rm -f {} ;")
         }
     }
