@@ -36,7 +36,9 @@ internal class LocalTranscription(context: Context, private val changed: (State)
         if (!closed && generation.get()==id) changed(value)
     } }
     @Synchronized fun start() {
-        if (closed || recorder != null) return
+        if (closed) return
+        // Cancel stops the previous capture. The serial worker releases its recorder
+        // before starting a replacement, even when the user retries immediately.
         cancel()
         if (app.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             changed(State.Unable("يلزم إذن الميكروفون لهذا التسميع المحلي")); return
@@ -50,6 +52,7 @@ internal class LocalTranscription(context: Context, private val changed: (State)
         stopCapture = false
         changed(State.Preparing)
         worker.execute {
+            if (generation.get() != id) return@execute
             var samples: FloatArray? = null
             var active: AudioRecord? = null
             try {

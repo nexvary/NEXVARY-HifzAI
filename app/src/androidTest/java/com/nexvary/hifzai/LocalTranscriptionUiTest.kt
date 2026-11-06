@@ -38,6 +38,24 @@ class LocalTranscriptionUiTest {
     private fun click(text: String) { rule.onNodeWithText(text).performScrollTo().performClick(); rule.waitForIdle() }
     private fun has(text: String) = rule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
 
+    @Test fun cancelledCaptureCanBeRestartedImmediately() {
+        rule.onNodeWithText("الإعدادات").performClick()
+        click("تفريغ صوتي محلي تجريبي")
+        val start = "ابدأ تسميعًا محليًا تجريبيًا"
+        val recording = "الميكروفون يعمل الآن • الصوت في الذاكرة المؤقتة فقط"
+        val lowMemory = "الذاكرة المتاحة لا تكفي لتشغيل النموذج بأمان الآن"
+        click(start)
+        rule.waitUntil(7000) { has(recording) || has(lowMemory) }
+        val firstStarted = has(recording)
+
+        click("إلغاء ومحو المسودة")
+        click(start)
+        rule.waitUntil(7000) { has(recording) || has(lowMemory) }
+        if (firstStarted) rule.onNodeWithText(recording).assertExists()
+        click("إلغاء ومحو المسودة")
+        rule.onNodeWithText("لا تسجيل ولا تفريغ محفوظ في هذه الصفحة.").assertExists()
+    }
+
     @Test fun microphoneOrExplicitResourceRefusalStaysPrivateAndStopsInBackground() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val audio = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager

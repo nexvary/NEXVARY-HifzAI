@@ -482,7 +482,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
     Scaffold(
         containerColor = navy,
         bottomBar = {
-            AdaptiveBottomNavigation(listOf(
+            AdaptiveBottomNavigation(windowWidth, listOf(
                 NavigationDestination("الرئيسية", Icons.Rounded.Home, screen == Screen.HOME) { screen = Screen.HOME },
                 NavigationDestination("الحفظ", Icons.Rounded.AutoStories, screen == Screen.PRACTICE) {
                     followsDailyPlan = false; screen = Screen.PRACTICE

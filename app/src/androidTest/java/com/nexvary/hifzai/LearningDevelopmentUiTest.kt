@@ -1,6 +1,7 @@
 package com.nexvary.hifzai
 
 import android.graphics.Bitmap
+import android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.UiAutomation
 import android.os.Bundle
@@ -128,8 +129,8 @@ class LearningDevelopmentUiTest {
         } finally {
             // Leave no external window over subsequent tests if an assertion fails.
             if (automation.pickerRoot() != null) {
-                if (automation.keyboardVisible()) automation.shell("input keyevent KEYCODE_BACK")
-                automation.shell("input keyevent KEYCODE_BACK")
+                if (automation.keyboardVisible()) automation.performGlobalAction(GLOBAL_ACTION_BACK)
+                if (automation.pickerRoot() != null) automation.performGlobalAction(GLOBAL_ACTION_BACK)
             }
             info.flags = originalFlags
             automation.serviceInfo = info
@@ -143,11 +144,15 @@ class LearningDevelopmentUiTest {
         withProgressPicker { automation ->
             // On a small or scaled display, Back first dismisses the filename keyboard.
             if (automation.keyboardVisible()) {
-                automation.shell("input keyevent KEYCODE_BACK")
+                assertTrue("System must accept Back for the keyboard", automation.performGlobalAction(GLOBAL_ACTION_BACK))
                 rule.waitUntil(15000) { !automation.keyboardVisible() }
             }
-            if (automation.pickerRoot() != null) automation.shell("input keyevent KEYCODE_BACK")
-            rule.waitUntil(15000) { automation.pickerRoot() == null }
+            if (automation.pickerRoot() != null) {
+                assertTrue("System must accept Back for the picker", automation.performGlobalAction(GLOBAL_ACTION_BACK))
+            }
+            rule.waitUntil(15000) {
+                automation.windows.any { it.isFocused && it.root?.packageName?.toString() == context.packageName }
+            }
             rule.onNodeWithText("أُلغي حفظ ملف التقدم").performScrollTo().assertExists()
         }
         assertEquals(before, store.memory(1001))
