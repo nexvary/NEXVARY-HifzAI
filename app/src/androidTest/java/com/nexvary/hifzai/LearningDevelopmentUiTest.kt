@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityWindowInfo
+import android.view.accessibility.AccessibilityEvent
 import java.util.UUID
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -109,6 +110,9 @@ class LearningDevelopmentUiTest {
             .mapNotNull { it.root }
             .firstOrNull { it.packageName?.toString()?.endsWith(".documentsui") == true }
 
+    private fun UiAutomation.appHasFocus(): Boolean =
+        windows.any { it.isFocused && it.root?.packageName?.toString() == context.packageName }
+
     private fun UiAutomation.keyboardVisible(): Boolean =
         windows.any { it.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD }
 
@@ -126,11 +130,31 @@ class LearningDevelopmentUiTest {
                 automation.pickerRoot()?.findNode { it.viewIdResourceName == "android:id/title" } != null
             }
             block(automation)
+        } catch (failure: Throwable) {
+            runCatching {
+                val windows = automation.windows.joinToString("\n") { window ->
+                    "$window package=${window.root?.packageName}"
+                }
+                File(context.filesDir, "hifz-export-picker-failure.txt").writeText(windows)
+                automation.takeScreenshot()?.let { screenshot ->
+                    try {
+                        File(context.filesDir, "hifz-export-picker-failure.png").outputStream().use {
+                            check(screenshot.compress(Bitmap.CompressFormat.PNG, 100, it))
+                        }
+                    } finally { screenshot.recycle() }
+                }
+            }.exceptionOrNull()?.let { failure.addSuppressed(it) }
+            throw failure
         } finally {
             // Leave no external window over subsequent tests if an assertion fails.
-            if (automation.pickerRoot() != null) {
-                if (automation.keyboardVisible()) automation.performGlobalAction(GLOBAL_ACTION_BACK)
-                if (automation.pickerRoot() != null) automation.performGlobalAction(GLOBAL_ACTION_BACK)
+            if (!automation.appHasFocus() && automation.pickerRoot() != null) {
+                if (automation.keyboardVisible()) {
+                    automation.performGlobalAction(GLOBAL_ACTION_BACK)
+                    automation.waitForIdle(300, 5000)
+                }
+                if (!automation.appHasFocus() && automation.pickerRoot() != null) {
+                    automation.performGlobalAction(GLOBAL_ACTION_BACK)
+                }
             }
             info.flags = originalFlags
             automation.serviceInfo = info
@@ -146,13 +170,22 @@ class LearningDevelopmentUiTest {
             // Back is delivered. Each step traverses actual system UI.
             automation.waitForIdle(300, 5000)
             var backSteps = 0
-            while (automation.pickerRoot() != null && backSteps < 3) {
-                assertTrue("System must accept Back", automation.performGlobalAction(GLOBAL_ACTION_BACK))
+            while (!automation.appHasFocus() && automation.pickerRoot() != null && backSteps < 3) {
+                // The global action is queued by the system. Wait for a real
+                // window event before testing focus or issuing another Back.
+                val transition = automation.executeAndWaitForEvent(
+                    { assertTrue("System must accept Back", automation.performGlobalAction(GLOBAL_ACTION_BACK)) },
+                    { event -> event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED ||
+                        event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED },
+                    5000
+                )
+                transition.recycle()
                 automation.waitForIdle(300, 5000)
                 backSteps++
             }
+            rule.waitUntil(15000) { automation.appHasFocus() }
             rule.waitUntil(15000) {
-                automation.windows.any { it.isFocused && it.root?.packageName?.toString() == context.packageName }
+                rule.onAllNodesWithText("أُلغي حفظ ملف التقدم").fetchSemanticsNodes().isNotEmpty()
             }
             rule.onNodeWithText("أُلغي حفظ ملف التقدم").performScrollTo().assertExists()
         }

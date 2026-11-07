@@ -49,7 +49,9 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api }}
-          target: google_apis
+          # API 35 Google APIs image showed a blocking Pixel Launcher ANR.
+          # The offline application uses the same tests on the AOSP image.
+          target: ${{ matrix.api == 35 && 'default' || 'google_apis' }}
           arch: x86_64
           profile: pixel_6
           disk-size: 2048M
@@ -78,4 +80,5 @@ jobs:
             ui-proof/instrumentation-navigation-2x.txt
             ui-proof/hifz-navigation*.png
             ui-proof/logcat-failure.txt
+            ui-proof/hifz-export-picker-failure.*
           if-no-files-found: ignore

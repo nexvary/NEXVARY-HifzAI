@@ -6,6 +6,14 @@ failure_diagnostics() {
   if [ "$result" -ne 0 ]; then
     adb logcat -d -v threadtime > ui-proof/logcat-failure.txt || true
     tail -n 180 ui-proof/logcat-failure.txt || true
+    for suffix in txt png; do
+      target="ui-proof/hifz-export-picker-failure.$suffix"
+      if adb exec-out run-as com.nexvary.hifzai cat "files/hifz-export-picker-failure.$suffix" > "$target.tmp"; then
+        mv "$target.tmp" "$target"
+      else
+        rm -f "$target.tmp"
+      fi
+    done
     adb exec-out run-as com.nexvary.hifzai cat files/hifz-navigation-before.png > ui-proof/hifz-navigation-failure.png || true
   fi
   exit "$result"

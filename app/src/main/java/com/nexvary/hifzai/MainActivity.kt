@@ -56,7 +56,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -184,17 +184,21 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showVerifiedContent(corpus: QuranCorpus) {
+        val export = androidx.lifecycle.ViewModelProvider(this)[ProgressExportViewModel::class.java]
         setContent {
             val preferences = remember { ProgressStore(this@MainActivity) }
             var appearance by remember { mutableStateOf(preferences.appearance) }
             HifzTheme(appearance) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    VerifiedAppContent(corpus, appearance, changeAppearance = {
+                    VerifiedAppContent(corpus, appearance, export, changeAppearance = {
                         preferences.appearance = it
                         appearance = it
                     }, resetRuntime = {
                         val result = dataReset.request()
-                        if (result != LocalDataReset.Result.NOT_STARTED) RecitationPlaybackService.stopForDataReset()
+                        if (result != LocalDataReset.Result.NOT_STARTED) {
+                            RecitationPlaybackService.stopForDataReset()
+                            export.clearForReset()
+                        }
                         if (result != LocalDataReset.Result.NOT_STARTED) recreate()
                         result != LocalDataReset.Result.NOT_STARTED
                     })
@@ -218,7 +222,7 @@ class MainActivity : ComponentActivity() {
 
 /** The Activity installs this root only after canonical verification succeeds. */
 @Composable
-private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
+private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, export: ProgressExportViewModel, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
     val context = LocalContext.current
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
@@ -284,30 +288,16 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
     var followsDailyPlan by rememberSaveable { mutableStateOf(savedSession?.followsDailyPlan ?: false) }
     var dailyPlanChapter by rememberSaveable { mutableIntStateOf(savedSession?.planChapter?.takeIf { it > 0 } ?: selectedSurah) }
     var message by remember { mutableStateOf("") }
-    val exportScope = rememberCoroutineScope()
-    var exportingProgress by remember { mutableStateOf(false) }
-    var exportStatus by rememberSaveable { mutableStateOf("") }
+    val exportState by export.status.collectAsState()
     val createProgressFile = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
         if (uri != null) {
             val snapshot = memories.toMap()
-            exportingProgress = true
-            exportScope.launch {
-                try {
-                    val result = withContext(Dispatchers.IO) {
-                        val payload = ProgressCsv.encode(corpus.verses, snapshot)
-                        ProgressCsv.write(payload) { context.contentResolver.openOutputStream(uri, "wt") }
-                    }
-                    exportStatus = when (result) {
-                        ProgressCsv.WriteResult.SAVED -> "حُفظ ملف التقدم"
-                        ProgressCsv.WriteResult.ACCESS_DENIED -> "تعذر الوصول إلى وجهة حفظ ملف التقدم"
-                        ProgressCsv.WriteResult.WRITE_FAILED -> "تعذر حفظ ملف التقدم؛ قد يكون الملف ناقصًا"
-                    }
-                } finally {
-                    exportingProgress = false
-                }
+            val resolver = context.applicationContext.contentResolver
+            export.write({ ProgressCsv.encode(corpus.verses, snapshot) }) {
+                resolver.openOutputStream(uri, "wt")
             }
         } else {
-            exportStatus = "أُلغي حفظ ملف التقدم"
+            export.cancelPicking()
         }
     }
     var confirmClear by remember { mutableStateOf(false) }
@@ -1175,17 +1165,18 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, c
                     }
                     Text("ملف CSV يحتوي على أرقام الآيات وعدادات التقدم. اختر مكان حفظ تثق به.")
                     OutlinedButton(onClick = {
-                        exportStatus = ""
-                        try {
-                            createProgressFile.launch("hifz-progress.csv")
-                        } catch (_: android.content.ActivityNotFoundException) {
-                            exportStatus = "لا يتوفر تطبيق لاختيار مكان حفظ ملف التقدم"
+                        if (export.beginPicking()) {
+                            try {
+                                createProgressFile.launch("hifz-progress.csv")
+                            } catch (_: android.content.ActivityNotFoundException) {
+                                export.pickerUnavailable()
+                            }
                         }
-                    }, enabled = !exportingProgress, modifier = Modifier.fillMaxWidth()) {
+                    }, enabled = !exportState.busy, modifier = Modifier.fillMaxWidth()) {
                         Text("حفظ التقدم في ملف CSV")
                     }
-                    if (exportingProgress || exportStatus.isNotEmpty()) {
-                        Text(if (exportingProgress) "جارٍ حفظ ملف التقدم…" else exportStatus,
+                    if (exportState != ProgressExportViewModel.Status.IDLE) {
+                        Text(exportState.message,
                             Modifier.semantics { liveRegion = LiveRegionMode.Polite })
                     }
                     if (confirmClear) {
