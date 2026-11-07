@@ -109,6 +109,9 @@ class LearningDevelopmentUiTest {
             .mapNotNull { it.root }
             .firstOrNull { it.packageName?.toString()?.endsWith(".documentsui") == true }
 
+    private fun UiAutomation.appHasFocus(): Boolean =
+        windows.any { it.isFocused && it.root?.packageName?.toString() == context.packageName }
+
     private fun UiAutomation.keyboardVisible(): Boolean =
         windows.any { it.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD }
 
@@ -128,9 +131,14 @@ class LearningDevelopmentUiTest {
             block(automation)
         } finally {
             // Leave no external window over subsequent tests if an assertion fails.
-            if (automation.pickerRoot() != null) {
-                if (automation.keyboardVisible()) automation.performGlobalAction(GLOBAL_ACTION_BACK)
-                if (automation.pickerRoot() != null) automation.performGlobalAction(GLOBAL_ACTION_BACK)
+            if (!automation.appHasFocus() && automation.pickerRoot() != null) {
+                if (automation.keyboardVisible()) {
+                    automation.performGlobalAction(GLOBAL_ACTION_BACK)
+                    automation.waitForIdle(300, 5000)
+                }
+                if (!automation.appHasFocus() && automation.pickerRoot() != null) {
+                    automation.performGlobalAction(GLOBAL_ACTION_BACK)
+                }
             }
             info.flags = originalFlags
             automation.serviceInfo = info
@@ -146,13 +154,14 @@ class LearningDevelopmentUiTest {
             // Back is delivered. Each step traverses actual system UI.
             automation.waitForIdle(300, 5000)
             var backSteps = 0
-            while (automation.pickerRoot() != null && backSteps < 3) {
+            while (!automation.appHasFocus() && automation.pickerRoot() != null && backSteps < 3) {
                 assertTrue("System must accept Back", automation.performGlobalAction(GLOBAL_ACTION_BACK))
                 automation.waitForIdle(300, 5000)
                 backSteps++
             }
+            rule.waitUntil(15000) { automation.appHasFocus() }
             rule.waitUntil(15000) {
-                automation.windows.any { it.isFocused && it.root?.packageName?.toString() == context.packageName }
+                rule.onAllNodesWithText("أُلغي حفظ ملف التقدم").fetchSemanticsNodes().isNotEmpty()
             }
             rule.onNodeWithText("أُلغي حفظ ملف التقدم").performScrollTo().assertExists()
         }
