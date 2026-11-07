@@ -78,4 +78,5 @@ jobs:
             ui-proof/instrumentation-navigation-2x.txt
             ui-proof/hifz-navigation*.png
             ui-proof/logcat-failure.txt
+            ui-proof/hifz-export-picker-failure.*
           if-no-files-found: ignore
