@@ -142,13 +142,14 @@ class LearningDevelopmentUiTest {
         val before = MemoryFingerprint(1001, attempts = 1, recalled = 1)
         store.save(ReviewCard(1001), before)
         withProgressPicker { automation ->
-            // On a small or scaled display, Back first dismisses the filename keyboard.
-            if (automation.keyboardVisible()) {
-                assertTrue("System must accept Back for the keyboard", automation.performGlobalAction(GLOBAL_ACTION_BACK))
-                rule.waitUntil(15000) { !automation.keyboardVisible() }
-            }
-            if (automation.pickerRoot() != null) {
-                assertTrue("System must accept Back for the picker", automation.performGlobalAction(GLOBAL_ACTION_BACK))
+            // Wait for the filename editor/IME to settle before deciding where
+            // Back is delivered. Each step traverses actual system UI.
+            automation.waitForIdle(300, 5000)
+            var backSteps = 0
+            while (automation.pickerRoot() != null && backSteps < 3) {
+                assertTrue("System must accept Back", automation.performGlobalAction(GLOBAL_ACTION_BACK))
+                automation.waitForIdle(300, 5000)
+                backSteps++
             }
             rule.waitUntil(15000) {
                 automation.windows.any { it.isFocused && it.root?.packageName?.toString() == context.packageName }
