@@ -69,20 +69,19 @@ internal class LocalTranscription(context: Context, private val changed: (State)
                 if (stopCapture) { emit(id,State.Unable("التسجيل قصير جدًا للتفريغ")); return@execute }
                 val buffer = FloatArray(AudioInputGate.MAX_SAMPLES)
                 samples = buffer
-                val chunk = ShortArray(2048)
-                var count = 0
                 input.startRecording()
                 check(input.recordingState == AudioRecord.RECORDSTATE_RECORDING)
                 emit(id, State.Recording)
-                while (!stopCapture && generation.get()==id && count<buffer.size) {
-                    val read = input.read(chunk,0,minOf(chunk.size,buffer.size-count),AudioRecord.READ_BLOCKING)
-                    if (read <= 0) break
-                    repeat(read) { i -> buffer[count++] = chunk[i]/32768f }
-                    chunk.fill(0)
+                val count = readLocalPcm(buffer, shouldStop = { stopCapture || generation.get() != id }) { chunk, length ->
+                    input.read(chunk, 0, length, AudioRecord.READ_BLOCKING)
                 }
                 runCatching { input.stop() }; input.release(); active = null; recorder = null
                 if (generation.get()!=id) return@execute
-                val pcm = buffer.copyOf(count)
+                if (count == null) {
+                    emit(id, State.Unable("انقطع تسجيل الميكروفون. أعد المحاولة."))
+                    return@execute
+                }
+                val pcm = if (count == buffer.size) buffer else buffer.copyOf(count).also { buffer.fill(0f) }
                 try {
                     if (!AudioInputGate.usable(pcm)) { emit(id,State.Unable("غير قادر على التأكد: التسجيل قصير أو منخفض الصوت")); return@execute }
                     val processingStarted = SystemClock.elapsedRealtime()
