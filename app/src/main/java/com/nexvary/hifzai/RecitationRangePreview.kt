@@ -1,6 +1,17 @@
 package com.nexvary.hifzai
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Slider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import com.nexvary.hifzai.learning.CatalogRecording
+import com.nexvary.hifzai.learning.LocalRecitationLibrary
+import com.nexvary.hifzai.learning.ReciterProfile
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,23 +37,24 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.nexvary.hifzai.learning.QuranCorpus
 import com.nexvary.hifzai.learning.QuranSearchIndex
-import com.nexvary.hifzai.learning.RecitationCatalog
-import com.nexvary.hifzai.learning.ReciterCatalog
 import com.nexvary.hifzai.learning.RecordingAddress
 import com.nexvary.hifzai.learning.SurahInfo
 import com.nexvary.hifzai.learning.VerifiedVerse
 
 @Composable
-internal fun RecitationRangePreview(corpus: QuranCorpus, favorite: String?, current: VerifiedVerse, today: Long) {
+internal fun RecitationRangePreview(corpus: QuranCorpus, reciter: ReciterProfile?, current: VerifiedVerse,
+    today: Long, library: LocalRecitationLibrary, playback: RecitationLibraryViewModel) {
     Text("نطاق التلاوة", Modifier.semantics { heading() }, style = MaterialTheme.typography.titleLarge)
-    val reciter = ReciterCatalog.all.firstOrNull { it.slug == favorite }
     if (reciter == null) {
         Text("اختر قارئًا مفضلًا من القائمة أدناه للتحقق من توفر نطاق له.")
+        RecitationPlaybackPanel(playback)
         return
     }
 
-    // Only reviewed, bundled records can populate this catalogue.
-    val catalog = remember(corpus) { RecitationCatalog.create(emptyList(), corpus) }
+    val catalog = library.catalog
+    val playbackState by playback.state.collectAsState()
+    val context = LocalContext.current
+    if (catalog.recordings.isEmpty()) Text("فهرس التسجيلات المأذونة المرفق فارغ حاليًا.")
     val initialAddress = "${current.chapter}:${current.verse}"
     var first by rememberSaveable(initialAddress) { mutableStateOf(initialAddress) }
     var last by rememberSaveable(initialAddress) { mutableStateOf(initialAddress) }
@@ -71,19 +83,47 @@ internal fun RecitationRangePreview(corpus: QuranCorpus, favorite: String?, curr
         Text("تحقق من توفر التلاوة")
     }
     if (checked) {
-        val status = remember(catalog, first, last, reciter.slug, today) {
-            val start = QuranSearchIndex.address(first)?.let { (chapter, ayah) -> RecordingAddress(chapter, ayah) }
-            val end = QuranSearchIndex.address(last)?.let { (chapter, ayah) -> RecordingAddress(chapter, ayah) }
-            if (start == null || end == null) "أدخل بداية ونهاية بصيغة سورة:آية"
-            else try {
-                val records = catalog.selectRange(start, end, reciter.slug, today)
-                "عدد التسجيلات المأذونة في النطاق: ${records.size}"
+        val start = QuranSearchIndex.address(first)?.let { (chapter, ayah) -> RecordingAddress(chapter, ayah) }
+        val end = QuranSearchIndex.address(last)?.let { (chapter, ayah) -> RecordingAddress(chapter, ayah) }
+        val result: Result<List<CatalogRecording>> = remember(catalog, start, end, reciter.slug, today) {
+            try {
+                require(start != null && end != null) { "أدخل بداية ونهاية بصيغة سورة:آية" }
+                Result.success(catalog.selectRange(start, end, reciter.slug, today))
             } catch (error: IllegalArgumentException) {
-                error.message ?: "تعذر التحقق من توفر النطاق"
+                Result.failure(error)
             }
         }
-        Text(status, Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+        val records = result.getOrNull()
+        if (records == null) {
+            Text(result.exceptionOrNull()?.message ?: "تعذر التحقق من توفر النطاق",
+                Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+        } else {
+            Text("عدد التسجيلات المأذونة في النطاق: ${records.size}")
+            LazyColumn(Modifier.heightIn(max = 160.dp)) {
+                items(records, key = { it.rights.recordingId }) { record ->
+                    Text("${corpus.info(record.address.chapter).arabicName} • الآية ${record.address.ayah}")
+                }
+            }
+            var verseRepeats by rememberSaveable { mutableIntStateOf(0) }
+            var rangeRepeats by rememberSaveable { mutableIntStateOf(0) }
+            var speed by rememberSaveable { mutableFloatStateOf(1f) }
+            RepeatChoice("الآية", verseRepeats) { verseRepeats = it }
+            RepeatChoice("النطاق", rangeRepeats) { rangeRepeats = it }
+            Text("سرعة النطاق الجديد ${playbackSpeedLabel(speed)}")
+            Slider(value = speed, onValueChange = { speed = it }, valueRange = 0.5f..1.5f, steps = 3,
+                modifier = Modifier.semantics { contentDescription = "سرعة النطاق الجديد" })
+            OutlinedButton(onClick = {
+                focus.clearFocus()
+                playback.prepare(context as ComponentActivity, library, checkNotNull(start), checkNotNull(end),
+                    reciter.slug, RecitationLibraryViewModel.Options(verseRepeats, rangeRepeats, speed))
+            }, enabled = !playbackState.preparing && playbackState.playback?.phase !in
+                setOf(com.nexvary.hifzai.learning.LocalRecitationQueue.Phase.READY,
+                    com.nexvary.hifzai.learning.LocalRecitationQueue.Phase.PLAYING,
+                    com.nexvary.hifzai.learning.LocalRecitationQueue.Phase.PAUSED),
+                modifier = Modifier.fillMaxWidth()) { Text("تجهيز النطاق") }
+        }
     }
+    RecitationPlaybackPanel(playback)
 }
 
 @Composable
@@ -114,4 +154,16 @@ private fun RecitationSurahDialog(surahs: List<SurahInfo>, onDismiss: () -> Unit
         },
         confirmButton = { TextButton(onClick = onDismiss) { Text("إلغاء") } }
     )
+}
+
+
+@Composable
+private fun RepeatChoice(label: String, extra: Int, change: (Int) -> Unit) {
+    Text("تكرار $label بعد المرة الأولى: $extra")
+    Row {
+        OutlinedButton(onClick = { change(extra - 1) }, enabled = extra > 0,
+            modifier = Modifier.semantics { contentDescription = "تقليل تكرار $label" }) { Text("−") }
+        OutlinedButton(onClick = { change(extra + 1) }, enabled = extra < 20,
+            modifier = Modifier.semantics { contentDescription = "زيادة تكرار $label" }) { Text("+") }
+    }
 }
