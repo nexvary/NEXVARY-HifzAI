@@ -1,6 +1,11 @@
 package com.nexvary.hifzai
 
 import android.app.NotificationManager
+import android.graphics.Bitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.onRoot
+import org.junit.Assert.assertTrue
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
@@ -43,7 +48,7 @@ class RecitationLibraryUiTest {
     private val playback = RecitationLibraryViewModel()
     private lateinit var directory: File
 
-    private fun render(durationMs: Int, missing: Boolean = false) {
+    private fun render(durationMs: Int, missing: Boolean = false, repeats: Boolean = false) {
         val rate = 16000
         val samples = rate * durationMs / 1000
         val buffer = ByteBuffer.allocate(44 + samples * 2).order(ByteOrder.LITTLE_ENDIAN)
@@ -69,19 +74,32 @@ class RecitationLibraryUiTest {
         rule.setContent {
             HifzTheme(AppAppearance.DARK) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                    Column(Modifier.fillMaxSize()) {
                         Text("اختبار بنغمات اصطناعية")
-                        RecitationRangePreview(corpus, reader, corpus.verses.first(),
-                            LocalDate.now().toEpochDay(), library, playback)
+                        Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                            RecitationRangePreview(corpus, reader, corpus.verses.first(),
+                                LocalDate.now().toEpochDay(), library, playback)
+                        }
                     }
                 }
             }
         }
         click("تحقق من توفر التلاوة")
+        if (repeats) {
+            rule.onNodeWithContentDescription("زيادة تكرار الآية").performScrollTo().performClick()
+            rule.onNodeWithContentDescription("زيادة تكرار النطاق").performScrollTo().performClick()
+        }
         click("تجهيز النطاق")
     }
 
     private fun click(label: String) = rule.onNodeWithText(label).performScrollTo().performClick()
+
+    private fun screenshot(name: String) {
+        val bitmap = rule.onRoot().captureToImage().asAndroidBitmap()
+        File(context.filesDir, "hifz-$name.png").outputStream().use {
+            assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, it))
+        }
+    }
 
     private fun await(phase: LocalRecitationQueue.Phase) {
         rule.waitUntil(12000) { playback.state.value.playback?.phase == phase }
@@ -93,17 +111,23 @@ class RecitationLibraryUiTest {
     }
 
     @Test fun preparesThenPlaysPausesChangesSpeedResumesAndClears() {
-        render(20000)
+        render(10000, repeats = true)
         await(LocalRecitationQueue.Phase.READY)
+        assertEquals(1, playback.state.value.playback?.playback?.extraRepeats)
+        assertEquals(2, playback.state.value.playback?.rangePasses)
         click("تشغيل النطاق المجهز")
         await(LocalRecitationQueue.Phase.PLAYING)
         rule.waitUntil(8000) { (playback.state.value.playback?.playback?.positionMs ?: 0) > 100 }
+        rule.onNodeWithText("إيقاف التلاوة مؤقتًا").performScrollTo()
+        screenshot("library-playback")
         click("إيقاف التلاوة مؤقتًا")
         await(LocalRecitationQueue.Phase.PAUSED)
         rule.onNodeWithContentDescription("سرعة التلاوة الحالية").performScrollTo()
             .performSemanticsAction(SemanticsActions.SetProgress) { it(1.5f) }
         rule.waitUntil(8000) { playback.state.value.playback?.playback?.speed == 1.5f }
         assertEquals(LocalRecitationQueue.Phase.PAUSED, playback.state.value.playback?.phase)
+        rule.onNodeWithText("استئناف التلاوة").performScrollTo()
+        screenshot("library-paused")
         click("استئناف التلاوة")
         await(LocalRecitationQueue.Phase.PLAYING)
         click("إيقاف التلاوة ومسح القائمة")
