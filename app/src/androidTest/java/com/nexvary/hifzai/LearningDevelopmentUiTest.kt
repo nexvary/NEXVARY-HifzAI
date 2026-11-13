@@ -256,6 +256,8 @@ class LearningDevelopmentUiTest {
         rule.onNodeWithText("سورة البقرة").performClick()
         rule.onNodeWithText("2:1").assertExists()
         rule.onNodeWithText("2:286").assertExists()
+        rule.onNodeWithText("فهرس التسجيلات المأذونة المرفق فارغ حاليًا.").assertExists()
+        rule.onNodeWithText("تجهيز النطاق").assertDoesNotExist()
         val first = rule.onNodeWithText("بداية نطاق التلاوة")
         val last = rule.onNodeWithText("نهاية نطاق التلاوة")
         first.performScrollTo().performTextReplacement("١:٧")

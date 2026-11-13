@@ -185,12 +185,14 @@ class MainActivity : ComponentActivity() {
 
     private fun showVerifiedContent(corpus: QuranCorpus) {
         val export = androidx.lifecycle.ViewModelProvider(this)[ProgressExportViewModel::class.java]
+        val recitation = androidx.lifecycle.ViewModelProvider(this)[RecitationLibraryViewModel::class.java]
+        recitation.reconnect(applicationContext)
         setContent {
             val preferences = remember { ProgressStore(this@MainActivity) }
             var appearance by remember { mutableStateOf(preferences.appearance) }
             HifzTheme(appearance) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    VerifiedAppContent(corpus, appearance, export, changeAppearance = {
+                    VerifiedAppContent(corpus, appearance, export, recitation, changeAppearance = {
                         preferences.appearance = it
                         appearance = it
                     }, resetRuntime = {
@@ -198,6 +200,7 @@ class MainActivity : ComponentActivity() {
                         if (result != LocalDataReset.Result.NOT_STARTED) {
                             RecitationPlaybackService.stopForDataReset()
                             export.clearForReset()
+                            recitation.clear()
                         }
                         if (result != LocalDataReset.Result.NOT_STARTED) recreate()
                         result != LocalDataReset.Result.NOT_STARTED
@@ -222,7 +225,7 @@ class MainActivity : ComponentActivity() {
 
 /** The Activity installs this root only after canonical verification succeeds. */
 @Composable
-private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, export: ProgressExportViewModel, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
+private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, export: ProgressExportViewModel, recitation: RecitationLibraryViewModel, changeAppearance: (AppAppearance) -> Unit, resetRuntime: () -> Boolean) {
     val context = LocalContext.current
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     val store = remember(context) { ProgressStore(context) }
@@ -955,7 +958,11 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, e
                 Screen.LOCAL_TRANSCRIPTION -> LocalTranscriptionScreen()
                 Screen.RECITERS -> {
                     Section("دليل قرّاء مصر والسعودية", "أسماء مبدئية • التسجيلات تحتاج مراجعة التراخيص")
-                    RecitationRangePreview(corpus, favoriteReciter, verse, today)
+                    val library = remember(corpus) {
+                        com.nexvary.hifzai.learning.LocalRecitationLibrary.bundled(context, corpus)
+                    }
+                    RecitationRangePreview(corpus, ReciterCatalog.all.firstOrNull { it.slug == favoriteReciter },
+                        verse, today, library, recitation)
                     ReciterCatalog.all.groupBy { it.country }.forEach { (country, people) ->
                         Text(country.displayArabic, color = green, fontSize = 21.sp)
                         people.forEach { person ->

@@ -37,6 +37,7 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
     private var foregroundStarted = false
     private var requestedLoad: Long? = null
     private var closed = false
+    private var outcome: LocalRecitationQueue.Snapshot? = null
     private var lastPublished: LocalRecitationQueue.Snapshot? = null
     private var inactiveSince = 0L
     private val binder = PlaybackBinder()
@@ -76,6 +77,8 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
         fun speed(value: Float) { requireMain(); check(!closed); queue.setPlaybackSpeed(value) }
         fun stop() { requireMain(); stopPlayback() }
         fun snapshot(): LocalRecitationQueue.Snapshot = queue.snapshot()
+        internal fun isActive(): Boolean = foregroundStarted && !closed
+        internal fun lastOutcome(): LocalRecitationQueue.Snapshot? = outcome
         fun sessionToken(): MediaSession.Token = session.sessionToken
     }
 
@@ -178,6 +181,10 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
 
     private fun stopPlayback() {
         if (closed) return
+        val finalState = queue.snapshot()
+        outcome = finalState.takeIf {
+            it.phase == LocalRecitationQueue.Phase.COMPLETED || it.phase == LocalRecitationQueue.Phase.FAILED
+        }
         closed = true
         foregroundStarted = false
         handler.removeCallbacks(refresh)
@@ -213,6 +220,9 @@ class RecitationPlaybackService : Service(), LifecycleOwner {
             check(activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
             activity.startForegroundService(Intent(activity, RecitationPlaybackService::class.java).setAction(ACTION_START))
         }
+
+        internal fun hasActivePlayback(): Boolean =
+            current?.let { it.foregroundStarted && !it.closed } == true
 
         /** Stops an existing instance even if an Activity still holds its local binder. */
         fun stopForDataReset() {
