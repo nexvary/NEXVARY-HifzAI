@@ -8,9 +8,12 @@ import androidx.compose.ui.test.onRoot
 import org.junit.Assert.assertTrue
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -23,6 +26,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.nexvary.hifzai.learning.*
@@ -74,11 +78,13 @@ class RecitationLibraryUiTest {
         rule.setContent {
             HifzTheme(AppAppearance.DARK) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    Column(Modifier.fillMaxSize()) {
-                        Text("اختبار بنغمات اصطناعية")
-                        Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-                            RecitationRangePreview(corpus, reader, corpus.verses.first(),
-                                LocalDate.now().toEpochDay(), library, playback)
+                    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                        Column(Modifier.fillMaxSize().padding(18.dp)) {
+                            Text("اختبار بنغمات اصطناعية")
+                            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                                RecitationRangePreview(corpus, reader, corpus.verses.first(),
+                                    LocalDate.now().toEpochDay(), library, playback)
+                            }
                         }
                     }
                 }
