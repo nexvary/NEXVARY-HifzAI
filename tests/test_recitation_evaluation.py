@@ -1,8 +1,12 @@
 import copy
 import datetime as dt
 import json
+import os
+import tempfile
 import unittest
-from tools.evaluate_recitation import alignment, evaluate, canonical_references, character_alignment
+from pathlib import Path
+from unittest.mock import patch
+from tools.evaluate_recitation import alignment, evaluate, canonical_references, character_alignment, main
 
 
 class RecitationEvaluationTests(unittest.TestCase):
@@ -36,6 +40,31 @@ class RecitationEvaluationTests(unittest.TestCase):
         encoded = json.dumps(report)
         for private in ('synthetic-speaker-1', 'نص للاختبار', 'consent_record', 'fixture-1'):
             self.assertNotIn(private, encoded)
+
+    def test_held_out_region_and_ayah_counts_exclude_calibration_speakers(self):
+        data = self.fixture()
+        sample = data['samples'][0]
+        data['samples'].append(dict(sample, split='calibration', sample_id='training',
+                                    speaker_id='training-speaker', hypothesis=sample['human_transcript']))
+        groups = self.run_fixture(data)['groups']
+        self.assertAlmostEqual(1/6, groups['region:EG']['wer'])
+        self.assertAlmostEqual(1/3, groups['split:evaluation/region:EG']['wer'])
+        self.assertEqual(1, groups['split:evaluation/verse:fixture']['samples'])
+        self.assertEqual(0, groups['split:calibration/verse:fixture']['wer'])
+
+    def test_cli_refuses_to_overwrite_dataset_through_any_alias(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory, 'dataset.json')
+            source.write_text('private dataset', encoding='utf-8')
+            symbolic = source.with_name('symbolic.json')
+            symbolic.symlink_to(source)
+            hard = source.with_name('hard.json')
+            os.link(source, hard)
+            for output in (source, symbolic, hard):
+                with self.subTest(output=output), patch('sys.argv', ['evaluate_recitation', str(source), '--output', str(output)]):
+                    with self.assertRaisesRegex(ValueError, 'must not overwrite'):
+                        main()
+                self.assertEqual('private dataset', source.read_text(encoding='utf-8'))
 
     def test_human_transcript_is_asr_reference_not_intended_ayah(self):
         data = self.fixture()

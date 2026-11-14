@@ -11,9 +11,9 @@ import json
 from pathlib import Path
 
 try:
-    from tools.evaluate_recitation import evaluate, canonical_references, CORPUS_SHA256
+    from tools.evaluate_recitation import evaluate, canonical_references, require_distinct_output, CORPUS_SHA256
 except ModuleNotFoundError:  # Direct invocation from tools/.
-    from evaluate_recitation import evaluate, canonical_references, CORPUS_SHA256
+    from evaluate_recitation import evaluate, canonical_references, require_distinct_output, CORPUS_SHA256
 
 
 METRICS = ('wer', 'cer', 'coverage', 'false_alarm_rate', 'missed_error_rate')
@@ -64,8 +64,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--threshold', type=float, default=0.9)
     args = parser.parse_args()
-    if args.output.resolve() in (args.baseline.resolve(), args.candidate.resolve()):
-        raise ValueError('Output must not overwrite a dataset')
+    require_distinct_output(args.output, args.baseline, args.candidate)
     baseline, baseline_sha = read_dataset(args.baseline)
     candidate, candidate_sha = read_dataset(args.candidate)
     report = compare(baseline, candidate, canonical_references(), dt.date.today(), args.threshold)
