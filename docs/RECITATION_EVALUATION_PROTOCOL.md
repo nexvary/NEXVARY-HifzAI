@@ -49,8 +49,9 @@ python tools/evaluate_recitation.py /private/consented-evaluation.json --output 
 The numeric threshold is for analysis only, not independently calibrated permission
 to enable automatic feedback. Tune only on calibration speakers; report the held-out
 evaluation split separately. The tool also reports combined, per-region and per-ayah
-summaries, with sample counts. Do not interpret the combined/calibration rows as
-held-out performance. A group without sufficient representative samples cannot
+summaries, with sample counts. Use `split:evaluation/region:EG` and
+`split:evaluation/verse:chapter:ayah` rows for held-out region and verse metrics;
+combined region and verse rows include calibration speakers. A group without sufficient representative samples cannot
 support population claims. Seek independent statistical review of sample size,
 uncertainty intervals and the final threshold before making accuracy claims.
 
@@ -106,5 +107,6 @@ a model that abstains more cannot be called better merely because its conditiona
 false-alarm rate falls. These are descriptive paired differences, not significance,
 calibration, participant consent verification or real-world improvement evidence.
 No audio is collected; consent/rights assertions still require external review.
-The output path cannot overwrite either research dataset. No real dataset has been
+The evaluator and comparison commands reject output paths that refer to an input
+dataset, including symbolic links and hard links. No real dataset has been
 supplied or evaluated as part of this development batch.

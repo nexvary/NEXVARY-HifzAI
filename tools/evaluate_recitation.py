@@ -139,7 +139,10 @@ def evaluate(dataset, references, today, threshold=0.9):
         asr = alignment(sample['human_transcript'], sample['hypothesis'])
         asr.update(character_alignment(sample['human_transcript'], sample['hypothesis']))
         lexical = alignment(references[sample['verse']], sample['hypothesis'])
-        for group in ('all', 'region:'+sample['region'], 'verse:'+sample['verse'], 'split:'+sample['split']):
+        split = 'split:' + sample['split']
+        region = 'region:' + sample['region']
+        verse = 'verse:' + sample['verse']
+        for group in ('all', region, verse, split, f'{split}/{region}', f'{split}/{verse}'):
             row = aggregate[group]
             row['samples'] += 1
             for key, value in asr.items():
@@ -172,6 +175,7 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--threshold', type=float, default=0.9)
     args = parser.parse_args()
+    require_distinct_output(args.output, args.dataset)
     if args.dataset.stat().st_size > 20_000_000:
         raise ValueError('Dataset too large')
     raw = args.dataset.read_bytes()
@@ -180,6 +184,12 @@ def main():
     report['canonical_sha256'] = CORPUS_SHA256
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+'\n')
+
+
+def require_distinct_output(output, *datasets):
+    for dataset in datasets:
+        if output.resolve() == dataset.resolve() or (output.exists() and output.samefile(dataset)):
+            raise ValueError('Output must not overwrite a dataset')
 
 
 if __name__ == '__main__':

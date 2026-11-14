@@ -28,6 +28,7 @@ class PairedRecitationComparisonTests(unittest.TestCase):
         self.assertEqual(-0.5, delta['wer'])
         self.assertLess(delta['cer'], 0)
         self.assertEqual(-1, delta['false_alarm_rate'])
+        self.assertEqual(delta, report['groups']['split:evaluation/region:EG']['candidate_minus_baseline'])
         self.assertFalse(report['automatic_grading_enabled'])
         for private in ('private-id', 'private-speaker', 'private-consent', 'private-rights', 'نص تعليمي'):
             self.assertNotIn(private, json.dumps(report, ensure_ascii=False))
