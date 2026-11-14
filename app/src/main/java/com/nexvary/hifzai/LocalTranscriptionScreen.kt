@@ -14,9 +14,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.nexvary.hifzai.learning.LocalTranscription
+import com.nexvary.hifzai.learning.LexicalAligner
+import com.nexvary.hifzai.learning.QuranCorpus
+import com.nexvary.hifzai.learning.VerifiedVerse
+import com.nexvary.hifzai.learning.WordEditKind
 
 @Composable
-internal fun LocalTranscriptionScreen() {
+internal fun LocalTranscriptionScreen(corpus: QuranCorpus, reference: VerifiedVerse?) {
     val context = LocalContext.current
     var state by remember { mutableStateOf<LocalTranscription.State>(LocalTranscription.State.Idle) }
     val engine = remember(context) { LocalTranscription(context) { state = it } }
@@ -32,6 +36,7 @@ internal fun LocalTranscriptionScreen() {
         onDispose { activity?.lifecycle?.removeObserver(observer); engine.close() }
     }
     Text("تفريغ صوتي محلي تجريبي", style=MaterialTheme.typography.headlineSmall)
+    if (reference != null) Text("الآية المتوقعة: ${corpus.info(reference.chapter).arabicName} • ${reference.verse}")
     Text("المعالجة على هاتفك بنموذج Whisper Tiny، دون خادم. تحدث حتى 30 ثانية، ثم أوقف التسجيل لعرض مسودة التفريغ.")
     Text("غير قادر على التأكد من صحة التسميع: لم تُقَس دقة هذا النموذج للقرآن بشكل مستقل. لا درجات آلية أو حكم تجويد أو تعديل للمصحف.", color=MaterialTheme.colorScheme.primary)
     when (val value = state) {
@@ -51,6 +56,7 @@ internal fun LocalTranscriptionScreen() {
             Text("مسودة آلية قد تخطئ أو تضيف كلامًا لم يُنطق • ليست نصًا قرآنيًا معتمدًا")
             Text(value.text, fontFamily=FontFamily.SansSerif)
             Text("زمن تجهيز النموذج والتفريغ على هذا الجهاز: ${value.processingMillis} مللي ثانية")
+            if (reference != null) key(value) { DraftWordReview(corpus.ayahText(reference), value.text) }
         }
         is LocalTranscription.State.Unable -> Text(value.reason)
         else -> Text("لا تسجيل ولا تفريغ محفوظ في هذه الصفحة.")
@@ -63,4 +69,34 @@ internal fun LocalTranscriptionScreen() {
     },modifier=Modifier.fillMaxWidth()) { Text("ابدأ تسميعًا محليًا تجريبيًا") }
     OutlinedButton(onClick={ engine.cancel(); state=LocalTranscription.State.Idle },modifier=Modifier.fillMaxWidth()) { Text("إلغاء ومحو المسودة") }
     Text("المغادرة أو الخلفية توقف الجلسة وتمحو مسودتها. لا يُحفظ الصوت على القرص ولا تُحفظ النتيجة في تقدمك. لا تستخدم مسودة المحرك لتصحيح المصحف؛ ارجع للنص الأصلي.")
+}
+
+@Composable
+internal fun DraftWordReview(reference: String, draft: String) {
+    var show by remember { mutableStateOf(false) }
+    OutlinedButton(onClick = { show = !show }, modifier = Modifier.fillMaxWidth()) {
+        Text(if (show) "إخفاء مواضع المراجعة" else "عرض مواضع المراجعة المحتملة")
+    }
+    if (!show) return
+
+    val comparison = remember(reference, draft) { LexicalAligner.inspectDraft(reference, draft) }
+    Text("مواضع غير مؤكدة: قد تعكس أخطاء التفريغ. الأرقام تبدأ من أول كلمة في الآية أو المسودة.")
+    if (comparison == null) {
+        Text("تعذرت محاذاة المسودة بالآية. أعد المحاولة.")
+        return
+    }
+    if (comparison.distance == 0) Text("لم تظهر فروق لفظية في المسودة.")
+    val omissions = comparison.edits.filter { it.kind == WordEditKind.OMITTED }
+    val substitutions = comparison.edits.filter { it.kind == WordEditKind.SUBSTITUTED }
+    val additions = comparison.edits.filter { it.kind == WordEditKind.INSERTED }
+        .mapNotNull { it.heardIndex }.filterNot { it in comparison.possibleRepetitions }
+    ReviewPositions("حذف محتمل · كلمات الآية", omissions.mapNotNull { it.referenceIndex })
+    ReviewPositions("استبدال محتمل · كلمات الآية", substitutions.mapNotNull { it.referenceIndex })
+    ReviewPositions("تكرار محتمل · كلمات المسودة", comparison.possibleRepetitions)
+    ReviewPositions("إضافة محتملة · كلمات المسودة", additions)
+}
+
+@Composable
+private fun ReviewPositions(label: String, indices: List<Int>) {
+    if (indices.isNotEmpty()) Text("$label: ${indices.joinToString("، ") { (it + 1).toString() }}")
 }

@@ -38,6 +38,25 @@ class LocalTranscriptionUiTest {
     private fun click(text: String) { rule.onNodeWithText(text).performScrollTo().performClick(); rule.waitForIdle() }
     private fun has(text: String) = rule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
 
+    @Test fun opensTheExpectedVerseFromRecallAndReturnsToPractice() {
+        rule.onNodeWithText("الإعدادات").performClick()
+        click("حذف تقدم الحفظ من الجهاز")
+        click("حذف البيانات")
+        rule.awaitHifzReady()
+        rule.onNodeWithText("الحفظ").performClick()
+        repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+        val path = "تفريغ تجريبي للآية الحالية"
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val progress = context.getSharedPreferences("hifz_progress_v1", Context.MODE_PRIVATE)
+        val before = progress.all.toMap()
+        click(path)
+        rule.onNodeWithText("الآية المتوقعة: الفاتحة • 1").assertExists()
+        click("رجوع")
+        rule.onNodeWithText(path).assertExists()
+        rule.onNodeWithText("الآية المتوقعة: الفاتحة • 1").assertDoesNotExist()
+        assertEquals(before, progress.all)
+    }
+
     @Test fun cancelledCaptureCanBeRestartedImmediately() {
         rule.onNodeWithText("الإعدادات").performClick()
         click("تفريغ صوتي محلي تجريبي")

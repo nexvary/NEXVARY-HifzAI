@@ -2,7 +2,11 @@ package com.nexvary.hifzai.learning
 
 enum class WordEditKind { MATCH, OMITTED, INSERTED, SUBSTITUTED }
 data class WordEdit(val kind: WordEditKind, val referenceIndex: Int?, val heardIndex: Int?)
-data class LexicalAlignment(val edits: List<WordEdit>, val referenceWords: Int) {
+data class LexicalAlignment(
+    val edits: List<WordEdit>,
+    val referenceWords: Int,
+    val possibleRepetitions: List<Int> = emptyList(),
+) {
     val omissions get() = edits.count { it.kind == WordEditKind.OMITTED }
     val insertions get() = edits.count { it.kind == WordEditKind.INSERTED }
     val substitutions get() = edits.count { it.kind == WordEditKind.SUBSTITUTED }
@@ -12,8 +16,6 @@ data class LexicalAlignment(val edits: List<WordEdit>, val referenceWords: Int) 
 /** Derived experimental word positions only; never changes, grades or renders Quran text. */
 object LexicalAligner {
     fun align(reference: String, heard: String): LexicalAlignment {
-        fun words(text: String) = QuranSearchIndex.normalize(text).trim()
-            .split(Regex("\\s+")).filter { it.isNotEmpty() }
         require(reference.length <= 20_000 && heard.length <= 20_000)
         val a = words(reference); val b = words(heard)
         require(a.size <= 512 && b.size <= 512)
@@ -39,6 +41,25 @@ object LexicalAligner {
                 else -> result.add(WordEdit(WordEditKind.INSERTED, null, --j))
             }
         }
-        return LexicalAlignment(result.reversed(), a.size)
+        val edits = result.reversed()
+        val possibleRepetitions = edits.mapNotNull { edit ->
+            if (edit.kind != WordEditKind.INSERTED) return@mapNotNull null
+            val at = checkNotNull(edit.heardIndex)
+            at.takeIf { b.getOrNull(at - 1) == b[at] || b.getOrNull(at + 1) == b[at] }
+        }
+        return LexicalAlignment(edits, a.size, possibleRepetitions)
     }
+
+    internal fun inspectDraft(reference: String, draft: String): LexicalAlignment? {
+        val result = try {
+            align(reference, draft.replace(Regex("[\\p{P}\\p{S}]"), " "))
+        } catch (_: IllegalArgumentException) {
+            return null
+        }
+        // Complete disagreement provides no anchor for useful review positions.
+        return result.takeIf { it.edits.any { edit -> edit.kind == WordEditKind.MATCH } }
+    }
+
+    private fun words(text: String) = QuranSearchIndex.normalize(text).trim()
+        .split(Regex("\\s+")).filter { it.isNotEmpty() }
 }

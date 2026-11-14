@@ -291,6 +291,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, e
     var followsDailyPlan by rememberSaveable { mutableStateOf(savedSession?.followsDailyPlan ?: false) }
     var dailyPlanChapter by rememberSaveable { mutableIntStateOf(savedSession?.planChapter?.takeIf { it > 0 } ?: selectedSurah) }
     var message by remember { mutableStateOf("") }
+    var transcriptionFromPractice by rememberSaveable { mutableStateOf(false) }
     val exportState by export.status.collectAsState()
     val createProgressFile = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
         if (uri != null) {
@@ -465,9 +466,14 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, e
         scrollState.scrollTo(0)
     }
 
-    BackHandler(enabled = screen != Screen.HOME) {
-        screen = if (screen == Screen.CHAPTERS || screen == Screen.SAVED_PLACES) Screen.MUSHAF else Screen.HOME
+    fun goBack() {
+        screen = when (screen) {
+            Screen.CHAPTERS, Screen.SAVED_PLACES -> Screen.MUSHAF
+            Screen.LOCAL_TRANSCRIPTION -> if (transcriptionFromPractice) Screen.PRACTICE else Screen.HOME
+            else -> Screen.HOME
+        }
     }
+    BackHandler(enabled = screen != Screen.HOME, onBack = ::goBack)
 
     val windowWidthPx = LocalWindowInfo.current.containerSize.width
     val windowWidth = with(LocalDensity.current) { windowWidthPx.toDp() }
@@ -507,9 +513,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, e
                 Text("حِفْظ | NEXVARY", color = gold, fontSize = 20.sp,
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                if (screen != Screen.HOME) OutlinedButton(onClick = {
-                    screen = if (screen == Screen.CHAPTERS || screen == Screen.SAVED_PLACES) Screen.MUSHAF else Screen.HOME
-                }) { Text("رجوع") }
+                if (screen != Screen.HOME) OutlinedButton(onClick = ::goBack) { Text("رجوع") }
             }
             if (screen == Screen.HOME) Text("مصحف تدريبي يتكيّف مع طريقة استرجاعك", color = muted, fontSize = 14.sp)
             if (message.isNotEmpty() && screen != Screen.LOCAL_TRANSCRIPTION) {
@@ -704,6 +708,12 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, e
                         }
                         if (voicePractice.hasRecording) {
                             PrivateAudioControls(voicePractice) { voiceMessage = it }
+                        }
+                        OutlinedButton(onClick = {
+                            transcriptionFromPractice = true
+                            screen = Screen.LOCAL_TRANSCRIPTION
+                        }, modifier = Modifier.fillMaxWidth(), enabled = !voicePractice.isRecording) {
+                            Text("تفريغ تجريبي للآية الحالية")
                         }
                         Text("تمرين اختياري: اكتب ما تحفظه، ثم قارن بنفسك. لا يُستخدم لتقييم التجويد.",
                             color = muted, fontSize = 13.sp)
@@ -955,7 +965,7 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, e
                         }
                     }
                 }
-                Screen.LOCAL_TRANSCRIPTION -> LocalTranscriptionScreen()
+                Screen.LOCAL_TRANSCRIPTION -> LocalTranscriptionScreen(corpus, verse.takeIf { transcriptionFromPractice })
                 Screen.RECITERS -> {
                     Section("دليل قرّاء مصر والسعودية", "أسماء مبدئية • التسجيلات تحتاج مراجعة التراخيص")
                     val library = remember(corpus) {
@@ -1122,7 +1132,10 @@ private fun VerifiedAppContent(corpus: QuranCorpus, appearance: AppAppearance, e
                 Screen.TEACHERS -> TeacherNotebookScreen(corpus, LocalDate.ofEpochDay(today))
                 Screen.EXERCISES -> VerseExercisesScreen(corpus, verses, index, ::openCorpusVerse)
                 Screen.SETTINGS -> {
-                    OutlinedButton(onClick = { screen = Screen.LOCAL_TRANSCRIPTION }, modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(onClick = {
+                        transcriptionFromPractice = false
+                        screen = Screen.LOCAL_TRANSCRIPTION
+                    }, modifier = Modifier.fillMaxWidth()) {
                         Text("تفريغ صوتي محلي تجريبي")
                     }
                     Section("الإعدادات", "خصص تجربتك واختر الصفحات التالية")
