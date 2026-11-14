@@ -38,6 +38,17 @@ class LocalTranscriptionUiTest {
     private fun click(text: String) { rule.onNodeWithText(text).performScrollTo().performClick(); rule.waitForIdle() }
     private fun has(text: String) = rule.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
 
+    @Test fun opensTheExpectedVerseFromRecallAndReturnsToPractice() {
+        rule.onNodeWithText("الحفظ").performClick()
+        repeat(3) { click("المرحلة التالية في سُلّم الاسترجاع") }
+        val path = "تفريغ تجريبي للآية الحالية"
+        click(path)
+        rule.onNodeWithText("الآية المتوقعة: الفاتحة • 1").assertExists()
+        click("رجوع")
+        rule.onNodeWithText(path).assertExists()
+        rule.onNodeWithText("الآية المتوقعة: الفاتحة • 1").assertDoesNotExist()
+    }
+
     @Test fun cancelledCaptureCanBeRestartedImmediately() {
         rule.onNodeWithText("الإعدادات").performClick()
         click("تفريغ صوتي محلي تجريبي")

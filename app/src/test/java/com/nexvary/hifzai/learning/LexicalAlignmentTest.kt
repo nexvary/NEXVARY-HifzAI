@@ -23,6 +23,25 @@ class LexicalAlignmentTest {
         assertTrue(runCatching { LexicalAligner.align("x ".repeat(513), "x") }.isFailure)
         assertTrue(runCatching { LexicalAligner.align("x", "x".repeat(20_001)) }.isFailure)
     }
+    @Test fun draftReviewIgnoresPunctuationAndFindsRepeatedInsertions() {
+        val result = checkNotNull(LexicalAligner.inspectDraft("ألف باء جيم دال هاء", "ألف، ألف! باء جيم هاء"))
+        assertEquals(1, result.omissions)
+        assertEquals(1, result.insertions)
+        assertEquals(0, result.substitutions)
+        assertEquals(listOf(0), result.possibleRepetitions)
+        assertEquals(3, result.edits.single { it.kind == WordEditKind.OMITTED }.referenceIndex)
+        val expectedRepeat = checkNotNull(LexicalAligner.inspectDraft("ألف ألف جيم", "ألف ألف جيم"))
+        assertTrue(expectedRepeat.possibleRepetitions.isEmpty())
+        val unrelatedInsertion = checkNotNull(LexicalAligner.inspectDraft("ألف جيم", "ألف جديد جيم"))
+        assertEquals(1, unrelatedInsertion.insertions)
+        assertTrue(unrelatedInsertion.possibleRepetitions.isEmpty())
+    }
+
+    @Test fun draftReviewAbstainsWithoutAnyMatchingWord() {
+        assertNull(LexicalAligner.inspectDraft("ألف باء", "…؟"))
+        assertNull(LexicalAligner.inspectDraft("ألف باء", "جيم دال"))
+        assertNull(LexicalAligner.inspectDraft("ألف باء", "ألف ".repeat(513)))
+    }
     @Test fun expirationRevocationSourceAndNarrationAreSeparateChecks() {
         val rights = RecitationRights("fixture", "fixture", "https://example.com/a", "a".repeat(64),
             "synthetic-document", "synthetic-review", "hafs-an-asim", true, true, expiresEpochDay = 10)
