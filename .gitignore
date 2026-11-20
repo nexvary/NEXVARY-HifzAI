@@ -1,0 +1,23 @@
+.gradle/
+**/build/
+local.properties
+__pycache__/
+*.pyc
+*.apk
+*.aab
+*.jks
+*.keystore
+.idea/
+
+.kotlin/
+
+# Private academy state, never source artifacts
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+
+node_modules/
+
+# Android native build intermediates and fetched dependency source
+.cxx/

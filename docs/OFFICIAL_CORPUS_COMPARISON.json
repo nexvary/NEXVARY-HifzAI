@@ -1,0 +1,13 @@
+{
+  "verified_utc": "2026-10-14T18:43:26.435600+00:00",
+  "method": "HTTPS download directly from Tanzil; compare full bytes including license footer; no normalization",
+  "official_url": "https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&marks=true&sajdah=true&tatweel=true&agree=true",
+  "source_version": "Tanzil Uthmani 1.1",
+  "sha256": "6933e133dd56db778c801bf738848454e43648105a151e8d84d86a7cae39ec5f",
+  "git_blob_sha1": "9813920ae5afce9e50d2ac44562457e29bb4bfca",
+  "bytes": 1396087,
+  "byte_equal": true,
+  "surahs": 114,
+  "ayat": 6236,
+  "scholarly_display_approval": false
+}

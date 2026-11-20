@@ -1,0 +1,43 @@
+name: Private Academy Console Proof
+on:
+  push:
+    branches: [dev/foundation]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: academy-proof-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  console:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install locked test-only dependencies
+        working-directory: academy/test
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install Chromium for private console tests
+        working-directory: academy/test
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Test actual academy service and browser workflows
+        run: |
+          python tools/run_python_tests.py
+          node --check academy/console.js
+          python tools/run_academy_console_proof.py
+      - name: Preserve synthetic web console proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HifzAI-private-academy-WEB-console-proof
+          path: |
+            build/python/test-results.json
+            build/academy-console-proof/
+          if-no-files-found: error
