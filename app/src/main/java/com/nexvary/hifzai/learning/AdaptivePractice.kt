@@ -88,7 +88,9 @@ object MemoryCoach {
         }
     }
 
-    /** Prioritise overdue reviews, then learning cards, then non-due reviewed cards. */
+    /** Lapsed cards (graded AGAIN this session) precede all other due cards so the learner
+     *  re-encounters a failed verse immediately, before working through older backlog.
+     *  Priority: 0 = lapsed-today, 1 = normal due/overdue, 2 = new, 3 = future. */
     fun studyOrder(
         verses: List<VerifiedVerse>,
         cards: Map<Int, ReviewCard>,
@@ -98,9 +100,11 @@ object MemoryCoach {
             compareBy<VerifiedVerse> { verse ->
                 val card = cards[verse.id]
                 when {
-                    card == null || (card.repetitions == 0 && card.lapses == 0) -> 1
-                    card.dueEpochDay <= todayEpochDay -> 0
-                    else -> 2
+                    card != null && card.repetitions == 0 && card.lapses > 0
+                        && card.dueEpochDay <= todayEpochDay -> 0
+                    card == null || (card.repetitions == 0 && card.lapses == 0) -> 2
+                    card.dueEpochDay <= todayEpochDay -> 1
+                    else -> 3
                 }
             }.thenBy { verse ->
                 val card = cards[verse.id]

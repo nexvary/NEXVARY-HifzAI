@@ -4,7 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class AdaptivePracticeTest {
-    private val a = VerifiedVerse(1, 1, "نَصٌّ تَجْرِيبِيٌّ مُشَكَّلٌ")
+    private val a = VerifiedVerse(1, 1, "نَصٌّ تَجْرِيبِيٌّ مُشَكَّلٌ")
     private val b = VerifiedVerse(1, 2, "نص ثان محفوظ")
     private val c = VerifiedVerse(2, 1, "نص ثالث تجريبي")
 
@@ -32,15 +32,30 @@ class AdaptivePracticeTest {
         assertEquals(1, MemoryCoach.dueCount(cards.values, 6))
     }
 
+    /** A lapsed card (graded AGAIN, repetitions reset) must be presented before older overdue
+     *  cards so the learner revisits the failed verse immediately rather than after all backlog. */
+    @Test fun lapsedCardsPreceedOverdueInStudyOrder() {
+        val today = 10L
+        // verse `a` was just failed: repetitions=0, lapses=1, due today (SM-2 AGAIN path)
+        val lapsedA = ReviewCard(a.id, repetitions = 0, lapses = 1, dueEpochDay = today)
+        // verse `b` has been overdue since day 5 (repetitions=1, never lapsed)
+        val overdueB = ReviewCard(b.id, repetitions = 1, lapses = 0, dueEpochDay = 5)
+        val cards = mapOf(a.id to lapsedA, b.id to overdueB)
+        val ordered = MemoryCoach.studyOrder(listOf(b, c, a), cards, today)
+        val lapsedIdx = ordered.indexOf(a)
+        val overdueIdx = ordered.indexOf(b)
+        assertTrue("lapsed card must come before older overdue card", lapsedIdx < overdueIdx)
+    }
+
     @Test fun bridgeDoesNotCrossSurah() {
-        assertEquals("تَجْرِيبِيٌّ مُشَكَّلٌ", BridgeTrainer.tailOfPrevious(listOf(a, b), 1))
+        assertEquals("تَجْرِيبِيٌّ مُشَكَّلٌ", BridgeTrainer.tailOfPrevious(listOf(a, b), 1))
         assertNull(BridgeTrainer.tailOfPrevious(listOf(a, c), 1))
     }
 
     @Test fun similarityIgnoresDiacriticsOnlyForSearch() {
         val near = VerifiedVerse(3, 1, "نص تجريبي مشكل")
         assertTrue(SimilarityIndex.similarTo(a, listOf(a, near)).contains(near))
-        assertEquals("نَصٌّ تَجْرِيبِيٌّ مُشَكَّلٌ", a.text)
+        assertEquals("نَصٌّ تَجْرِيبِيٌّ مُشَكَّلٌ", a.text)
     }
 
     @Test fun coldStartHasNoFictitiousProgress() {

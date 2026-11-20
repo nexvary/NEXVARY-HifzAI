@@ -67,8 +67,14 @@ object DailyMemorizationPlan {
         val due = unique.filter { v ->
             val c = cards[v.id]
             c != null && (c.repetitions > 0 || c.lapses > 0) && c.dueEpochDay <= today
-        }.sortedWith(compareBy({ cards[it.id]?.dueEpochDay ?: Long.MAX_VALUE }, { it.chapter }, { it.verse }))
-            .take(maxDue)
+        }.sortedWith(compareBy(
+            // Lapsed cards (graded AGAIN, repetitions reset) are shown first so the learner
+            // re-encounters a failed verse before older waiting cards eat the session budget.
+            { v -> if ((cards[v.id]?.repetitions ?: 1) == 0 && (cards[v.id]?.lapses ?: 0) > 0) 0 else 1 },
+            { cards[it.id]?.dueEpochDay ?: Long.MAX_VALUE },
+            { it.chapter },
+            { it.verse }
+        )).take(maxDue)
         val new = unique.filter { v ->
             val c = cards[v.id]
             c == null || (c.repetitions == 0 && c.lapses == 0)

@@ -53,6 +53,20 @@ class RecallLadderTest {
         assertEquals(1,plan.newVerseIds.size)
     }
 
+    /** A verse graded AGAIN (lapsed) must head the daily due list so it is re-reviewed
+     *  before older overdue verses that have simply been waiting for their next interval. */
+    @Test fun lapsedVersePrecedesOlderOverdueInDailyPlan() {
+        val today = 10L
+        // verses[0]: just lapsed (SM-2 AGAIN → repetitions=0, lapses=1, due today)
+        val lapsed = ReviewCard(verses[0].id, repetitions = 0, lapses = 1, dueEpochDay = today)
+        // verses[1]: overdue since day 5 (normal interval, never lapsed)
+        val overdue = ReviewCard(verses[1].id, repetitions = 1, lapses = 0, dueEpochDay = 5)
+        val cards = mapOf(verses[0].id to lapsed, verses[1].id to overdue)
+        val plan = DailyMemorizationPlan.create(verses, cards, today, maxDue = 5, maxNew = 0)
+        assertEquals("lapsed verse must be first in the due list",
+            verses[0].id, plan.dueVerseIds.first())
+    }
+
     @Test fun selfReportedDifficultyRecordedOnlyWhenStruggling() {
         val memory = MemoryFingerprint(112001)
         val harder = MemoryCoach.record(memory,RecallGrade.HARD,0,false,DifficultyTag.SIMILAR_VERSE)
