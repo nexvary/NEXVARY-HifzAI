@@ -63,3 +63,5 @@ jobs:
           jq -e '.is_error == false and (.result | contains("HIFZAI_BEDROCK_OK"))' \
             "$RUNNER_TEMP/hifzai-result.json" >/dev/null
           printf '%s\n' 'OIDC and Bedrock verified for HifzAI.' >> "$GITHUB_STEP_SUMMARY"
+
+# Verify the repository-specific IAM trust grant.
