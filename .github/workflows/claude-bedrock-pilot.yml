@@ -21,6 +21,23 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - name: Report the OIDC subject without exposing the token
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64
+          import json
+          import os
+          import urllib.request
+          request = urllib.request.Request(
+              os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=sts.amazonaws.com",
+              headers={"Authorization": "Bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]},
+          )
+          with urllib.request.urlopen(request) as response:
+              claims = json.load(response)["value"].split(".")[1]
+          payload = json.loads(base64.urlsafe_b64decode(claims + "=" * (-len(claims) % 4)))
+          print(json.dumps({key: payload[key] for key in ("sub", "aud", "repository_id")}))
+          PY
       - name: Assume Bedrock role
         uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c
         with:
