@@ -1,6 +1,6 @@
 {
   "current_scope": "Device-local Android. docs/LOCAL_ONLY_SCOPE.md supersedes connected-academy/server requirements; historical remote rows are not completed and are not local-release blockers.",
-  "source_revision_audited": "3492ee58aa7a4c44afcc930dc32874a620353994",
+  "source_revision_audited": "074672d",
   "all_phase_numbers_present": true,
   "phase_count": 219,
   "final_complete_phases": 0,
@@ -468,12 +468,18 @@
     {
       "phase": "030",
       "required_function": "Add reverse transition prompts",
-      "status": "not_implemented_or_not_evidenced",
-      "implementation": [],
-      "implementation_commits": {},
-      "tests_or_checks": [],
+      "status": "partial_unaccepted",
+      "implementation": [
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt"
+      ],
+      "implementation_commits": {
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c8773f0"
+      },
+      "tests_or_checks": [
+        "app/src/test/java/com/nexvary/hifzai/learning/AdaptivePracticeTest.kt: headOfNextReturnsFirstWordsOfNextVerse, headOfNextNullWhenNotConsecutive, headOfNextNullAtEndOfList, headOfNextWordCountRespected"
+      ],
       "verification": "Referenced tests must be matched to reports for the exact source revision; no overall completion claim",
-      "problems": "لم يتم إثبات تنفيذ هذا المتطلب؛ يلزم التنفيذ واختبار القبول"
+      "problems": "BridgeTrainer.headOfNext() تُعيد أول N كلمات من الآية التالية في نفس السورة. الوحدات مكتملة؛ لا يوجد دليل بصري على واجهة المستخدم حتى الآن."
     },
     {
       "phase": "031",
@@ -1798,8 +1804,8 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
-        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c8773f0",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c8773f0",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
@@ -1829,8 +1835,8 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
-        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c8773f0",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c8773f0",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },
@@ -1860,8 +1866,8 @@
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt"
       ],
       "implementation_commits": {
-        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "240501881fe4aac9b266b5c52ac51ccd22f347ea",
-        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c4e656a8c50759f97a77c858475a65a1c607c35a",
+        "app/src/main/java/com/nexvary/hifzai/learning/AdaptivePractice.kt": "c8773f0",
+        "app/src/main/java/com/nexvary/hifzai/learning/RecallLadder.kt": "c8773f0",
         "app/src/main/java/com/nexvary/hifzai/learning/ProgressStore.kt": "6f09368565bc80fa53d348fc17caafb5955b7aa6",
         "app/src/main/java/com/nexvary/hifzai/MainActivity.kt": "3492ee58aa7a4c44afcc930dc32874a620353994"
       },

@@ -20,7 +20,19 @@ failure_diagnostics() {
 }
 trap failure_diagnostics EXIT
 # Run instrumentation explicitly so AGP cannot uninstall the app before PNG extraction.
-gradle :app:assembleDebug :app:assembleDebugAndroidTest -PhifzTestAbi=x86_64 --no-daemon --stacktrace
+# Maven Central occasionally returns 429 on first-run cache misses; retry up to 3
+# times so subsequent attempts only re-download failed artifacts from local cache.
+for _gradle_attempt in 1 2 3; do
+  if gradle :app:assembleDebug :app:assembleDebugAndroidTest \
+       -PhifzTestAbi=x86_64 --no-daemon --stacktrace; then
+    break
+  elif [ "$_gradle_attempt" -lt 3 ]; then
+    echo "Gradle attempt $_gradle_attempt failed; retrying in 30s..."
+    sleep 30
+  else
+    exit 1
+  fi
+done
 python3 tools/verify_native_asr_apk.py app/build/outputs/apk/debug/app-debug.apk --abi x86_64
 cp build/native-asr/packaging.json ui-proof/native-packaging.json
 adb install -r app/build/outputs/apk/debug/app-debug.apk

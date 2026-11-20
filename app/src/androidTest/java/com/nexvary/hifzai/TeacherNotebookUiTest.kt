@@ -32,8 +32,25 @@ class TeacherNotebookUiTest {
         val root = androidx.test.espresso.matcher.RootMatchers.withDecorView(
             androidx.test.espresso.matcher.ViewMatchers.hasDescendant(
                 androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget)))
-        androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget))
-            .inRoot(root).check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
+        // presentAfterOwnerFocus defers dialog.show() until Activity decor view
+        // regains window focus; on API 35 this can take several hundred ms.
+        val deadline = System.currentTimeMillis() + 10_000L
+        while (true) {
+            try {
+                androidx.test.espresso.Espresso.onView(
+                    androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom(widget))
+                    .inRoot(root)
+                    .check(androidx.test.espresso.assertion.ViewAssertions.matches(
+                        androidx.test.espresso.matcher.ViewMatchers.isDisplayed()))
+                break
+            } catch (e: androidx.test.espresso.NoMatchingRootException) {
+                if (System.currentTimeMillis() >= deadline) throw e
+                Thread.sleep(100)
+            } catch (e: androidx.test.espresso.NoMatchingViewException) {
+                if (System.currentTimeMillis() >= deadline) throw e
+                Thread.sleep(100)
+            }
+        }
         // Capture the actual platform window; Compose captureToImage only sees
         // the Activity beneath this native picker. No generated UI or fixtures.
         val image = checkNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())

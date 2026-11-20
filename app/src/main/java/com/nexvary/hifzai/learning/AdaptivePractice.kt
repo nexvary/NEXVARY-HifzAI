@@ -88,19 +88,40 @@ object MemoryCoach {
         }
     }
 
-    /** Prioritise overdue reviews, then learning cards, then non-due reviewed cards. */
+    /**
+     * Five-tier verse ordering. Within each tier, oldest due date comes first.
+     *
+     *  Tier 0 — current-session failures: graded AGAIN this session (in [sessionLapses]),
+     *            repetitions reset to 0 by SM-2. Re-encounter the verse immediately.
+     *  Tier 1 — previously lapsed and due: repetitions=0, lapses>0, dueEpochDay<=today,
+     *            but NOT graded this session. Failed on an earlier day, now overdue again.
+     *  Tier 2 — ordinary overdue: repetitions>0, dueEpochDay<=today. Never lapsed, or
+     *            lapsed then successfully reviewed (repetitions advanced back above 0).
+     *  Tier 3 — new: no card, or repetitions=0 and lapses=0. Never studied before.
+     *  Tier 4 — future: dueEpochDay>today. Not yet due.
+     *
+     * [sessionLapses] is an in-memory set of verse IDs graded AGAIN in the current practice
+     * session. It is NOT persisted; callers supply it from ViewModel state. When empty (the
+     * default), tiers 0 and 1 collapse into a single lapsed-due group, which still precedes
+     * ordinary overdue cards.
+     */
     fun studyOrder(
         verses: List<VerifiedVerse>,
         cards: Map<Int, ReviewCard>,
-        todayEpochDay: Long
+        todayEpochDay: Long,
+        sessionLapses: Set<Int> = emptySet()
     ): List<VerifiedVerse> {
         return verses.sortedWith(
             compareBy<VerifiedVerse> { verse ->
                 val card = cards[verse.id]
+                val isLapsed = card != null && card.repetitions == 0 && card.lapses > 0
+                    && card.dueEpochDay <= todayEpochDay
                 when {
-                    card == null || (card.repetitions == 0 && card.lapses == 0) -> 1
-                    card.dueEpochDay <= todayEpochDay -> 0
-                    else -> 2
+                    isLapsed && verse.id in sessionLapses -> 0
+                    isLapsed -> 1
+                    card != null && card.repetitions > 0 && card.dueEpochDay <= todayEpochDay -> 2
+                    card == null || (card.repetitions == 0 && card.lapses == 0) -> 3
+                    else -> 4
                 }
             }.thenBy { verse ->
                 val card = cards[verse.id]
@@ -108,7 +129,6 @@ object MemoryCoach {
             }.thenBy { it.chapter }.thenBy { it.verse }
         )
     }
-
     fun dueCount(cards: Collection<ReviewCard>, todayEpochDay: Long) =
         cards.count { (it.repetitions > 0 || it.lapses > 0) && it.dueEpochDay <= todayEpochDay }
 
@@ -130,6 +150,22 @@ object BridgeTrainer {
         if (previous.chapter != current.chapter || previous.verse + 1 != current.verse) return null
         return textForExercise(previous).trim().split(Regex("\\s+")).takeLast(words).joinToString(" ")
     }
+
+    /**
+     * Reverse bridge: first [words] of the verse at [index]+1.
+     * Prompts "what verse follows?" — Phase 030 reverse-transition practice.
+     * Returns null when there is no immediately consecutive next verse in the same chapter.
+     */
+    fun headOfNext(verses: List<VerifiedVerse>, index: Int, words: Int = 2,
+        textForExercise: (VerifiedVerse) -> String = { it.text }): String? {
+        if (index !in 0 until verses.lastIndex) return null
+        require(words > 0)
+        val current = verses[index]
+        val next = verses[index + 1]
+        if (current.chapter != next.chapter || current.verse + 1 != next.verse) return null
+        return textForExercise(next).trim().split(Regex("\\s+")).take(words).joinToString(" ")
+    }
+
 }
 
 /**

@@ -54,28 +54,57 @@ object DailyMemorizationPlan {
     /**
      * A study budget in number of new verses, not a claim about learning efficacy.
      * Future-due cards are never pushed into a new-verse session.
+     *
+     * Due cards are split into two groups ordered by priority, then by oldest due date:
+     *   1. Lapsed (repetitions=0, lapses>0, dueEpochDay<=today): capped at ceil(maxDue/2)
+     *      so ordinary overdue cards are never starved of session slots.
+     *   2. Ordinary overdue (repetitions>0, dueEpochDay<=today): fills remaining slots.
+     *
+     * To distinguish current-session failures from previously-lapsed-due cards, callers may
+     * pass [sessionLapses] — an in-memory set of verse IDs graded AGAIN this session.
+     * Lapsed cards in [sessionLapses] are sorted to the front of the lapsed group.
      */
     fun create(
         verses: List<VerifiedVerse>,
         cards: Map<Int, ReviewCard>,
         today: Long,
         maxDue: Int = 15,
-        maxNew: Int = 2
+        maxNew: Int = 2,
+        sessionLapses: Set<Int> = emptySet()
     ): DailyPlan {
         require(maxDue >= 0 && maxNew >= 0)
         val unique = verses.distinctBy { it.id }
-        val due = unique.filter { v ->
+
+        // Anti-starvation: lapsed cards get at most ceil(maxDue/2) slots.
+        val lapsedCap = if (maxDue == 0) 0 else ((maxDue + 1) / 2).coerceAtLeast(1)
+        val lapsed = unique.filter { v ->
             val c = cards[v.id]
-            c != null && (c.repetitions > 0 || c.lapses > 0) && c.dueEpochDay <= today
-        }.sortedWith(compareBy({ cards[it.id]?.dueEpochDay ?: Long.MAX_VALUE }, { it.chapter }, { it.verse }))
-            .take(maxDue)
-        val new = unique.filter { v ->
+            c != null && c.repetitions == 0 && c.lapses > 0 && c.dueEpochDay <= today
+        }.sortedWith(compareBy(
+            // Current-session failures (Tier 0) precede previously-lapsed-due (Tier 1).
+            { v -> if (v.id in sessionLapses) 0 else 1 },
+            { cards[it.id]?.dueEpochDay ?: Long.MAX_VALUE },
+            { it.chapter },
+            { it.verse }
+        )).take(lapsedCap)
+
+        val lapsedIds = lapsed.map { it.id }.toHashSet()
+        val normal = unique.filter { v ->
+            val c = cards[v.id]
+            c != null && c.repetitions > 0 && c.dueEpochDay <= today && v.id !in lapsedIds
+        }.sortedWith(compareBy(
+            { cards[it.id]?.dueEpochDay ?: Long.MAX_VALUE },
+            { it.chapter },
+            { it.verse }
+        )).take(maxDue - lapsed.size)
+
+        val due = lapsed + normal
+
+        val newCards = unique.filter { v ->
             val c = cards[v.id]
             c == null || (c.repetitions == 0 && c.lapses == 0)
-        }
-            .sortedWith(compareBy({ it.chapter }, { it.verse }))
-            .take(maxNew)
-        return DailyPlan(due.map { it.id }, new.map { it.id })
+        }.sortedWith(compareBy({ it.chapter }, { it.verse })).take(maxNew)
+        return DailyPlan(due.map { it.id }, newCards.map { it.id })
     }
 }
 
