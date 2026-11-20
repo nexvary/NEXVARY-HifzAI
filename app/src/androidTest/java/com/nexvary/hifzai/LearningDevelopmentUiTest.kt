@@ -106,7 +106,7 @@ class LearningDevelopmentUiTest {
         ParcelFileDescriptor.AutoCloseInputStream(executeShellCommand(command)).use { it.readBytes() }
 
     private fun UiAutomation.pickerRoot(): AccessibilityNodeInfo? =
-        windows.asSequence().filter { it.type == AccessibilityWindowInfo.TYPE_APPLICATION }
+        windows.asSequence()
             .mapNotNull { it.root }
             .firstOrNull { it.packageName?.toString()?.endsWith(".documentsui") == true }
 
