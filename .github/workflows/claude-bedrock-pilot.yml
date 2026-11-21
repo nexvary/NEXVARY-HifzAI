@@ -1,0 +1,67 @@
+name: HifzAI Claude Bedrock pilot
+on:
+  push:
+    branches: [integration/hifzai-claude-bedrock]
+    paths: ['.github/workflows/claude-bedrock-pilot.yml']
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: hifzai-claude-bedrock-pilot
+  cancel-in-progress: false
+jobs:
+  smoke:
+    if: >-
+      github.repository == 'nexvary/NEXVARY-HifzAI' &&
+      github.actor == 'nexvary' &&
+      github.ref == 'refs/heads/integration/hifzai-claude-bedrock' &&
+      (github.event_name == 'workflow_dispatch' ||
+        (github.event.head_commit.message == 'ci: verify HifzAI Bedrock access' && github.run_attempt == 1))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+    steps:
+      - name: Report the OIDC subject without exposing the token
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64
+          import json
+          import os
+          import urllib.request
+          request = urllib.request.Request(
+              os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=sts.amazonaws.com",
+              headers={"Authorization": "Bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]},
+          )
+          with urllib.request.urlopen(request) as response:
+              claims = json.load(response)["value"].split(".")[1]
+          payload = json.loads(base64.urlsafe_b64decode(claims + "=" * (-len(claims) % 4)))
+          print(json.dumps({key: payload[key] for key in ("sub", "aud", "repository_id")}))
+          PY
+      - name: Assume Bedrock role
+        uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c
+        with:
+          role-to-assume: ${{ vars.NEXVARY_BEDROCK_ROLE_ARN || 'arn:aws:iam::716997672148:role/nexvary-github-bedrock-development' }}
+          aws-region: eu-central-1
+          role-duration-seconds: 900
+          retry-max-attempts: 2
+      - name: Run bounded Bedrock smoke test
+        shell: bash
+        env:
+          CLAUDE_CODE_USE_BEDROCK: '1'
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
+          DISABLE_AUTOUPDATER: '1'
+        run: |
+          test "$(aws sts get-caller-identity --query Account --output text)" = 716997672148
+          npm install --prefix "$RUNNER_TEMP/claude-cli" @anthropic-ai/claude-code@2.1.328 --no-audit --no-fund
+          mkdir -p "$RUNNER_TEMP/hifzai-smoke"
+          cd "$RUNNER_TEMP/hifzai-smoke"
+          "$RUNNER_TEMP/claude-cli/node_modules/.bin/claude" \
+            -p 'Reply exactly HIFZAI_BEDROCK_OK.' --model eu.anthropic.claude-sonnet-4-6 \
+            --max-turns 1 --tools "" --safe-mode --restricted --no-session-persistence \
+            --output-format json > "$RUNNER_TEMP/hifzai-result.json"
+          jq -e '.is_error == false and (.result | contains("HIFZAI_BEDROCK_OK"))' \
+            "$RUNNER_TEMP/hifzai-result.json" >/dev/null
+          printf '%s\n' 'OIDC and Bedrock verified for HifzAI.' >> "$GITHUB_STEP_SUMMARY"
+
+# Verify the repository-specific IAM trust grant.
